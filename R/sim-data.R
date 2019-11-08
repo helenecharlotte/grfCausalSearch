@@ -5,7 +5,7 @@ sim.data <- function(n=1000,
                      seed=runif(1, min=1, max=30000),
                      CR=c(1,2),
                      t0=0.5, n.A=10, cens.A=0,
-                     form.A = function(X, alpha=0.2, beta=0.5) alpha+as.numeric(X[,1])*beta,
+                     form.A = function(X, alpha=0.2, beta=0.5) 0.5+alpha+as.numeric(X[,1])*beta,
                      form.T1 = function(X, A) -1.1 + as.numeric(X[, 1])*0.2 -
                          as.numeric(X[,3])*0.1 -
                          A[, 1]*1.5,
@@ -23,8 +23,8 @@ sim.data <- function(n=1000,
                     X4 = factor(sample(1:4, n, TRUE)))
 
     A <- data.frame(sapply(1:n.A, function(a) {
-        return(rexpit(form.A(X[, sample(1:4, 4)], alpha=sample(c(-1,1),1)/n.A,
-                             beta=0.2*sample(c(-1,0,1),1))))
+        return(rexpit(form.A(X[, rep((a%%3)*1+(a%%2)*1+1-1*(a==5), 4)], alpha=(2*(a%%2)-1)/(n.A*10),
+                             beta=((2*(a%%2)-1)+((a%%3)>0))/10)))
     }))
 
     names(A) <- paste0("A", 1:n.A)
