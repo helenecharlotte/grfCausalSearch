@@ -47,7 +47,7 @@ hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
         grf.A <- causal_forest(
             model.matrix(~ -1 + .,
                          dt[, (1:ncol(dt))[colnames(dt) %in% X.vars], with=FALSE]),
-            dt$Y,
+            dt[, Y1],
             dt[, (1:ncol(dt))[colnames(dt)==a], with=FALSE][[1]],
             num.trees=400)
 
