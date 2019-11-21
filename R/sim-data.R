@@ -4,23 +4,26 @@ sim.data <- function(n=1000,
                      which.A=1,
                      seed=runif(1, min=1, max=30000),
                      CR=c(1,2),
+                     C.shape=0.4,
                      t0=0.5, n.A=10, cens.A=0,
                      form.A = function(X, alpha=0.2, beta=0.5) 0.5+alpha+as.numeric(X[,1])*beta,
                      form.T1 = function(X, A) -1.1 + as.numeric(X[, 1])*0.2 -
                          as.numeric(X[,3])*0.1 -
                          A[, 1]*1.5,
                      form.T2 = function(X, A) 0.1 - as.numeric(X[, 2])*0.4 -
-                                              as.numeric(X[, 3])*0.33 +
-                                              2.1*A[, 2]) {
+                                              as.numeric(X[, 1])*0.33 +
+                                              1.5*A[, 2]) {
 
     if (length(seed)>0) set.seed(seed)
 
     rexpit <-  function(x) rbinom(n=length(x), size=1, prob=plogis(x))
 
-    X <- data.frame(X1 = factor(sample(1:2, n, TRUE)),
+    X <- data.frame(X1 = runif(n),
                     X2 = factor(sample(1:3, n, TRUE)),
-                    X3 = factor(sample(1:3, n, TRUE)),
-                    X4 = factor(sample(1:4, n, TRUE)))
+                    X3 = factor(sample(1:4, n, TRUE)),
+                    X4 = runif(n),
+                    X5 = runif(n),
+                    X6 = runif(n))
 
     A <- data.frame(sapply(1:n.A, function(a) {
         return(rexpit(form.A(X[, rep((a%%3)*1+(a%%2)*1+1-1*(a==5), 4)], alpha=(2*(a%%2)-1)/(n.A*10),
@@ -30,9 +33,9 @@ sim.data <- function(n=1000,
     names(A) <- paste0("A", 1:n.A)
 
     if (cens.A>0) {
-        C <- rweibull(n, shape=0.4+A[, cens.A], scale=2.4)
+        C <- rweibull(n, shape=C.shape+A[, cens.A], scale=2.4)
     } else {
-        C <- rweibull(n, shape=0.9, scale=2.4)
+        C <- rweibull(n, shape=C.shape+0.5, scale=2.4)
     }
 
     if (compute.counterfactuals) {
@@ -105,4 +108,3 @@ sim.data <- function(n=1000,
     }
 
 }
-
