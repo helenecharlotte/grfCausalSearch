@@ -49,7 +49,7 @@ hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
                          dt[, (1:ncol(dt))[colnames(dt) %in% X.vars], with=FALSE]),
             dt[, Y1],
             dt[, (1:ncol(dt))[colnames(dt)==a], with=FALSE][[1]],
-            num.trees=400)
+            num.trees=1000)
 
         return(average_treatment_effect(grf.A))
 
