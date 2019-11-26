@@ -8,13 +8,6 @@ hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
                           t0=0.5,
                           browse=FALSE) {
 
-    #-- reset weights and define id variable:
-
-    dt[, id:=1:.N]
-    dt[, wt:=0]
-
-    if (browse) browser()
-
     ATE.list <- lapply(A.vars, function(a) {
 
         #-- reset weights and define id variable:
