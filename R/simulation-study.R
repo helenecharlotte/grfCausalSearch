@@ -2,20 +2,13 @@
 ## set working directory
 #-------------------------------------------------------------------------------------------#
 
-if (system("echo $USER",intern=TRUE)%in%c("jhl781")){
-    setwd("/home/ifsv/jhl781/research/phd/random-forest/r-code/causal-search-dst/")
-} else {
-    setwd("~/research/phd/random-forest/r-code/causal-search-dst/")
-}
-
-
 library(grf)
 library(data.table)
 library(survival)
 library(riskRegression)
 
-source("sim-data.R")
-source("hunt-fun-fast.R")
+source("R/sim-data.R")
+source("R/hunt-fun-fast.R")
 
 
 #--------------------- test with simulations ------------------------#'
@@ -72,18 +65,15 @@ for (m in 1:M) {
 
     nevents[[m]] <- table(dt[time<=0.5, delta])
 
-    saveRDS(nevents, file=paste0("output/nevents",
-                                 "-V-n",n,"-M",M,"-censoring", censoring, ".rds"))
-
     # estimate theta1:
     ATE.list.1.unadj[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=TRUE,
-                                               X.vars=paste0("X", 1:10))
+                                             X.vars=paste0("X", 1:10))
     ATE.list.1.adjA[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=TRUE,
-                                             X.vars=paste0("X", 1:10),
-                                             stratify.CR="A2")
+                                            X.vars=paste0("X", 1:10),
+                                            stratify.CR="A2")
     ATE.list.1.adj[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=TRUE,
-                                             X.vars=paste0("X", 1:10),
-                                             stratify.CR="A2+X1+X2")
+                                           X.vars=paste0("X", 1:10),
+                                           stratify.CR="A2+X1+X2")
     
     # estimate theta2:
     ATE.list.2.unadj[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=FALSE,
