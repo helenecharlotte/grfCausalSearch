@@ -74,7 +74,7 @@ for (m in 1:M) {
     ATE.list.1.adj[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=TRUE,
                                            X.vars=paste0("X", 1:10),
                                            stratify.CR="A2+X1+X2")
-    
+
     # estimate theta2:
     ATE.list.2.unadj[[m+1]] <- hunt.fun.fast(dt, CR.as.censoring=FALSE,
                                                X.vars=paste0("X", 1:10))

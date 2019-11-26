@@ -1,5 +1,5 @@
 hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
-                          X.vars=paste0("X", 1:4),
+                          X.vars=paste0("X", 1:10),
                           CR.as.censoring=FALSE,
                           stratify.CR=NULL,
                           stratify.A=FALSE,
