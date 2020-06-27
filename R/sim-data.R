@@ -7,9 +7,7 @@ sim.data <- function(n=1000,
                      C.shape=0.4,
                      t0=0.5, n.A=10, cens.A=0,
                      form.A = function(X, alpha=0.2, beta=0.5) 0.5+alpha+as.numeric(X[,1])*beta,
-                     form.T1 = function(X, A) -1.1 + as.numeric(X[, 1])*0.2 -
-                         as.numeric(X[,3])*0.1 -
-                         A[, 1]*1.5,
+                     form.T1 = function(X, A) -1.1 + as.numeric(X[, 1])*0.2 - as.numeric(X[,3])*0.1 - A[, 1]*1.5,
                      form.T2 = function(X, A) 0.1 - as.numeric(X[, 2])*0.4 -
                                               as.numeric(X[, 1])*0.33 +
                                               1.5*A[, 2]) {
@@ -54,9 +52,12 @@ sim.data <- function(n=1000,
             T2.0 <- rweibull(n, shape=0.8-0.5*form.T2(X, A.0), scale=1)
             T2   <- T2.1*A[, which.A] + T2.0*(1-A[, which.A])
 
-            T.1  <- sapply(1:n, function(i) min(T1.1[i], T2.1[i]))
-            T.0  <- sapply(1:n, function(i) min(T1.0[i], T2.0[i]))
-            time <- sapply(1:n, function(i) min(T1[i], T2[i], C[i]))
+            ## T.1  <- sapply(1:n, function(i) min(T1.1[i], T2.1[i]))
+            T.1  <- pmin(T1.1, T2.1)
+            ## T.0  <- sapply(1:n, function(i) min(T1.0[i], T2.0[i]))
+            T.0 <- pmin(T1.0, T2.0)
+            ## time <- sapply(1:n, function(i) min(T1[i], T2[i], C[i]))
+            time <- pmin(T1, T2, C)
 
             delta.1 <- 1*(T.1==T1.1) + 2*(T.1==T2.1)
             delta.0 <- 1*(T.0==T1.0) + 2*(T.0==T2.0)
@@ -68,7 +69,8 @@ sim.data <- function(n=1000,
 
         } else {
 
-            time  <- sapply(1:n, function(i) min(T1[i], C[i]))
+            ## time  <- sapply(1:n, function(i) min(T1[i], C[i]))
+            time  <- pmin(T1,C)
             delta <- 1*(time==T1)
 
             df <- cbind(X, A, time=time, delta=delta,
@@ -82,14 +84,16 @@ sim.data <- function(n=1000,
         if (CR[1]>1) {
 
             T2    <- rweibull(n, shape=0.8-0.5*form.T2(X, A.1), scale=1)
-            time  <- sapply(1:n, function(i) min(T1[i], T2[i], C[i]))
-            delta <- 1*(time=T1) + 2*(time=T2)
+            ## time  <- sapply(1:n, function(i) min(T1[i], T2[i], C[i]))
+            time <- pmin(T1,T2,C)
+            delta <- 1*(time==T1) + 2*(time==T2)
             df    <- cbind(X, A, time=time, delta=delta, T1=T1, T2=T2)
 
         } else {
 
-            time  <- sapply(1:n, function(i) min(T1[i], C[i]))
-            delta <- 1*(time=T1)
+            ## time  <- sapply(1:n, function(i) min(T1[i], C[i]))
+            tim <- pmin(T1,C)
+            delta <- 1*(time==T1)
             df <- cbind(X, A, time=time, delta=delta, T1=T1)
 
         }

@@ -6,6 +6,7 @@ hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
                           event=1, method.weight="KM",
                           A.vars=paste0("A", 1:10),
                           t0=0.5,
+                          num.trees=1000,
                           browse=FALSE) {
 
     ATE.list <- lapply(A.vars, function(a) {
@@ -50,20 +51,18 @@ hunt.fun.fast <- function(dt, ## time, delta (0=censoring), A, X
 
         #-- define real-valued outcome:
         dt[, Y1:=wt*as.numeric(time<=t0)]
-
         #-- run grf:
-
+        
         grf.A <- causal_forest(
             model.matrix(~ -1 + .,
                          dt[, (1:ncol(dt))[colnames(dt) %in% X.vars], with=FALSE]),
             dt[, Y1],
             dt[, (1:ncol(dt))[colnames(dt)==a], with=FALSE][[1]],
-            num.trees=1000)
+            num.trees=num.trees)
 
         return(average_treatment_effect(grf.A))
 
     })
-
     ATE.out <- as.data.frame(do.call("rbind", ATE.list))
 
     ATE.out$CI.lwr <- ATE.out$estimate - 1.96*ATE.out$std.err
