@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jun 10 2020 (14:53) 
+## Last-Updated: Jun 27 2020 (07:53) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 45
+##     Update #: 102
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -68,13 +68,43 @@
 ##' regression(m,censtime~A+X1+X2+X3+X4+X5) <- c(gammaA,gamma1,gamma2,gamma3,gamma4,gamma5)
 ##' plot(m)
 ##' set.seed(99)
-##' d <- sim(m,1000)
+##' d <- sim(m,200)
 ##' plot(prodlim(Hist(time,event)~A,data=d))
 ##' fit0 <- prodlim(Hist(time,event)~A,data=d)
 ##' fit1 <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7)
 ##' fit1
-##' fit2 <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,num.tree=50,args.weight=list(num.tree=50))
+##' fit2 <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,
+##'                 num.tree=50,args.weight=list(num.tree=50))
 ##' fit2
+##' # with effect of A on T1
+##' regression(m,latenttime1~A) <- 0.5
+##' set.seed(98)
+##' d <- sim(m,200)
+##' fit2a <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,
+##'                 num.tree=50,args.weight=list(num.tree=50))
+##' fit2a
+##' # with effect of A on T2 in opposite direction
+##' regression(m,latenttime2~A) <- -0.9
+##' set.seed(98)
+##' d <- sim(m,200)
+##' fit2b <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,
+##'                 num.tree=50,args.weight=list(num.tree=50))
+##' fit2b
+##' 
+##' ## CR.as.censoring:
+##' # a) variable A has an effect only through the rate of the competing risk
+##' regression(m,latenttime1~A) <- 0
+##' regression(m,latenttime2~A) <- 0
+##' set.seed(89)
+##' x <- foreach(i=1:10,.combine="rbind")%dopar%{
+##' d <- sim(m,200)
+##' fit3  <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,
+##'                  num.tree=50,args.weight=list(num.tree=50),CR.as.censoring=FALSE)
+##' fit3b  <- grfcens(formula=Hist(time,event)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7,
+##'                   num.tree=50,args.weight=list(num.tree=50),CR.as.censoring=TRUE)
+##' c(here=fit3[[1]],hypo=fit3b[[2]])
+##' }
+##' 
 ##' @export 
 ##' @author Helene Charlotte Rytgaard <hely@@sund.ku.dk>, Thomas A. Gerds <tag@@biostat.ku.dk>
 grfcens <- function(formula,
@@ -84,50 +114,56 @@ grfcens <- function(formula,
                     method.weight="ranger",
                     formula.weight,
                     args.weight=NULL,
-                    treatment,
                     times,...){
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        stripSpecials="intervene",
                                        specials="intervene")
-    dt <- data.table(cbind(unclass(EHF$event.history),EHF$design,EHF$intervene))
     if (length(times)>1) warning("Works currently only for one time point at a time.")
     t0=times[[1]]
-    cens.code <- attr(EHF$event.history,"cens.code")
-    if (attr(EHF$event.history,"cens.type")=="uncensored"){
-        dt[,Y1:=as.numeric(time<=t0)]
-        if (length(unique(dt[["Y1"]]))<=1) stop(paste0("Outcome status has no variation at time ",t0))
-        grf.A <- causal_forest(X=EHF$design,
-                               Y=dt[["Y1"]],
-                               W=as.numeric(as.character(EHF$intervene[[1]])),
-                               ...)
-    }else{ ## require right censored
-        stopifnot(attr(EHF$event.history,"cens.type")=="rightCensored")
-        dt[,id:=1:.N]
+    response.type <- attr(response,"model") # either "survival" or "competing.risk"
+    cens.type <- attr(EHF$event.history,"cens.type") # either "uncensored" or "rightCensored"
+    if (CR.as.censoring == TRUE && response.type=="survival")
+        warning("Only one cause of event in data. Removing a competing risk which does not occur.")
+    # uncensored
+    if (CR.as.censoring==FALSE &&  cens.type=="uncensored"){
+        Y <- as.numeric(dt[["time"]]<=t0)
+    }else{
+        ## require either right censored data, or request for the hypothetical world
+        ## where competing risk has been removed
+        stopifnot(cens.type=="rightCensored" || CR.as.censoring == TRUE)
+        dt <- data.table(cbind(unclass(EHF$event.history),EHF$design,EHF$intervene))
+        ## in case without competing risks add event variable
+        if (response.type=="survival") dt[,event:=status]
         if (CR.as.censoring) {
             dt[,is.censored:=as.numeric(event!=cause)]
         }else{
             dt[,is.censored:=as.numeric(status==0)]
         }
-        ## foreach::foreach (t0=times) %dopar%{
         if (tolower(method.weight)=="km"){
+            if (CR.as.censoring==TRUE) dt[is.censored==1,status:=0]
             if (missing(formula.weight)){
                 formula.weight <- formula(paste0("Hist(time,status)~",paste(c(colnames(EHF$design),colnames(EHF$intervene)),collapse="+")))
                 reverse.km.fit <- prodlim(formula.weight, data=dt, reverse=TRUE)
             }else{
-                reverse.km.fit <- prodlim(formula.weight, data=data, reverse=TRUE)
+                formula.weight <- update.formula(formula.weight,"Hist(time,status)~.")
+                reverse.km.fit <- prodlim(formula.weight, data=dt, reverse=TRUE)
             }
-            ## resultat of predictSurvIndividual is sorted by (time, -status)
+            ## result of predictSurvIndividual is sorted by (time, -status)
+            dt[,id:=1:.N]
             setorder(dt,time,is.censored)
             #-- define real-valued outcome:
-            dt[,Y1:=(event==cause)*(time<=t0)/predictSurvIndividual(reverse.km.fit)]
-            if (length(unique(dt[["Y1"]]))<=1) stop(paste0("Outcome status has no variation at time ",t0))
-        } else{
-            if (missing(formula.weight))
-                formula.weight <- formula(paste0("Surv(time,is.censored)~",paste(c(colnames(EHF$design),colnames(EHF$intervene)),collapse="+")))
-            else
-                formula.weight <- update(formula.weight,"Surv(time,is.censored)~.")
-            reverse.forest <- do.call("ranger",c(list(formula=formula.weight, data=dt),args.weight))
+            dt[,Y:=(event==cause)*(time<=t0)/predictSurvIndividual(reverse.km.fit)]
+            ## back to original order
+            setorder(dt,id)
+            Y <- dt[["Y"]]
+        }else{
+            if (missing(formula.weight)){
+                ff <- formula(paste0("Surv(time,is.censored)~",paste(c(colnames(EHF$design),colnames(EHF$intervene)),collapse="+")))
+            }else{
+                ff <- update(formula.weight,"Surv(time,is.censored)~.")
+            }
+            reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),args.weight))
             Gmat <- stats::predict(reverse.forest,data=dt)$survival
             jtimes <- ranger::timepoints(reverse.forest)
             Gi.minus <- sapply(1:length(dt$time),function(i){
@@ -138,19 +174,18 @@ grfcens <- function(formula,
                 c(1,Gmat[i,])[1+pos]
             })
             dt[,weights:=Gi.minus]
-            dt[,Y1:=as.numeric((event==cause)*(time<=t0))]
-            dt[Y1!=0,Y1:=1/weights]
-            if (length(unique(dt[["Y1"]]))<=1) stop(paste0("Outcome status has no variation at time ",t0))
+            dt[,Y:=as.numeric((event==cause)*(time<=t0))]
+            dt[Y!=0,Y:=1/weights]
+            Y <- dt[["Y"]]
         }
-        if (any(is.infinite(dt$Y1))) stop(paste0("Weighted outcome status has infinite values at time ",t0))
-        ## back to original order
-        setorder(dt,id)
-        #-- run grf:
-        grf.A <- causal_forest(X=EHF$design,
-                               Y=dt[["Y1"]],
-                               W=as.numeric(as.character(EHF$intervene[[1]])),
-                               ...)
     }
+    if (any(is.infinite(Y))) stop(paste0("Weighted outcome status has infinite values at time ",t0))
+    if (length(unique(Y))<=1) stop(paste0("Outcome status has no variation at time ",t0))
+    #-- run grf:
+    grf.A <- causal_forest(X=EHF$design,
+                           Y=Y,
+                           W=as.numeric(as.character(EHF$intervene[[1]])),
+                           ...)
     out <- average_treatment_effect(grf.A)
     names(out) <- c("ate","se")
     lower=out[[1]]+qnorm(0.025)*out[[2]]
