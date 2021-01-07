@@ -50,9 +50,10 @@
 weighter <- function(formula,
                      data, 
                      CR.as.censoring=FALSE,
+                     fit.separate=FALSE,
                      cause=1,
                      method="ranger",
-                     times,truncate=TRUE,...){
+                     times,truncate=FALSE,...){
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        specials=NULL,
@@ -69,7 +70,7 @@ weighter <- function(formula,
         dt[time>max(times),time:=max(times)]
     }
     # uncensored
-    if (CR.as.censoring==FALSE &&  cens.type=="uncensored"){
+    if (CR.as.censoring==FALSE && cens.type=="uncensored"){
         Weight <- rep(1,NROW(data))
     }else{
         ## require either right censored data, or request for the hypothetical world
@@ -84,7 +85,14 @@ weighter <- function(formula,
         }
         if (tolower(method)=="km"){
             if (CR.as.censoring==TRUE) dt[is.censored==1,status:=0]
-            reverse.km.fit <- prodlim(formula, data=dt, reverse=TRUE)
+            ff <- update(formula,"Hist(time,status)~.")
+            if (FALSE) {
+                coef(glmnet(y=dt[, Surv(time,event!=1)], x=as.matrix(EHF$design),
+                            family="cox", maxit=1000, lambda=seq(0.0001, 0.1, length=10)))
+                coef(glmnet(y=dt[, Surv(time,event==2)], x=as.matrix(EHF$design),
+                            family="cox", maxit=1000, lambda=seq(0.0001, 0.1, length=10)))
+            }
+            reverse.km.fit <- prodlim(ff, data=dt, reverse=TRUE)
             ## result of predictSurvIndividual is sorted by (time, -status)
             dt[,id:=1:.N]
             setorder(dt,time,is.censored)
@@ -92,18 +100,42 @@ weighter <- function(formula,
             ## back to original order
             setorder(dt,id)
             Weight <- dt[["Weight"]]
-        }else{
-            ff <- update(formula,"Surv(time,is.censored)~.")
-            reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))
-            Gmat <- stats::predict(reverse.forest,data=dt)$survival
-            jtimes <- ranger::timepoints(reverse.forest)
-            Gi.minus <- sapply(1:length(dt$time),function(i){
-                pos <- prodlim::sindex(jump.times=jtimes,eval.times=dt$time[[i]],comp="smaller",strict=1L)
-                c(1,Gmat[i,])[1+pos]
-            })
-            dt[,Weight:=1/Gi.minus]
-            dt[event!=cause,Weight:=0]
-            Weight <- dt[["Weight"]]
+        } else{
+            #ff <- update(formula,"Surv(time,is.censored)~.")
+            if (fit.separate & CR.as.censoring) {
+                dt[,Weight:=1]
+                for (jj in c(ifelse(CR.as.censoring, c(0,2), 0))) {
+                    ff <- update(formula,paste0("Surv(time,event==", jj, ")~."))
+                    reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))
+                    if (FALSE) {
+                        ff <- update(formula,paste0("Surv(time,event==", 2, ")~."))
+                        test <- do.call("ranger",c(list(formula=ff, data=dt, importance="permutation"),...))
+                        sort(importance(test))
+                    }
+                    Gmat <- stats::predict(reverse.forest,data=dt)$survival
+                    jtimes <- ranger::timepoints(reverse.forest)
+                    Gi.minus <- sapply(1:length(dt$time),function(i){
+                        pos <- prodlim::sindex(jump.times=jtimes,eval.times=dt$time[[i]],
+                                               comp="smaller",strict=1L)
+                        c(1,Gmat[i,])[1+pos]
+                    })
+                    dt[,Weight:=1/Gi.minus]
+                    Weight <- dt[["Weight"]]
+                }
+                dt[event!=cause,Weight:=0]
+            } else {
+                ff <- update(formula,"Surv(time,is.censored)~.")
+                reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))
+                Gmat <- stats::predict(reverse.forest,data=dt)$survival
+                jtimes <- ranger::timepoints(reverse.forest)
+                Gi.minus <- sapply(1:length(dt$time),function(i){
+                    pos <- prodlim::sindex(jump.times=jtimes,eval.times=dt$time[[i]],comp="smaller",strict=1L)
+                    c(1,Gmat[i,])[1+pos]
+                })
+                dt[,Weight:=1/Gi.minus]
+                dt[event!=cause,Weight:=0]
+                Weight <- dt[["Weight"]]
+            }
         }
     }
     Y <- do.call("cbind",lapply(times,function(t0){as.numeric(dt[["time"]]<=t0)*Weight}))
