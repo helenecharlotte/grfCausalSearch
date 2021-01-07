@@ -22,6 +22,7 @@ runner <- function(seed,
                    NT=50,
                    args.weight=list(num.tree=50,replace=FALSE,probability=TRUE),
                    method.weight="ranger",
+                   fit.separate=FALSE,
                    formula.weight=NULL,
                    truncate=TRUE,
                    intervene="all",
@@ -31,15 +32,30 @@ runner <- function(seed,
     if (cores>1) registerDoParallel(cores=cores) else registerDoSEQ()
     if (verbose) pb <- txtProgressBar(max = M, style = 3,width=20)
     v <- seed
+    form.T1 <- function(X, A){
+        -1.1+as.numeric(X[, 1])*0.2-as.numeric(X[, 3])*0.1-A[, 1]*1.5}
+    form.T2 <- function(X, A) {
+        0.1-as.numeric(X[, 2])*0.4-as.numeric(X[, 1])*0.33+effect.A2*A[, 2]}
     ## all net-effects are zero except for A1
     truth <- data.table(intervene=paste0("A",1:10),truth=0)
+    truth.A1 <-
+        sim.data(n=1e6,seed=101,compute.psi=ifelse(effect=="crude", 2, 1),CR=2,C.shape=1,which.A=1,
+                 form.T1=form.T1, form.T2=form.T2)
+    truth[1,truth:=truth.A1]
+    if (effect=="crude") {
+        truth.A2 <-
+            sim.data(n=1e6,seed=101,compute.psi=ifelse(effect=="crude", 2, 1),CR=2,
+                     C.shape=1,which.A=2,
+                     form.T1=form.T1, form.T2=form.T2)
+        truth[2,truth:=truth.A2]
+    }
     # mean(sapply(1:10,function(u){sim.data(n=1000000,seed=u,compute.psi=1,CR=2,C.shape=1,which.A=1,form.T1 = function(X, A){ -1.1 + as.numeric(X[, 1])*0.2 - as.numeric(X[,3])*0.1 - A[, 1]*1.5},form.T2 = function(X, A) {0.1 - as.numeric(X[, 2])*0.4 - as.numeric(X[, 1])*0.33 + 1.5*A[, 2]})}))
-    truth[1,truth:=-0.1122533]
     #truth[1,truth:=sim.data(n=1000000,seed=seed,compute.psi=1,CR=2,C.shape=cens,which.A=1,form.T1 = function(X, A){ -1.1 + as.numeric(X[, 1])*0.2 - as.numeric(X[,3])*0.1 - A[, 1]*1.5},form.T2 = function(X, A) {0.1 - as.numeric(X[, 2])*0.4 - as.numeric(X[, 1])*0.33 + effect.A2*A[, 2]})]
     ## print(truth)
     result <- foreach(s=1:M,.combine="rbind",.errorhandling="pass")%dopar%{
         if (verbose) setTxtProgressBar(pb, s)
-        d <- sim.data(n=n,seed=seed+s,compute.psi=0,CR=2,C.scale=cens,which.A=2,form.T1 = function(X, A){ -1.1 + as.numeric(X[, 1])*0.2 - as.numeric(X[,3])*0.1 - A[, 1]*1.5},form.T2 = function(X, A) {0.1 - as.numeric(X[, 2])*0.4 - as.numeric(X[, 1])*0.33 + effect.A2*A[, 2]})
+        d <- sim.data(n=n,seed=seed+s,compute.psi=0,CR=2,C.shape=cens,which.A=2,
+                      form.T1=form.T1, form.T2=form.T2)
         set.seed(seed+s)
         if (intervene=="all"){
             ff <- Hist(time,delta)~intervene(A1)+intervene(A2)+intervene(A3)+intervene(A4)+intervene(A5)+intervene(A6)+intervene(A7)+intervene(A8)+intervene(A9)+intervene(A10)+X1+X2+X3+X4+X5+X6
@@ -55,6 +71,7 @@ runner <- function(seed,
                           formula.weight=formula.weight,
                           CR.as.censoring=(effect=="net"),
                           num.tree=NT,
+                          fit.separate=fit.separate,
                           args.weight=args.weight,
                           truncate=truncate,
                           data=d,
@@ -81,6 +98,7 @@ runner <- function(seed,
                   bias=mean(truth-ate,na.rm=TRUE),
                   abs.bias=mean(abs(truth-ate),na.rm=TRUE),
                   coverage=mean(coverage,na.rm=TRUE),
+                  ranked.1=mean(rank==1,na.rm=TRUE),
                   mean.rank=mean(rank,na.rm=TRUE)),by=intervene]
     else
         result[,.(time=time[1],
