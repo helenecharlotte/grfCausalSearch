@@ -5,6 +5,7 @@ sim.data <- function(n=1000,
                      seed=runif(1, min=1, max=30000),
                      CR=c(1,2),
                      C.shape=0.4,
+                     C.scale=2.4,
                      t0=0.5, n.A=10, cens.A=0,
                      form.A = function(X, alpha=0.2, beta=0.5) 0.5+alpha+as.numeric(X[,1])*beta,
                      form.T1 = function(X, A) -1.1 + as.numeric(X[, 1])*0.2 - as.numeric(X[,3])*0.1 - A[, 1]*1.5,
@@ -31,11 +32,11 @@ sim.data <- function(n=1000,
     names(A) <- paste0("A", 1:n.A)
 
     if (cens.A>0) {
-        C <- rweibull(n, shape=C.shape+A[, cens.A], scale=2.4)
+        C <- rweibull(n, shape=C.shape+A[, cens.A], scale=C.scale)
     } else {
-        C <- rweibull(n, shape=C.shape+0.5, scale=2.4)
+        C <- rweibull(n, shape=C.shape+0.5, scale=C.scale)
     }
-
+    ## print(summary(C))
     if (compute.counterfactuals) {
 
         A.1 <- A.0 <- A

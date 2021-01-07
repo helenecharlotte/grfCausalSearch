@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 29 2020 (08:16) 
 ## Version: 
-## Last-Updated: Jun 29 2020 (11:24) 
+## Last-Updated: Jul  3 2020 (15:01) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 2
+##     Update #: 3
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -18,7 +18,7 @@
 
 library(ggplot2)
 library(data.table)
-a <- readRDS("~/research/SoftWare/grfCausalSearch/simulation-results/Sim1c.rds")
+a <- readRDS("~/research/SoftWare/grfCausalSearch/simulation-results/results-net.rds")
 ## forgot to provide cens input parameter
 a[,censpar:=rep(rep(c(0.5,.7,1.5),rep(60,3)),9)]
 ## 9 * 3 *  6
