@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 27 2020 (09:36) 
 ## Version: 
-## Last-Updated: Jun 29 2020 (08:26) 
+## Last-Updated: Jul  3 2020 (15:01) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 23
+##     Update #: 24
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -100,7 +100,6 @@ runner <- function(seed,
 ## x <- runner(seed=7,cens=.2,effect.A2=1.5,M=2,cores=1,intervene="all")
 
 ## x <- runner(seed=7,cens=.2,effect.A2=1.5,M=25,cores=25,intervene="all")
-
 
 ## x <- runner(seed=7,cens=.2,effect.A2=1.5,M=1000,cores=25)
 ## x
