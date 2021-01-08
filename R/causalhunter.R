@@ -62,6 +62,7 @@ causalhunter <- function(formula,
                          CR.as.censoring=FALSE,
                          cause=1,
                          method.weight="ranger",
+                         fit.separate=FALSE,
                          formula.weight,
                          args.weight=NULL,
                          times,truncate=TRUE,...){
@@ -72,13 +73,25 @@ causalhunter <- function(formula,
                                        specialsFactor=FALSE,
                                        unspecialsDesign=TRUE) # grf does not work with non-numeric features
     if (missing(formula.weight) || is.null(formula.weight)){
-        formula.weight <- formula(paste0("Hist(time,event)~",paste(c(colnames(EHF$design),colnames(EHF$intervene)),collapse="+")))
-        dt <- data.table(cbind(unclass(EHF$event.history),EHF$design,EHF$intervene))
+        variables <- unique(c(c(names(attr(EHF$design, "levels")),
+                                colnames(EHF$design))[c(names(attr(EHF$design, "levels")),
+                                                        colnames(EHF$design))%in%colnames(data)],
+                              colnames(EHF$intervene)))
+        formula.weight <- formula(paste0("Hist(time,event)~",paste(variables,collapse="+")))
+        dt <- data.table(cbind(unclass(EHF$event.history),
+                               #EHF$design
+                               data[, variables, with=FALSE],EHF$intervene))
         ## fix censored event status 
         dt[status==0,event:=0]
-        Y <- do.call("weighter",c(list(formula=formula.weight,data=dt,times=times,method=method.weight,CR.as.censoring=CR.as.censoring,cause=cause,truncate=truncate),args.weight))
+        Y <- do.call("weighter",c(list(formula=formula.weight,data=dt,times=times,
+                                       method=method.weight,CR.as.censoring=CR.as.censoring,
+                                       fit.separate=fit.separate,
+                                       cause=cause,truncate=truncate),args.weight))
     }else{
-        Y <- do.call("weighter",c(list(formula=formula.weight,data=data,times=times,method=method.weight,CR.as.censoring=CR.as.censoring,cause=cause,truncate=truncate),args.weight))
+        Y <- do.call("weighter",c(list(formula=formula.weight,data=data,times=times,
+                                       method=method.weight,CR.as.censoring=CR.as.censoring,
+                                       fit.separate=fit.separate,
+                                       cause=cause,truncate=truncate),args.weight))
     }
     if (any(is.infinite(Y))) stop(paste0("Weighted outcome status has infinite values at time ",t0))
     if (length(unique(Y))<=1) stop(paste0("Outcome status has no variation at time ",t0))

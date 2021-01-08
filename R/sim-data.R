@@ -15,7 +15,7 @@ sim.data <- function(n=1000,
 
     if (length(seed)>0) set.seed(seed)
 
-    rexpit <-  function(x) rbinom(n=length(x), size=1, prob=plogis(x))
+    rexpit <- function(x) rbinom(n=length(x), size=1, prob=plogis(x))
 
     X <- data.frame(X1 = runif(n),
                     X2 = factor(sample(1:3, n, TRUE)),
