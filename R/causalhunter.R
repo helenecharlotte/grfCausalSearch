@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jun 27 2020 (09:15) 
+## Last-Updated: Jan 11 2021 (19:12) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 117
+##     Update #: 122
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -65,7 +65,8 @@ causalhunter <- function(formula,
                          fit.separate=FALSE,
                          formula.weight,
                          args.weight=NULL,
-                         times,truncate=TRUE,...){
+                         times,
+                         truncate=TRUE,...){
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        stripSpecials="intervene",
@@ -111,6 +112,7 @@ causalhunter <- function(formula,
             out <- rbind(out,est)
         }
     }
+    out$IPCW.weight.nodesize <- attr(Y,"winner")
     rownames(out) <- NULL
     out
 }
