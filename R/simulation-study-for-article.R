@@ -24,13 +24,9 @@ library(foreach)
 library(doParallel)
 
 #-- set working directory; 
-if (system("echo $USER",inter=TRUE)=="tag") {
-    setwd("~/research/SoftWare/grfCausalSearch/")
-} else if (system("echo $USER",intern=TRUE)%in%c("jhl781")) {
-    setwd("/home/ifsv/jhl781/Dropbox/grfCausalSearch/")
-} else if (system("echo $USER",intern=TRUE)%in%c("helene")) {
-    setwd("~/Dropbox/grfCausalSearch/")
-}
+try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
+try(setwd("/home/ifsv/jhl781/Dropbox/grfCausalSearch/"),silent=TRUE)
+try(setwd("~/Dropbox/grfCausalSearch/"),silent=TRUE)
 
 #-- source code; 
 source("./R/sim-data.R")

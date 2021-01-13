@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 27 2020 (06:33) 
 ## Version: 
-## Last-Updated: Jul  2 2020 (11:32) 
+## Last-Updated: Jan 11 2021 (19:09) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 20
+##     Update #: 63
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -48,12 +48,14 @@
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 weighter <- function(formula,
-                     data, 
+                     data,
                      CR.as.censoring=FALSE,
                      fit.separate=FALSE,
                      cause=1,
                      method="ranger",
-                     times,truncate=FALSE,...){
+                     times,
+                     truncate=FALSE,
+                     ...){
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        specials=NULL,
@@ -86,12 +88,6 @@ weighter <- function(formula,
         if (tolower(method)=="km"){
             if (CR.as.censoring==TRUE) dt[is.censored==1,status:=0]
             ff <- update(formula,"Hist(time,status)~.")
-            if (FALSE) {
-                coef(glmnet(y=dt[, Surv(time,event!=1)], x=as.matrix(EHF$design),
-                            family="cox", maxit=1000, lambda=seq(0.0001, 0.1, length=10)))
-                coef(glmnet(y=dt[, Surv(time,event==2)], x=as.matrix(EHF$design),
-                            family="cox", maxit=1000, lambda=seq(0.0001, 0.1, length=10)))
-            }
             reverse.km.fit <- prodlim(ff, data=dt, reverse=TRUE)
             ## result of predictSurvIndividual is sorted by (time, -status)
             dt[,id:=1:.N]
@@ -100,18 +96,12 @@ weighter <- function(formula,
             ## back to original order
             setorder(dt,id)
             Weight <- dt[["Weight"]]
-        } else{
-            #ff <- update(formula,"Surv(time,is.censored)~.")
+        } else {
             if (fit.separate & CR.as.censoring) {
                 dt[,Weight:=1]
                 for (jj in c(ifelse(CR.as.censoring, c(0,2), 0))) {
                     ff <- update(formula,paste0("Surv(time,event==", jj, ")~."))
                     reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))
-                    if (FALSE) {
-                        ff <- update(formula,paste0("Surv(time,event==", 2, ")~."))
-                        test <- do.call("ranger",c(list(formula=ff, data=dt, importance="permutation"),...))
-                        sort(importance(test))
-                    }
                     Gmat <- stats::predict(reverse.forest,data=dt)$survival
                     jtimes <- ranger::timepoints(reverse.forest)
                     Gi.minus <- sapply(1:length(dt$time),function(i){
@@ -125,20 +115,58 @@ weighter <- function(formula,
                 dt[event!=cause,Weight:=0]
             } else {
                 ff <- update(formula,"Surv(time,is.censored)~.")
-                reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))
-                Gmat <- stats::predict(reverse.forest,data=dt)$survival
-                jtimes <- ranger::timepoints(reverse.forest)
-                Gi.minus <- sapply(1:length(dt$time),function(i){
-                    pos <- prodlim::sindex(jump.times=jtimes,eval.times=dt$time[[i]],comp="smaller",strict=1L)
-                    c(1,Gmat[i,])[1+pos]
-                })
-                dt[,Weight:=1/Gi.minus]
-                dt[event!=cause,Weight:=0]
-                Weight <- dt[["Weight"]]
+                args <- c(list(formula=ff, data=dt),list(...))
+                N <- NROW(dt)
+                tune.node.size <- length(args$min.node.size)
+                if (tune.node.size>1){
+                    tune.node.size <- args$min.node.size
+                    stopifnot(all(tune.node.size<N))
+                    reverse.forest.candidates <- lapply(c(tune.node.size),function(nodesize){
+                        rargs <- args
+                        rargs$min.node.size <- nodesize
+                        rargs$tuning.time <- NULL
+                        do.call("ranger",rargs)})
+                    names(reverse.forest.candidates) <- paste0("MNS:",tune.node.size)
+                    suppressMessages(x <- Score(reverse.forest.candidates,times=args$tuning.time,formula=ff,metrics="brier",data=dt,split.method="cv10",se.fit=FALSE,contrast=NULL,progress.bar=NULL))
+                    winner <- as.character(setkey(x$Brier$score,Brier)[1][["model"]])
+                }else{
+                    # no tuning of nodesize
+                    reverse.forest.candidates <- lapply(1,function(nodesize){
+                        rargs <- args
+                        rargs$tuning.time <- NULL
+                        do.call("ranger",rargs)
+                    })
+                    names(reverse.forest.candidates) <- paste0("MNS:",args$min.node.size)
+                    winner <- names(reverse.forest.candidates)
+                }
+                # print(winner)
+                if (winner=="Null model"){ # marginal Kaplan-Meier
+                    if (CR.as.censoring==TRUE) dt[is.censored==1,status:=0]
+                    reverse.km.fit <- prodlim(Hist(time,status)~1, data=dt, reverse=TRUE)
+                    ## result of predictSurvIndividual is sorted by (time, -status)
+                    dt[,id:=1:.N]
+                    setorder(dt,time,is.censored)
+                    dt[,Weight:=(event==cause)/predictSurvIndividual(reverse.km.fit)]
+                    ## back to original order
+                    setorder(dt,id)
+                    Weight <- dt[["Weight"]]
+                }else{
+                    reverse.forest <- reverse.forest.candidates[[winner]]
+                    Gmat <- stats::predict(reverse.forest,data=dt)$survival
+                    jtimes <- ranger::timepoints(reverse.forest)
+                    Gi.minus <- sapply(1:length(dt$time),function(i){
+                        pos <- prodlim::sindex(jump.times=jtimes,eval.times=dt$time[[i]],comp="smaller",strict=1L)
+                        c(1,Gmat[i,])[1+pos]
+                    })
+                    dt[,Weight:=1/Gi.minus]
+                    dt[event!=cause,Weight:=0]
+                    Weight <- dt[["Weight"]]
+                }
             }
         }
     }
     Y <- do.call("cbind",lapply(times,function(t0){as.numeric(dt[["time"]]<=t0)*Weight}))
+    if (method=="ranger") attr(Y,"winner") <- winner else attr(Y,method)
     Y
 }
 

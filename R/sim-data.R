@@ -4,6 +4,8 @@ sim.data <- function(n=1000,
                      which.A=1,
                      seed=runif(1, min=1, max=30000),
                      CR=c(1,2),
+                     shape.T1=0.8,
+                     shape.T2=0.8,
                      C.shape=0.4,
                      C.scale=2.4,
                      t0=0.5, n.A=10, cens.A=0,
@@ -43,14 +45,14 @@ sim.data <- function(n=1000,
         A.1[, which.A] <- 1
         A.0[, which.A] <- 0
 
-        T1.1 <- rweibull(n, shape=0.8-0.5*form.T1(X, A.1), scale=1)
-        T1.0 <- rweibull(n, shape=0.8-0.5*form.T1(X, A.0), scale=1)
+        T1.1 <- rweibull(n, shape=shape.T1-0.5*form.T1(X, A.1), scale=1)
+        T1.0 <- rweibull(n, shape=shape.T1-0.5*form.T1(X, A.0), scale=1)
         T1   <- T1.1*A[, which.A] + T1.0*(1-A[, which.A])
 
         if (CR[1]>1) {
 
-            T2.1 <- rweibull(n, shape=0.8-0.5*form.T2(X, A.1), scale=1)
-            T2.0 <- rweibull(n, shape=0.8-0.5*form.T2(X, A.0), scale=1)
+            T2.1 <- rweibull(n, shape=shape.T2-0.5*form.T2(X, A.1), scale=1)
+            T2.0 <- rweibull(n, shape=shape.T2-0.5*form.T2(X, A.0), scale=1)
             T2   <- T2.1*A[, which.A] + T2.0*(1-A[, which.A])
 
             ## T.1  <- sapply(1:n, function(i) min(T1.1[i], T2.1[i]))
@@ -80,11 +82,11 @@ sim.data <- function(n=1000,
         }
     } else {
 
-        T1 <- rweibull(n, shape=0.8-0.5*form.T1(X, A), scale=1)
+        T1 <- rweibull(n, shape=shape.T1-0.5*form.T1(X, A), scale=1)
 
         if (CR[1]>1) {
 
-            T2    <- rweibull(n, shape=0.8-0.5*form.T2(X, A.1), scale=1)
+            T2    <- rweibull(n, shape=shape.T2-0.5*form.T2(X, A.1), scale=1)
             ## time  <- sapply(1:n, function(i) min(T1[i], T2[i], C[i]))
             time <- pmin(T1,T2,C)
             delta <- 1*(time==T1) + 2*(time==T2)
