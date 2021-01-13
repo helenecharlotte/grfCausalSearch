@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jan 11 2021 (19:12) 
+## Last-Updated: Jan 13 2021 (10:43) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 122
+##     Update #: 126
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -57,6 +57,7 @@
 ##' 
 ##' @export 
 ##' @author Helene Charlotte Rytgaard <hely@@sund.ku.dk>, Thomas A. Gerds <tag@@biostat.ku.dk>
+
 causalhunter <- function(formula,
                          data, 
                          CR.as.censoring=FALSE,
@@ -67,6 +68,7 @@ causalhunter <- function(formula,
                          args.weight=NULL,
                          times,
                          truncate=TRUE,...){
+    data <- copy(data)
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        stripSpecials="intervene",
@@ -89,10 +91,24 @@ causalhunter <- function(formula,
                                        fit.separate=fit.separate,
                                        cause=cause,truncate=truncate),args.weight))
     }else{
-        Y <- do.call("weighter",c(list(formula=formula.weight,data=data,times=times,
-                                       method=method.weight,CR.as.censoring=CR.as.censoring,
-                                       fit.separate=fit.separate,
-                                       cause=cause,truncate=truncate),args.weight))
+        Y <- foreach(i=1:NCOL(EHF$intervene),.combine="cbind")%dopar%{
+            data[,intervened:=.SD,.SDcols=names(EHF$intervene)[[i]]]
+            data0 <- data[intervened==0]
+            data1 <- data[intervened==1]
+            Y0 <- do.call("weighter",c(list(formula=formula.weight,data=data0,times=times,
+                                            method=method.weight,CR.as.censoring=CR.as.censoring,
+                                            fit.separate=fit.separate,
+                                            cause=cause,truncate=truncate),args.weight))
+            Y1 <- do.call("weighter",c(list(formula=formula.weight,data=data1,times=times,
+                                            method=method.weight,CR.as.censoring=CR.as.censoring,
+                                            fit.separate=fit.separate,
+                                            cause=cause,truncate=truncate),args.weight))
+            data[intervened==0,Y:=Y0]
+            data[intervened==1,Y:=Y1]
+            Y <- data[["Y"]]
+            Y
+        }
+        if (is.null(dim(Y))) Y <- cbind(Y)
     }
     if (any(is.infinite(Y))) stop(paste0("Weighted outcome status has infinite values at time ",t0))
     if (length(unique(Y))<=1) stop(paste0("Outcome status has no variation at time ",t0))
