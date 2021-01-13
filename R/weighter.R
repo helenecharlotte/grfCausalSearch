@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 27 2020 (06:33) 
 ## Version: 
-## Last-Updated: Jan 11 2021 (19:09) 
+## Last-Updated: Jan 13 2021 (10:41) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 63
+##     Update #: 65
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -47,6 +47,7 @@
 ##' cbind(a,b)
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
+
 weighter <- function(formula,
                      data,
                      CR.as.censoring=FALSE,
@@ -56,6 +57,7 @@ weighter <- function(formula,
                      times,
                      truncate=FALSE,
                      ...){
+    
     EHF <- prodlim::EventHistory.frame(formula=formula,
                                        data=data,
                                        specials=NULL,

@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 27 2020 (09:36) 
 ## Version: 
-## Last-Updated: Jan 11 2021 (17:42) 
+## Last-Updated: Jan 13 2021 (13:41) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 49
+##     Update #: 52
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -101,7 +101,7 @@ runner <- function(seed,
     result[,coverage:=(lower<truth)&(upper>truth)]
     IPCW.weight.nodesize <- table(result$IPCW.weight.nodesize)
     if (intervene=="all")
-        result <- result[,.(time=time[1],
+        result <- result[,.(n=n,M=M,time=time[1],
                             cens=mean(cens,na.rm=TRUE),
                             truth=truth[1],
                             num.trees=NT,
@@ -114,7 +114,7 @@ runner <- function(seed,
                             ranked.1=mean(rank==1,na.rm=TRUE),
                             mean.rank=mean(rank,na.rm=TRUE)),by=intervene]
     else
-        result <- result[,.(time=time[1],
+        result <- result[,.(n=n,M=M,time=time[1],
                             cens=mean(cens,na.rm=TRUE),
                             event1=mean(event1,na.rm=TRUE),
                             event2=mean(event2,na.rm=TRUE),
