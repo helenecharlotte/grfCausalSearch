@@ -123,6 +123,7 @@ weighter <- function(formula,
                     Weight <- dt[["Weight"]]
                 }
                 dt[event!=cause,Weight:=0]
+                
             } else {
                 ff <- update(formula,"Surv(time,is.censored)~.")
                 reverse.forest <- do.call("ranger",c(list(formula=ff, data=dt),...))

@@ -98,7 +98,7 @@ causalhunter <- function(formula,
     #-- run grf:
     out <- NULL
     for (s in 1:length(times)){
-        for (i in 1:NCOL(EHF$intervene)){
+        for (i in 1:ncol(EHF$intervene)){
             grf.A <- causal_forest(X=EHF$design,
                                    Y=Y[,s,drop=TRUE],
                                    W=as.numeric(as.character(EHF$intervene[[i]])),
