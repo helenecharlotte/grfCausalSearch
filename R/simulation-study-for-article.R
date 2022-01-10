@@ -37,6 +37,19 @@ source("./R/runner.R")
 
 #-- how many repetitions?
 M <- 500#1000#500#499#500#99#501#502#101
+results.net <- do.call("rbind",lapply(rev(c(1000)),function(sample.size){
+    do.call("rbind",lapply(c(0.2,0.4,0.6),function(cens){
+        do.call("rbind",lapply(c(-0.2,0,0.2,0.5,0.7,1.5),function(effect){
+            v <- runner(seed=179,cens=cens,cores=25,
+                        effect.A2=effect,M=M,n=sample.size,
+                        NT=200,method.weight="ranger",
+                        args.weight=list(num.tree=1,replace=FALSE,probability=TRUE),
+                        verbose=1L)
+            cbind(Effect.A2=effect,cens.shape=cens,v)
+        }))
+    }))
+}))
+saveRDS(results.net,file=paste0("./simulation-results/results2-net-weight-correct-numtree1-M", M, ".rds"))
 
 
 if (FALSE) {#test
