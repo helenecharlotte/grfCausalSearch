@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jan 13 2021 (10:43) 
+## Last-Updated: Jan 12 2022 (17:11) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 126
+##     Update #: 128
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -115,7 +115,7 @@ causalhunter <- function(formula,
     #-- run grf:
     out <- NULL
     for (s in 1:length(times)){
-        for (i in 1:NCOL(EHF$intervene)){
+        for (i in 1:ncol(EHF$intervene)){
             grf.A <- causal_forest(X=EHF$design,
                                    Y=Y[,s,drop=TRUE],
                                    W=as.numeric(as.character(EHF$intervene[[i]])),
