@@ -35,6 +35,7 @@ if (system("echo $USER",intern=TRUE)=="tag")
   setwd("~/research/SoftWare/grfCausalSearch/vignettes/")
 else
   setwd("~princess-hely/grfCausalSearch/vignettes/")
+library(targets)
 source("../R/grfcens.R")
 m <- lvm(~A+X1+X2+X3+X4+X5)
 # treatment variable
