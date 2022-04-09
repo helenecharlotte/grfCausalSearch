@@ -27,7 +27,6 @@ library(lava)
 library(Publish)
 library(riskRegression)
 library(prodlim)
-library(prodlim)
 library(survival)
 library(data.table)
 library(grf)
@@ -60,47 +59,29 @@ regression(m,censtime~A+X1+X2+X3+X4+X5) <- c(gammaA,gamma1,gamma2,gamma3,gamma4,
 m
 #+END_SRC
 
-#+RESULTS[<2020-06-10 13:38:24> 1e2c957538283269dee53fede01c3597bcfaae1f]:
+#+RESULTS[(2022-01-12 13:50:37) 1b71831ccd21d1229dc4b402b7b82c6981151cfc]:
 #+begin_example
-
-Attaching package: ‘lava’
-
-The following objects are masked _by_ ‘.GlobalEnv’:
-
-    expit, logit
-
-Loading required package: prodlim
-
-riskRegression version 2020.06.25
-
-data.table 1.12.8 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
-
-Error: unexpected 'else' in "else"
-
-Error in setwd("~princess-hely/grfCausalSearch/vignettes/") : 
-  cannot change working directory
-
 Event History Model
                                                                  
- A ~ X1+X2+X3+X4                                 binomial(logit) 
+ A ~ X1+X2+X3+X4+X5                              binomial(logit) 
  X1 ~ 1                                          Normal          
  X2 ~ 1                                          Normal          
  X3 ~ 1                                          Normal          
  X4 ~ 1                                          Normal          
  X5 ~ 1                                          Normal          
- latenttime1 ~ X1+X2+X3+X4                       weibull(2,0.01) 
- latenttime2 ~ A+X2+X3+X4+X5                     weibull(2,0.01) 
- censtime ~ 1                                    weibull(2,0.04) 
+ latenttime1 ~ A+X1+X2+X3+X4+X5                  weibull(2,0.01) 
+ latenttime2 ~ A+X1+X2+X3+X4+X5                  weibull(2,0.01) 
+ censtime ~ A+X1+X2+X3+X4+X5                     weibull(2,0.04) 
  time = min(latenttime1,latenttime2,censtime)    event := {1,2,0}
 
 Latent Variable Model
-                                               
-  A ~ X1+X2+X3+X4               binomial(logit)
-  latenttime1 ~ X1+X2+X3+X4     weibull(2,0.01)
-  latenttime2 ~ A+X2+X3+X4+X5   weibull(2,0.01)
-  censtime ~ 1                  weibull(2,0.04)
-  time ~ 1                      deterministic  
-  event ~ 1                     deterministic  
+                                                  
+  A ~ X1+X2+X3+X4+X5               binomial(logit)
+  latenttime1 ~ A+X1+X2+X3+X4+X5   weibull(2,0.01)
+  latenttime2 ~ A+X1+X2+X3+X4+X5   weibull(2,0.01)
+  censtime ~ A+X1+X2+X3+X4+X5      weibull(2,0.04)
+  time ~ 1                         deterministic  
+  event ~ 1                        deterministic  
 
 Exogenous variables:                    
   X1        gaussian
@@ -124,6 +105,10 @@ d <- setDT(sim(m,500))
 d[,dummy:=1]
 d[,A:=factor(A)]
 fit1 <- grfcens(formula=Hist(latenttime1,dummy)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7)
+fit1a <- riskRegression::ate(event=coxph(Surv(latenttime1,dummy)~A+X1+X2+X3+X4+X5,data=d,x=1,y=1),
+                             treatment=A~X1+X2+X3+X4+X5,
+                             data=d,
+                             times=7)
 fit1
 #+END_SRC
 
@@ -141,6 +126,10 @@ d <- setDT(sim(m,500))
 d[,dummy:=1]
 d[,A:=factor(A)]
 fit1 <- grfcens(formula=Hist(latenttime1,dummy)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7)
+fit1a <- riskRegression::ate(event=coxph(Surv(latenttime1,dummy)~A+X1+X2+X3+X4+X5,data=d,x=1,y=1),
+                             treatment=A~X1+X2+X3+X4+X5,
+                             data=d,
+                             times=7)
 fit1
 #+END_SRC
 
@@ -158,6 +147,10 @@ d <- setDT(sim(m,500))
 d[,dummy:=1]
 d[,A:=factor(A)]
 fit1 <- grfcens(formula=Hist(latenttime1,dummy)~intervene(A)+X1+X2+X3+X4+X5,data=d,times=7)
+fit1a <- riskRegression::ate(event=coxph(Surv(latenttime1,dummy)~A+X1+X2+X3+X4+X5,data=d,x=1,y=1),
+                             treatment=A~X1+X2+X3+X4+X5,
+                             data=d,
+                             times=7)
 fit1
 #+END_SRC
 

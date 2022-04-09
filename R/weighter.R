@@ -115,6 +115,7 @@ weighter <- function(formula,
                     Weight <- dt[["Weight"]]
                 }
                 dt[event!=cause,Weight:=0]
+                
             } else {
                 ff <- update(formula,"Surv(time,is.censored)~.")
                 args <- c(list(formula=ff, data=dt),list(...))

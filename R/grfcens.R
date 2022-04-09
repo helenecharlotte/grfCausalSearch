@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jun 27 2020 (07:53) 
+## Last-Updated: Jan 13 2022 (12:55) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 102
+##     Update #: 106
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -121,13 +121,14 @@ grfcens <- function(formula,
                                        specials="intervene")
     if (length(times)>1) warning("Works currently only for one time point at a time.")
     t0=times[[1]]
+    response <- EHF$event.history
     response.type <- attr(response,"model") # either "survival" or "competing.risk"
     cens.type <- attr(EHF$event.history,"cens.type") # either "uncensored" or "rightCensored"
     if (CR.as.censoring == TRUE && response.type=="survival")
         warning("Only one cause of event in data. Removing a competing risk which does not occur.")
     # uncensored
     if (CR.as.censoring==FALSE &&  cens.type=="uncensored"){
-        Y <- as.numeric(dt[["time"]]<=t0)
+        Y <- as.numeric(response[,"time"]<=t0)
     }else{
         ## require either right censored data, or request for the hypothetical world
         ## where competing risk has been removed
