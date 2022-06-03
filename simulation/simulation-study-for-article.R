@@ -25,13 +25,9 @@ library(doParallel)
 library(nleqslv)
 
 #-- set working directory; 
-if (system("echo $USER",inter=TRUE)=="tag") {
-    setwd("~/research/SoftWare/grfCausalSearch/")
-} else if (system("echo $USER",intern=TRUE)%in%c("jhl781")) {
-    setwd("/home/ifsv/jhl781/Dropbox/PhD/grfCausalSearch/")
-} else if (system("echo $USER",intern=TRUE)%in%c("helene")) {
-    setwd("~/Dropbox/PhD/grfCausalSearch/")
-}
+try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
+try(setwd("/home/ifsv/jhl781/Dropbox/PhD/grfCausalSearch/"),silent=TRUE)
+try(setwd("~/Dropbox/PhD/grfCausalSearch/"),silent=TRUE)
 
 #-- source code; 
 source("./R/sim-data.R")

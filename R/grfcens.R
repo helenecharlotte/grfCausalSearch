@@ -1,11 +1,11 @@
 ### grfcens.R --- 
 #----------------------------------------------------------------------
-## Author: Thomas Alexander Gerds
+## Author: Helene Charlotte Wiese Rytgaard & Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jan 13 2022 (12:55) 
+## Last-Updated: May 11 2022 (06:59) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 106
+##     Update #: 107
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -106,7 +106,7 @@
 ##' }
 ##' 
 ##' @export 
-##' @author Helene Charlotte Rytgaard <hely@@sund.ku.dk>, Thomas A. Gerds <tag@@biostat.ku.dk>
+##' @author Helene Charlotte Wiese Rytgaard <hely@@sund.ku.dk>, Thomas A. Gerds <tag@@biostat.ku.dk>
 grfcens <- function(formula,
                     data, 
                     CR.as.censoring=FALSE,
