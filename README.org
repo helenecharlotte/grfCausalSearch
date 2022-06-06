@@ -11,17 +11,57 @@ library(Publish)
 * Introduction
 
 Here we provide the R-codes that (re)produce the simulation study
-results for our manuscript.
+results presented in our manuscript.
 
 * Simulation setting
+
+** Data generation
+
+We simulate 10 treatment variables, A1, ..., A10, five binary
+predictor variables, X1, ..., X5, and two continuous predictor
+variables, X6 and X7. 
+
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+library(targets)
+library(tarchetypes)
+for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
+source("setting/independent_targets.R")
+set.seed(5)
+d = simulateData(setting = independent_fixed,
+                 A1_T1 = 1.25,
+                 A1_T2 = 1,
+                 A2_T1 = 1,
+                 A2_T2 = 1.25,
+                 n = 10,
+                 scale.censored = 1/25,
+                 keep.latent = TRUE)
+out=d[,c(1,2,18:NCOL(d)),with=FALSE]
+org(out,digits=2)
+#+END_SRC
+
+#+RESULTS[(2022-06-06 08:38:29) dcf6bff39c7f05413edade5a874f5ff1b44a1cdf]:
+:results:
+|   X1 |   X2 | T1_placebo_placebo | T1_treated_placebo | T1_placebo_treated | T1_treated_treated | T2_placebo_placebo | T2_treated_placebo | T2_placebo_treated | T2_treated_treated |    C |    T1 |    T2 | time | event |
+|------+------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+--------------------+------+-------+-------+------+-------|
+| 0.00 | 1.00 |               5.93 |              10.54 |               9.87 |               3.68 |               2.45 |              16.94 |               7.60 |              10.46 | 3.40 | 10.54 | 16.94 | 3.40 |  0.00 |
+| 0.00 | 0.00 |               9.55 |              10.00 |               5.76 |              11.09 |              12.78 |               5.16 |              17.36 |              10.88 | 5.56 |  9.55 | 12.78 | 5.56 |  0.00 |
+| 0.00 | 0.00 |               6.11 |               6.62 |               6.86 |               3.96 |              10.28 |               1.14 |               7.83 |               7.03 | 1.22 |  6.11 | 10.28 | 1.22 |  0.00 |
+| 0.00 | 1.00 |               6.39 |               4.80 |               3.31 |               5.74 |               5.51 |              10.02 |               1.13 |               7.61 | 4.11 |  3.31 |  1.13 | 1.13 |  2.00 |
+| 0.00 | 0.00 |              13.78 |               1.07 |               9.31 |               9.64 |               3.52 |               7.91 |               7.99 |              13.37 | 6.98 |  9.31 |  7.99 | 6.98 |  0.00 |
+| 0.00 | 0.00 |               7.37 |               6.06 |               4.65 |               0.69 |               9.31 |              19.43 |              13.82 |              13.86 | 4.48 |  7.37 |  9.31 | 4.48 |  0.00 |
+| 0.00 | 0.00 |               7.26 |               5.11 |              21.19 |               5.76 |               9.97 |               2.18 |               7.12 |              15.17 | 2.23 |  7.26 |  9.97 | 2.23 |  0.00 |
+| 1.00 | 0.00 |               6.96 |               2.82 |              13.84 |              12.12 |              18.30 |               9.14 |               7.79 |               7.88 | 8.05 |  6.96 | 18.30 | 6.96 |  1.00 |
+| 0.00 | 1.00 |               6.29 |               7.98 |               9.32 |               9.29 |               5.46 |               7.99 |               7.06 |               5.57 | 5.67 |  7.98 |  7.99 | 5.67 |  0.00 |
+| 0.00 | 0.00 |               6.13 |               2.61 |               3.02 |               3.61 |              16.71 |               5.28 |               9.30 |               3.24 | 7.49 |  3.02 |  9.30 | 3.02 |  1.00 |
+:end:
+
 
 ** Scenarios
 
 *** Independent right censoring
 
 #+BEGIN_SRC R :results file graphics :file ./output/independent-setting.png :exports none :session *R* :cache yes
-library(targets)
-library(tarchetypes)
 source("setting/independent_targets.R")
 for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 set.seed(99)
@@ -38,8 +78,10 @@ d[,T_treated_placebo := pmin(T1_treated_placebo,T2_treated_placebo)]
 d[,T_placebo_placebo := pmin(T1_placebo_placebo,T2_placebo_placebo)]
 plot(prodlim(Hist(T1_placebo_placebo,dummy)~1,data=d,conf.int = FALSE),
      xlim = c(0,8),
+     axis1.at=0:8,
+     atrisk.at=c(0,2.5,5,7.5),
      type = "risk",
-     plot.main = "Effect A1 on latent cause 1")
+     plot.main = "Effect of A1 on latent cause 1")
 legend(x = "topright",legend = c(0,1),title = "A1",
        col = c(1,"#E69F00"),lwd = c(2,2),cex = 1.5,bty = "n")
 plot(prodlim(Hist(T1_treated_placebo,dummy)~1,data=d,conf.int = FALSE),
@@ -50,7 +92,7 @@ plot(prodlim(Hist(T1_treated_placebo,dummy)~1,data=d,conf.int = FALSE),
 abline(v=5,col="gray77",lwd=3,lty=3)
 #+END_SRC
 
-#+RESULTS[(2022-05-25 08:03:24) f7a5aa2fb0d7e520e065a07140970613432b98e9]:
+#+RESULTS[(2022-06-06 08:28:19) 34abc88027cc6fb91c18ae3708973b4a84742008]:
 [[file:./output/independent-setting.png]]
 
 #+name: fig:1
@@ -61,10 +103,6 @@ abline(v=5,col="gray77",lwd=3,lty=3)
 
 * Performance
 
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache no
-library(targets)
-library(tarchetypes)
-#+END_SRC
 
 ** Independent right censoring
 
@@ -78,46 +116,19 @@ xi
 Publish::org(xi)
 #+END_SRC
 
-#+RESULTS[(2022-05-20 08:24:50) cb64047a2178fe4afceaada3d2624a5803813877]:
+#+RESULTS[(2022-06-06 08:26:46) cb64047a2178fe4afceaada3d2624a5803813877]:
 :results:
 | method        | P(C<5) | A1_T1 |  bias | coverage |
 |---------------+--------+-------+-------+----------|
-| causal_forest |    0.0 |  1.00 | -0.41 |     94.5 |
-| CSC           |    0.0 |  1.00 | -0.08 |     95.0 |
-| FGR           |    0.0 |  1.00 | -0.10 |       NA |
-| naive         |    0.0 |  1.00 | -8.97 |      0.0 |
-| causal_forest |    0.0 |  1.25 | -0.29 |     96.0 |
-| CSC           |    0.0 |  1.25 | -0.04 |     94.0 |
-| FGR           |    0.0 |  1.25 | -1.07 |       NA |
-| naive         |    0.0 |  1.25 | -9.39 |      0.0 |
-| causal_forest |    0.0 |  1.50 | -0.47 |     95.5 |
-| CSC           |    0.0 |  1.50 | -0.02 |     96.0 |
-| FGR           |    0.0 |  1.50 | -2.04 |       NA |
-| naive         |    0.0 |  1.50 | -9.90 |      0.0 |
-| causal_forest |   34.1 |  1.00 | -0.37 |     93.5 |
-| CSC           |   34.1 |  1.00 |  0.04 |     91.0 |
-| FGR           |   34.1 |  1.00 |  0.02 |       NA |
-| naive         |   34.1 |  1.00 | -8.93 |      0.0 |
-| causal_forest |   34.1 |  1.25 |  0.05 |     95.0 |
-| CSC           |   34.1 |  1.25 |  0.01 |     95.5 |
-| FGR           |   34.1 |  1.25 | -0.26 |       NA |
-| naive         |   34.1 |  1.25 | -9.56 |      0.0 |
-| causal_forest |   34.1 |  1.50 |  0.39 |     96.5 |
-| CSC           |   34.1 |  1.50 |  0.12 |     95.0 |
-| FGR           |   34.1 |  1.50 | -0.29 |       NA |
-| naive         |   34.1 |  1.50 | -9.78 |      0.0 |
-| causal_forest |   47.3 |  1.00 | -0.31 |     94.5 |
-| CSC           |   47.3 |  1.00 | -0.13 |     97.5 |
-| FGR           |   47.3 |  1.00 | -0.10 |       NA |
-| naive         |   47.3 |  1.00 | -8.90 |      0.0 |
-| causal_forest |   47.3 |  1.25 |  0.04 |     93.5 |
-| CSC           |   47.3 |  1.25 |  0.04 |     93.0 |
-| FGR           |   47.3 |  1.25 | -0.07 |       NA |
-| naive         |   47.3 |  1.25 | -9.47 |      0.0 |
-| causal_forest |   47.3 |  1.50 |  0.36 |     96.0 |
-| CSC           |   47.3 |  1.50 |  0.00 |     92.0 |
-| FGR           |   47.3 |  1.50 | -0.18 |       NA |
-| naive         |   47.3 |  1.50 | -9.89 |      0.0 |
+| causal_forest |    0.0 |  1.00 | -0.36 |     94.0 |
+| causal_forest |    0.0 |  1.25 | -0.29 |     93.0 |
+| causal_forest |    0.0 |  1.50 | -0.49 |     92.5 |
+| causal_forest |   34.1 |  1.00 | -0.32 |     94.5 |
+| causal_forest |   34.1 |  1.25 |  0.11 |     92.5 |
+| causal_forest |   34.1 |  1.50 |  0.10 |     94.0 |
+| causal_forest |   47.3 |  1.00 | -0.17 |     93.5 |
+| causal_forest |   47.3 |  1.25 |  0.35 |     97.5 |
+| causal_forest |   47.3 |  1.50 |  0.58 |     93.5 |
 :end:
 
 
@@ -125,7 +136,7 @@ Publish::org(xi)
 tar_read(INDEPENDENT_BOXPLOTS)
 #+END_SRC
 
-#+RESULTS[(2022-05-20 08:28:19) 4cd32117ad9c953b866082691cc0b821808ee1ea]:
+#+RESULTS[(2022-06-06 08:26:47) 4cd32117ad9c953b866082691cc0b821808ee1ea]:
 [[file:./output/independent-boxplots.png]]
 
 #+name: fig:1
@@ -144,13 +155,11 @@ xn
 Publish::org(xn)
 #+END_SRC
 
-#+RESULTS[(2022-05-20 15:14:52) 1d0055ecb6239338437407fb5779d5e5afc38101]:
+#+RESULTS[(2022-06-06 08:26:47) 1d0055ecb6239338437407fb5779d5e5afc38101]:
 :results:
-| method        | P(C<5) | A1_T1 |  bias | coverage |
-|---------------+--------+-------+-------+----------|
-| causal_forest |   34.1 |  1.00 | -0.48 |     96.5 |
-| causal_forest |   34.1 |  1.25 | -0.39 |     94.5 |
-| causal_forest |   34.1 |  1.50 | -0.58 |     96.0 |
+| method | P(C<5) | A1_T1 | bias | coverage |
+|--------+--------+-------+------+----------|
+Error in object[r, , drop = TRUE] : subscript out of bounds
 :end:
 
 ** Dependent right censoring
@@ -164,20 +173,20 @@ xd
 Publish::org(xd)
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS[(2022-06-06 08:26:48) 64957816025cd1b0e2bbc8dadf1428bb44035ae6]:
 :results:
 | method        | P(C<3) | intervene | A1_T1 |  bias | coverage |
 |---------------+--------+-----------+-------+-------+----------|
 | causal_forest |   28.3 | A1        |  1.00 | -0.60 |     94.5 |
 | naive         |   28.3 | A1        |  1.00 | -4.97 |      1.5 |
-| causal_forest |   28.3 | A1        |  1.25 | -0.73 |     91.0 |
-| naive         |   28.3 | A1        |  1.25 | -5.58 |      1.0 |
+| causal_forest |   28.3 | A1        |  1.25 | -0.66 |     93.5 |
+| naive         |   28.3 | A1        |  1.25 | -5.56 |      0.5 |
 | causal_forest |   28.3 | A1        |  1.50 | -0.95 |     91.0 |
 | naive         |   28.3 | A1        |  1.50 | -6.17 |      1.0 |
 | causal_forest |   28.3 | A2        |  1.00 | -0.10 |     96.0 |
 | naive         |   28.3 | A2        |  1.00 | -0.05 |     94.0 |
-| causal_forest |   28.3 | A2        |  1.25 | -0.08 |     95.0 |
-| naive         |   28.3 | A2        |  1.25 | -0.07 |     95.0 |
+| causal_forest |   28.3 | A2        |  1.25 |  0.13 |     94.5 |
+| naive         |   28.3 | A2        |  1.25 |  0.10 |     94.5 |
 | causal_forest |   28.3 | A2        |  1.50 | -0.08 |     94.0 |
 | naive         |   28.3 | A2        |  1.50 | -0.12 |     94.0 |
 :end:
@@ -186,7 +195,7 @@ Publish::org(xd)
 tar_read(DEPENDENT_BOXPLOTS)
 #+END_SRC
 
-#+RESULTS[(2022-05-20 08:32:04) 74d08874d4ba43c98f3d9d685907c787f4812cdf]:
+#+RESULTS[(2022-06-06 08:26:48) 74d08874d4ba43c98f3d9d685907c787f4812cdf]:
 [[file:./output/dependent-boxplots.png]]
 
 
@@ -202,20 +211,39 @@ xm
 Publish::org(xm)
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS[(2022-06-06 08:26:48) f05470148081dbc910113f688bdf1ef9760fda8e]:
 :results:
 | method        | P(C<5) | intervene | A1_T1 |  bias | coverage |
 |---------------+--------+-----------+-------+-------+----------|
-| causal_forest |   44.9 | A1        |   0.7 | -0.59 |     92.5 |
-| CSC           |   44.9 | A1        |   0.7 |  1.98 |     72.0 |
-| FGR           |   44.9 | A1        |   0.7 |  2.12 |       NA |
-| naive         |   44.9 | A1        |   0.7 |  4.22 |     41.5 |
-| causal_forest |   44.9 | A2        |   0.7 | -0.07 |     93.5 |
-| CSC           |   44.9 | A2        |   0.7 |  0.07 |     94.0 |
-| FGR           |   44.9 | A2        |   0.7 | -0.04 |       NA |
-| naive         |   44.9 | A2        |   0.7 |  0.14 |     94.0 |
+| causal_forest |   44.9 | A1        |  0.70 | -1.00 |     92.8 |
+| CSC           |   44.9 | A1        |  0.70 |  1.90 |     76.0 |
+| FGR           |   44.9 | A1        |  0.70 |  2.01 |       NA |
+| naive         |   44.9 | A1        |  0.70 |  4.15 |     41.0 |
+| causal_forest |   44.9 | A1        |  1.00 | -0.42 |     94.4 |
+| CSC           |   44.9 | A1        |  1.00 |  1.48 |     84.0 |
+| FGR           |   44.9 | A1        |  1.00 |  1.52 |       NA |
+| naive         |   44.9 | A1        |  1.00 |  3.96 |     45.6 |
+| causal_forest |   44.9 | A1        |  1.25 | -0.10 |     94.9 |
+| CSC           |   44.9 | A1        |  1.25 |  1.24 |     87.7 |
+| FGR           |   44.9 | A1        |  1.25 |  1.04 |       NA |
+| naive         |   44.9 | A1        |  1.25 |  3.73 |     51.3 |
+| causal_forest |   44.9 | A2        |  0.70 |  0.10 |     95.9 |
+| CSC           |   44.9 | A2        |  0.70 |  0.06 |     96.1 |
+| FGR           |   44.9 | A2        |  0.70 |  0.11 |       NA |
+| naive         |   44.9 | A2        |  0.70 |  0.15 |     95.0 |
+| causal_forest |   44.9 | A2        |  1.00 | -0.10 |     94.0 |
+| CSC           |   44.9 | A2        |  1.00 | -0.11 |     93.1 |
+| FGR           |   44.9 | A2        |  1.00 | -0.14 |       NA |
+| naive         |   44.9 | A2        |  1.00 |  0.10 |     95.7 |
+| causal_forest |   44.9 | A2        |  1.25 | -0.08 |     94.6 |
+| CSC           |   44.9 | A2        |  1.25 | -0.15 |     94.3 |
+| FGR           |   44.9 | A2        |  1.25 | -0.16 |       NA |
+| naive         |   44.9 | A2        |  1.25 | -0.11 |     95.4 |
 :end:
 
 #+BEGIN_SRC R :results file graphics :file ./output/dependent-boxplots.png :exports none :session *R* :cache yes
 tar_read(MISSPECIFIED_BOXPLOTS)
 #+END_SRC
+
+#+RESULTS[(2022-06-06 08:26:49) 58d685bd44aa73e0e1e10306f375b59d5b6bc65e]:
+[[file:./output/dependent-boxplots.png]]

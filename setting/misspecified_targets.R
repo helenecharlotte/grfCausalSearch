@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:10) 
 ## Version: 
-## Last-Updated: Jun  3 2022 (07:32) 
+## Last-Updated: Jun  3 2022 (12:05) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 11
+##     Update #: 24
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -26,7 +26,7 @@ misspecified_fixed <- list(horizon = 5,
                                                C ~ f(A1,0),
                                                A1 ~ f(X1,-1) + f(X6,.7) + f(A7,.2)))
 misspecified_fixed_target <- tar_target(MISSPECIFIED_FIXED,misspecified_fixed,deployment = "main")
-misspecified_varying <- data.table::CJ(A1_T1 = c(.7), #c(1,1.25,1.5)
+misspecified_varying <- data.table::CJ(A1_T1 = c(.7,1,1.25), #c(1,1.25,1.5)
                                       A1_T2 = 1,
                                       A2_T1 = 1,
                                       A2_T2 = 1.25,
@@ -67,33 +67,29 @@ misspecified_truth_varying <- tar_map(
         deployment = "worker"))
 
 misspecified_truth <- tar_combine(MISSPECIFIED_TRUTH,
-                                 misspecified_truth_varying)
+                                  misspecified_truth_varying)
 # ---------------------------------------------------------------------
 # Estimation of ATE 
 # ---------------------------------------------------------------------
 misspecified_estimates <- tar_map(
     # outer map generates data under varying parameters of the data generating model
-    values = misspecified_varying[,.(A1_T1,A1_T2,A2_T1,A2_T2,scale.censored,sample.size)],
+    values = merge(misspecified_varying[,.(A1_T1,A1_T2,A2_T1,A2_T2,scale.censored,sample.size,id = 1)],
+                   misspecified_estimators[,.(net,num.trees,method,weighter,id = 1)],by = "id",all.x = TRUE,all.y = TRUE,allow.cartesian=TRUE),
     unlist = FALSE,
-    tar_target(MISSPECIFIED_SIM_DATA,{
-        lavaModel
-        simulateData(setting = MISSPECIFIED_FIXED,
-                     A1_T1 = A1_T1,
-                     A1_T2 = A1_T2,
-                     A2_T1 = A2_T1,
-                     A2_T2 = A2_T2,
-                     n = sample.size,
-                     scale.censored = scale.censored,
-                     keep.latent = FALSE)},
-        deployment = "worker",
-        pattern = map(REPETITIONS)),
-    # inner map estimates ATE under varying hyper-parameters of the estimator
-    inner_misspecified <- tar_map(
-        values = misspecified_estimators[,.(net,num.trees,method,weighter)],
-        unlist = FALSE,
-        tar_target(MISSPECIFIED_ESTIMATE,{
-            if(weighter == "km")
-                ff <- Hist(time,event)~A1+A2
+    tar_target(MISSPECIFIED_ESTIMATES,{
+        lavaModel;
+        simulateData;
+        out = do.call("rbind",mclapply(REPETITIONS,function(b){
+            sd = simulateData(setting = MISSPECIFIED_FIXED,
+                         A1_T1 = A1_T1,
+                         A1_T2 = A1_T2,
+                         A2_T1 = A2_T1,
+                         A2_T2 = A2_T2,
+                         n = sample.size,
+                         scale.censored = scale.censored,
+                         keep.latent = FALSE)
+            if (weighter == "km")
+                ff <- Hist(time,event)~1
             else
                 ff <- Hist(time,event)~A1+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7
             x <- causalhunter(formula=Hist(time,event)~intervene(A1)+intervene(A2)+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7,
@@ -102,7 +98,7 @@ misspecified_estimates <- tar_map(
                               args.weight = list(num.trees = num.trees),
                               num.trees=num.trees,
                               CR.as.censoring = net,
-                              data=MISSPECIFIED_SIM_DATA,
+                              data=sd,
                               times=MISSPECIFIED_FIXED$horizon,
                               formula.weight = ff)
             x <- cbind(x,data.table(n = sample.size,
@@ -116,15 +112,14 @@ misspecified_estimates <- tar_map(
                                     A2_T1 = A2_T1,
                                     A2_T2 = A2_T2))
             x
-        },
-        deployment = "worker",
-        pattern = map(MISSPECIFIED_SIM_DATA))
-    )
+        },mc.cores = MCCORES)) # end of repetitions
+        gc()
+        out
+    }) # end of parameter map
 )
 # combine
 misspecified_ate <- tar_combine(MISSPECIFIED_ESTIMATE_ATE,{
-    # the first element are the data
-    misspecified_estimates[-1]
+    misspecified_estimates
 })
 # ---------------------------------------------------------------------
 # Summarize performance of estimators against true parameter values
