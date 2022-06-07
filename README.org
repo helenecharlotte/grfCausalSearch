@@ -28,7 +28,6 @@ tabel_crude
 Publish::org(tabel_crude)
 #+END_SRC
 
-#+RESULTS[(2022-06-07 18:28:22) a66a92cde7e5c97f900778c0bb2514636450ee11]:
 :results:
 | method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
 |---------------+--------+-------+-------+------+------+------+----------|
@@ -49,7 +48,6 @@ tabel_net
 Publish::org(tabel_net)
 #+END_SRC
 
-#+RESULTS[(2022-06-07 18:31:24) 9b5ef84a8772ecb03367cf42518f1252962eeed8]:
 :results:
 | method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
 |---------------+--------+-------+-------+------+------+------+----------|
@@ -65,8 +63,6 @@ b=tar_read(BOXPLOTS)
 cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
 
-#+RESULTS[(2022-06-07 18:43:05) ee567d5b06de7a47be7dbced30e52d5dd3ce99d9]:
-[[file:./output/crude-net-effect-boxplots.png]]
 
 #+name: fig:1
 #+CAPTION: 1000 estimates of crude and net effects
@@ -90,8 +86,6 @@ b=tar_read(BOXPLOTS)
 b[[4]]
 #+END_SRC
 
-#+RESULTS[(2022-06-07 19:02:05) fed0e23230ea7f045908df9e6322d90eeea3f8c1]:
-[[file:./output/misspecified-parametric-boxplots.png]]
 
 #+name: fig:2
 #+CAPTION: Bias in parametric models that ignore a quadratic effect of a confounder variable 
