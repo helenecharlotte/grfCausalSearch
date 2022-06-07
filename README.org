@@ -11,7 +11,7 @@ library(Publish)
 * Introduction
 
 Here we provide the R-codes that (re)produce the simulation study
-results presented in our manuscript.
+results presented in our manuscript. 
 
 * Simulation setting
 
@@ -59,7 +59,7 @@ org(out,digits=2)
 
 ** Scenarios
 
-*** Independent right censoring
+*** Crude effects 
 
 #+BEGIN_SRC R :results file graphics :file ./output/independent-setting.png :exports none :session *R* :cache yes
 source("setting/independent_targets.R")
@@ -104,146 +104,83 @@ abline(v=5,col="gray77",lwd=3,lty=3)
 * Performance
 
 
-** Independent right censoring
-
-*** Crude effects
-#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes  
-xi=tar_read(INDEPENDENT_RESULTS)[intervene=="A1"&n==5000,.(method,"P(C<5)"=censored.tau,A1_T1,bias=round(100*bias,2),coverage=round(100*coverage,1))]
-xi
+** Crude effects
+#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
+x=tar_read(RESULTS)
+x_crude = x[theme=="crude_effect"]
+tabel_crude=x_crude[,.(method,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
+tabel_crude
 #+END_SRC
 
 #+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-Publish::org(xi)
+Publish::org(tabel_crude)
 #+END_SRC
 
-#+RESULTS[(2022-06-06 08:26:46) cb64047a2178fe4afceaada3d2624a5803813877]:
+#+RESULTS[(2022-06-07 18:28:22) a66a92cde7e5c97f900778c0bb2514636450ee11]:
 :results:
-| method        | P(C<5) | A1_T1 |  bias | coverage |
-|---------------+--------+-------+-------+----------|
-| causal_forest |    0.0 |  1.00 | -0.36 |     94.0 |
-| causal_forest |    0.0 |  1.25 | -0.29 |     93.0 |
-| causal_forest |    0.0 |  1.50 | -0.49 |     92.5 |
-| causal_forest |   34.1 |  1.00 | -0.32 |     94.5 |
-| causal_forest |   34.1 |  1.25 |  0.11 |     92.5 |
-| causal_forest |   34.1 |  1.50 |  0.10 |     94.0 |
-| causal_forest |   47.3 |  1.00 | -0.17 |     93.5 |
-| causal_forest |   47.3 |  1.25 |  0.35 |     97.5 |
-| causal_forest |   47.3 |  1.50 |  0.58 |     93.5 |
+| method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
+|---------------+--------+-------+-------+------+------+------+----------|
+| causal_forest |   17.6 |  1.25 |  0.80 | 0.07 | 2.22 | 2.29 |     96.0 |
+| causal_forest |   17.6 |  1.25 |  1.00 | 0.14 | 2.28 | 2.30 |     95.0 |
+| causal_forest |   17.6 |  1.25 |  1.25 | 0.03 | 2.29 | 2.31 |     95.5 |
 :end:
 
-
-#+BEGIN_SRC R :results file graphics :file ./output/independent-boxplots.png :exports none :session *R* :cache yes
-tar_read(INDEPENDENT_BOXPLOTS)
+** Net effects
+#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
+x=tar_read(RESULTS)
+x_net = x[theme=="net_effect" & net==1]
+tabel_net=x_net[,.(method,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
+tabel_net
 #+END_SRC
 
-#+RESULTS[(2022-06-06 08:26:47) 4cd32117ad9c953b866082691cc0b821808ee1ea]:
-[[file:./output/independent-boxplots.png]]
+#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
+Publish::org(tabel_net)
+#+END_SRC
+
+#+RESULTS[(2022-06-07 18:31:24) 9b5ef84a8772ecb03367cf42518f1252962eeed8]:
+:results:
+| method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
+|---------------+--------+-------+-------+------+------+------+----------|
+| causal_forest |   17.6 |  0.80 |   0.8 | 0.60 | 2.27 | 2.24 |     93.9 |
+| causal_forest |   17.6 |  1.00 |   0.8 | 0.53 | 2.23 | 2.31 |     95.5 |
+| causal_forest |   17.6 |  1.25 |   0.8 | 0.68 | 2.28 | 2.37 |     95.9 |
+:end:
+
+** Boxplots
+
+#+BEGIN_SRC R :results file graphics :file ./output/crude-net-effect-boxplots.png :exports none :session *R* :cache yes :width 500 :height 1000
+b=tar_read(BOXPLOTS)
+cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects"),ncol = 1)
+#+END_SRC
+
+#+RESULTS[(2022-06-07 18:43:05) ee567d5b06de7a47be7dbced30e52d5dd3ce99d9]:
+[[file:./output/crude-net-effect-boxplots.png]]
 
 #+name: fig:1
-#+ATTR_LATEX: :width 0.7\textwidth
-#+CAPTION:
-[[file:./output/independent-boxplots.png]]
+#+CAPTION: 1000 estimates of crude and net effects
+[[file:./output/crude-net-effect-boxplots.png]]
 
-*** Net effects
+** Censoring percentage 
 
-#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes  
-xn=tar_read(NET_RESULTS)[intervene=="A1"&n==5000,.(method,"P(C<5)"=censored.tau,A1_T1,bias=round(100*bias,2),coverage=round(100*coverage,1))]
-xn
+#+BEGIN_SRC R :results file graphics :file ./output/censoring-percentage-boxplots.png :exports none :session *R* :cache yes :width 500 :height 1000
+x=tar_read(RESULTS)
+x_censoring = x[theme=="censoring" ]
+setkey(x_censoring,formula,censored.tau)
+tabel_censoring=x_censoring[,.(method,formula,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
+tabel_censoring
 #+END_SRC
 
-#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-Publish::org(xn)
+
+** Misspecified parametric models
+
+#+BEGIN_SRC R :results file graphics :file ./output/misspecified-parametric-boxplots.png :exports none :session *R* :cache yes 
+b=tar_read(BOXPLOTS)
+b[[4]]
 #+END_SRC
 
-#+RESULTS[(2022-06-06 08:26:47) 1d0055ecb6239338437407fb5779d5e5afc38101]:
-:results:
-| method | P(C<5) | A1_T1 | bias | coverage |
-|--------+--------+-------+------+----------|
-Error in object[r, , drop = TRUE] : subscript out of bounds
-:end:
+#+RESULTS[(2022-06-07 19:02:05) fed0e23230ea7f045908df9e6322d90eeea3f8c1]:
+[[file:./output/misspecified-parametric-boxplots.png]]
 
-** Dependent right censoring
-
-#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes  
-xd=tar_read(DEPENDENT_RESULTS)[n==5000,.(method,"P(C<3)"=censored.tau,intervene,A1_T1,bias=round(100*bias,2),coverage=round(100*coverage,1))]
-xd
-#+END_SRC
-
-#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-Publish::org(xd)
-#+END_SRC
-
-#+RESULTS[(2022-06-06 08:26:48) 64957816025cd1b0e2bbc8dadf1428bb44035ae6]:
-:results:
-| method        | P(C<3) | intervene | A1_T1 |  bias | coverage |
-|---------------+--------+-----------+-------+-------+----------|
-| causal_forest |   28.3 | A1        |  1.00 | -0.60 |     94.5 |
-| naive         |   28.3 | A1        |  1.00 | -4.97 |      1.5 |
-| causal_forest |   28.3 | A1        |  1.25 | -0.66 |     93.5 |
-| naive         |   28.3 | A1        |  1.25 | -5.56 |      0.5 |
-| causal_forest |   28.3 | A1        |  1.50 | -0.95 |     91.0 |
-| naive         |   28.3 | A1        |  1.50 | -6.17 |      1.0 |
-| causal_forest |   28.3 | A2        |  1.00 | -0.10 |     96.0 |
-| naive         |   28.3 | A2        |  1.00 | -0.05 |     94.0 |
-| causal_forest |   28.3 | A2        |  1.25 |  0.13 |     94.5 |
-| naive         |   28.3 | A2        |  1.25 |  0.10 |     94.5 |
-| causal_forest |   28.3 | A2        |  1.50 | -0.08 |     94.0 |
-| naive         |   28.3 | A2        |  1.50 | -0.12 |     94.0 |
-:end:
-
-#+BEGIN_SRC R :results file graphics :file ./output/dependent-boxplots.png :exports none :session *R* :cache yes
-tar_read(DEPENDENT_BOXPLOTS)
-#+END_SRC
-
-#+RESULTS[(2022-06-06 08:26:48) 74d08874d4ba43c98f3d9d685907c787f4812cdf]:
-[[file:./output/dependent-boxplots.png]]
-
-
-** Misspecified semi-parametric models
-
-
-#+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes  
-xm=tar_read(MISSPECIFIED_RESULTS)[n==5000,.(method,"P(C<5)"=censored.tau,intervene,A1_T1,bias=round(100*bias,2),coverage=round(100*coverage,1))]
-xm
-#+END_SRC
-
-#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-Publish::org(xm)
-#+END_SRC
-
-#+RESULTS[(2022-06-06 08:26:48) f05470148081dbc910113f688bdf1ef9760fda8e]:
-:results:
-| method        | P(C<5) | intervene | A1_T1 |  bias | coverage |
-|---------------+--------+-----------+-------+-------+----------|
-| causal_forest |   44.9 | A1        |  0.70 | -1.00 |     92.8 |
-| CSC           |   44.9 | A1        |  0.70 |  1.90 |     76.0 |
-| FGR           |   44.9 | A1        |  0.70 |  2.01 |       NA |
-| naive         |   44.9 | A1        |  0.70 |  4.15 |     41.0 |
-| causal_forest |   44.9 | A1        |  1.00 | -0.42 |     94.4 |
-| CSC           |   44.9 | A1        |  1.00 |  1.48 |     84.0 |
-| FGR           |   44.9 | A1        |  1.00 |  1.52 |       NA |
-| naive         |   44.9 | A1        |  1.00 |  3.96 |     45.6 |
-| causal_forest |   44.9 | A1        |  1.25 | -0.10 |     94.9 |
-| CSC           |   44.9 | A1        |  1.25 |  1.24 |     87.7 |
-| FGR           |   44.9 | A1        |  1.25 |  1.04 |       NA |
-| naive         |   44.9 | A1        |  1.25 |  3.73 |     51.3 |
-| causal_forest |   44.9 | A2        |  0.70 |  0.10 |     95.9 |
-| CSC           |   44.9 | A2        |  0.70 |  0.06 |     96.1 |
-| FGR           |   44.9 | A2        |  0.70 |  0.11 |       NA |
-| naive         |   44.9 | A2        |  0.70 |  0.15 |     95.0 |
-| causal_forest |   44.9 | A2        |  1.00 | -0.10 |     94.0 |
-| CSC           |   44.9 | A2        |  1.00 | -0.11 |     93.1 |
-| FGR           |   44.9 | A2        |  1.00 | -0.14 |       NA |
-| naive         |   44.9 | A2        |  1.00 |  0.10 |     95.7 |
-| causal_forest |   44.9 | A2        |  1.25 | -0.08 |     94.6 |
-| CSC           |   44.9 | A2        |  1.25 | -0.15 |     94.3 |
-| FGR           |   44.9 | A2        |  1.25 | -0.16 |       NA |
-| naive         |   44.9 | A2        |  1.25 | -0.11 |     95.4 |
-:end:
-
-#+BEGIN_SRC R :results file graphics :file ./output/dependent-boxplots.png :exports none :session *R* :cache yes
-tar_read(MISSPECIFIED_BOXPLOTS)
-#+END_SRC
-
-#+RESULTS[(2022-06-06 08:26:49) 58d685bd44aa73e0e1e10306f375b59d5b6bc65e]:
-[[file:./output/dependent-boxplots.png]]
+#+name: fig:2
+#+CAPTION: Bias in parametric models that ignore a quadratic effect of a confounder variable 
+[[file:./output/misspecified-parametric-boxplots.png]]
