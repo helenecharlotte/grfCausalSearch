@@ -8,6 +8,13 @@ library(tarchetypes)
 library(Publish)
 #+END_SRC
 
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+library(targets)
+library(tarchetypes)
+library(Publish)
+#+END_SRC
+
 * Introduction
 
 Here we provide the R-codes that (re)produce the simulation study
