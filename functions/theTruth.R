@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 10 2022 (09:18) 
 ## Version: 
-## Last-Updated: Jun  7 2022 (09:24) 
+## Last-Updated: Jun 21 2022 (13:31) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 66
+##     Update #: 71
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -34,7 +34,7 @@ theTruth <- function(setting,
                          scale.censored = scale.censored,
                          keep.latent = TRUE)
         # average treatment effects in both worlds
-        x <- d[,.(intervene = c("A1","A2","A1","A2","A1","A2","A1","A2"),
+        x <- d[,data.table::data.table(intervene = c("A1","A2","A1","A2","A1","A2","A1","A2"),
                   cause = c(1,1,1,1,2,2,2,2),
                   net = c(1,1,0,0,1,1,0,0),
                   ate = c(
@@ -53,9 +53,12 @@ theTruth <- function(setting,
                   # calculate percent censored before tau
                   scale.censored = scale.censored,
                   censored.tau = round(100*mean(time <= horizon & event == 0),1))]
+        rm(d)
+        gc()
         x[,rep := b]
-    }))
-    out = out[,.(ate = mean(ate),censored.tau = mean(censored.tau)),by = c("intervene","cause","net","scale.censored")]
+    },mc.cores = cores))
+    gc()
+    out = out[,data.table::data.table(ate = mean(ate),censored.tau = mean(censored.tau)),by = c("intervene","cause","net","scale.censored")]
     out[]
 }
 

@@ -39,11 +39,11 @@ for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 # ---------------------------------------------------------------------
 ## 
 ## tweak recources are ignored
-library(future)
-library(future.callr)
-library(batchtools)
-library(future.batchtools)
-if (server){
+## library(future)
+## library(future.callr)
+## library(batchtools)
+## library(future.batchtools)
+if (FALSE){
     slurm <- future::tweak(batchtools_slurm,
                            template = 'batchtools.slurm.tmpl')
     future::plan(slurm)
@@ -63,21 +63,22 @@ if (server){
             )
         )
     )
-    ## future::plan(batchtools_slurm, template = "slurm.tmpl")
-    ## tar_option_set(
-    ## memory='transient',
-    ## storage='worker',
-    ## resources = tar_resources(
-    ## future = tar_resources_future(
-    ## resources = list(template = 'slurm.tmpl',
-    ## num_cores = 30,
-    ## n_cores = 30),
-    ## )
-    ## )
-    ## )
-}else{
-    future::plan(callr)
 }
+## future::plan(batchtools_slurm, template = "slurm.tmpl")
+## tar_option_set(
+## memory='transient',
+## storage='worker',
+## resources = tar_resources(
+## future = tar_resources_future(
+## resources = list(template = 'slurm.tmpl',
+## num_cores = 30,
+## n_cores = 30),
+## )
+## )
+## )
+## }else{
+## future::plan(callr)
+## }
 # ---------------------------------------------------------------------
 # Simulation settings
 # ---------------------------------------------------------------------
@@ -89,8 +90,10 @@ source("./setting/simulation_targets.R")
 # ---------------------------------------------------------------------
 # The target flow
 # ---------------------------------------------------------------------
-list(tar_target(MCCORES, 50),
-     tar_target(REPETITIONS, 1:1000),
+
+## MCCORES <- 5
+MCCORES <- 50
+list(tar_target(REPETITIONS, 1:1000),
      varying_target,
      fixed_target,
      fixed,
@@ -99,38 +102,9 @@ list(tar_target(MCCORES, 50),
      estimates,
      ate,
      results,
+     ranking,
      boxplots)
-     ## misspecified_varying_target,
-     ## misspecified_fixed_target,
-     ## misspecified_estimators_target,
-     ## misspecified_fixed,
-     ## misspecified_truth_varying,
-     ## misspecified_truth,
-     ## misspecified_estimates,
-     ## misspecified_ate,
-     ## misspecified_results,
-     ## misspecified_boxplots)
 
-## list(tar_target(REPETITIONS, 1:5),
 
-     ## dependent_varying_target,
-     ## dependent_fixed_target,
-     ## dependent_estimators_target,
-     ## dependent_fixed,
-     ## dependent_truth_varying,
-     ## dependent_truth,
-     ## dependent_estimates,
-     ## dependent_ate,
-     ## dependent_results,
-     ## dependent_boxplots,
-     ## net_varying_target,
-     ## net_fixed_target,
-     ## net_estimators_target,
-     ## net_fixed,
-     ## net_truth_varying,
-     ## net_truth,
-     ## net_estimates,
-     ## net_ate,
-     ## net_results,
-     ## net_boxplots
-     ## )
+
+

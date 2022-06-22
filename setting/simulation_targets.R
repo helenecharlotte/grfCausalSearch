@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jun  7 2022 (19:03) 
+## Last-Updated: Jun 22 2022 (08:33) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 105
+##     Update #: 125
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -40,7 +40,7 @@ formula_ranking <- list(T1 ~ f(X1,1) + f(X2,.3) + f(X6,.3),
 # covariate dependent censoring
 formula_cens <- list(T1 ~ f(A4,.3) + f(A5,.7) + f(X1,1) + f(X2,.3) + f(X6,-.5),
                      T2  ~ f(A5, -.3)+ f(X1,-.1) + f(X2,.6) + f(X6,.1),
-                     C ~ f(A1,.3)+f(A3,-0.1) + f(X2,-0.1)+f(X6,.1),
+                     C ~ f(A1,.1)+f(A3,-0.3) + f(X2,-0.4)+f(X6,.1),
                      A1 ~ f(X1,-1) + f(X6,.7) + f(A7,.2))
 # misspecified parametric models
 formula_misspecified =  list(T1 ~ f(A4,.3) + f(A5,.7) + f(X1,1) + f(X2,.3) + f(X6,.3)+f(X6_2,.4),
@@ -107,9 +107,9 @@ varying_misspecified <- data.table::CJ(A1_T1 = 1.25,
 varying_ranking <- data.table::CJ(A1_T1 = 1.25,
                                   A1_T2 = 1,
                                   A2_T1 = 1,
-                                  A2_T2 = 1.25,
-                                  scale.censored = 1/40,
-                                  sample.size = 5000,
+                                  A2_T2 = c(.2,.8,1,1.25,2),
+                                  scale.censored = -Inf,
+                                  sample.size = c(500,1000,2000,5000),
                                   horizon = 5,
                                   setting = "formula_ranking",
                                   method = "causal_forest",
@@ -170,7 +170,7 @@ truth_varying <- tar_map(
                   horizon = horizon,
                   formula = setting)
         y},
-        deployment = "worker"))
+        deployment = "main"))
 
 truth <- tar_combine(TRUTH, truth_varying)
 # ---------------------------------------------------------------------
@@ -201,7 +201,8 @@ estimates <- tar_map(
             x <- causalhunter(formula=ff,
                               method = method,
                               weighter="ranger",
-                              args.weight = list(num.trees = num.trees),
+                              args.weight = list(num.trees = num.trees,alpha = 0.05,mtry = 17),
+                              fit.separate = TRUE,
                               num.trees=num.trees,
                               CR.as.censoring = net,
                               data=simulated_data,
@@ -236,11 +237,14 @@ ate <- tar_combine(ESTIMATE_ATE,{
 # ---------------------------------------------------------------------
 # Summarize performance of estimators against true parameter values
 # ---------------------------------------------------------------------
-results <-
-    tar_target(RESULTS,
-               summarizePerformance(truth = TRUTH,
-                                    estimate = ESTIMATE_ATE),
-               deployment = "main")
+results <- tar_target(RESULTS,
+                      summarizePerformance(truth = TRUTH,
+                                           estimate = ESTIMATE_ATE),
+                      deployment = "main")
+
+ranking <- tar_target(RANKING,
+                      rankingPerformance(estimate = ESTIMATE_ATE),
+                      deployment = "main")
 
 boxplots <- tar_target(BOXPLOTS,{
     e <- ESTIMATE_ATE[intervene == "A1"]
@@ -298,23 +302,10 @@ boxplots <- tar_target(BOXPLOTS,{
     g_samplesize <- ggplot(e_samplesize,aes(x = n,y = ate))
     g_samplesize <- g_samplesize+geom_boxplot()+theme(legend.position="none")
     g_samplesize <- g_samplesize+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_samplesize)
-    g_samplesize+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
+    g_samplesize = g_samplesize+ylab("Average treatment effect")+xlab("Sample size (n)")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
     list("crude" = g_crude,"net" = g_net,"censored" = g_censored,"misspecified"=g_misspecified,"samplesize" = g_samplesize)
 })
-coverage <- tar_target(COVERAGE,{
-    x <- RESULTS
-    x[,censored.tau:=factor(censored.tau)]
-    x[,n:=factor(n)]
-    x[,net:=factor(net)]
-    x[,num.trees:=factor(num.trees)]
-    x[,A1_T1:=factor(A1_T1)]
-    x[,A1_T2:=factor(A1_T2)]
-    x[,A2_T1:=factor(A2_T1)]
-    x[,A2_T2:=factor(A2_T2)]
-    g <- ggplot(x[intervene == "A1"],aes(x = n,y = coverage,group = method,color = method))
-    g <- g+geom_line()+facet_grid(A1_T1~censored.tau)
-    g
-})
+
 
 
 ######################################################################
