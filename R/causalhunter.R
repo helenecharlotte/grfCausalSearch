@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jun  6 2022 (11:21) 
+## Last-Updated: Jun 21 2022 (17:14) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 211
+##     Update #: 218
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -66,16 +66,17 @@
 ##' @export 
 ##' @author Helene Charlotte Rytgaard <hely@@sund.ku.dk>, Thomas A. Gerds <tag@@biostat.ku.dk>
 causalhunter <- function(formula,
-                         data, 
+                         data,
                          CR.as.censoring=FALSE,
                          cause=1,
                          method = "causal_forest",
-                         weighter="km",
+                         weighter="ranger",
                          fit.separate=FALSE,
                          formula.weight,
                          args.weight=NULL,
                          times,
-                         truncate=FALSE,...){
+                         truncate=FALSE,
+                         ...){
     requireNamespace("data.table")
     requireNamespace("prodlim")
     Hist <- prodlim::Hist
@@ -117,10 +118,10 @@ causalhunter <- function(formula,
         #-- run grf:
         for (s in 1:length(times)){
             for (i in 1:NCOL(EHF$intervene)){
-                grf.A <- causal_forest(X=EHF$design,
-                                       Y=Y[,s,drop=TRUE],
-                                       W=as.numeric(as.character(EHF$intervene[[i]])),
-                                       ...)
+                grf.A <- do.call(causal_forest,c(list(X=EHF$design,
+                                                      Y=Y[,s,drop=TRUE],
+                                                      W=as.numeric(as.character(EHF$intervene[[i]]))),
+                                                 ...))
                 est <- average_treatment_effect(grf.A)
                 names(est) <- c("ate","se")
                 lower=est[[1]]+qnorm(0.025)*est[[2]]
