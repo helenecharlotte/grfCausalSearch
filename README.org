@@ -279,12 +279,6 @@ cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects")
 #+RESULTS[(2022-06-23 08:27:09) ee567d5b06de7a47be7dbced30e52d5dd3ce99d9]:
 [[file:./output/crude-net-effect-boxplots.png]]
 
-
-#+name: fig:1
-#+CAPTION: 1000 estimates of crude and net effects
-[[file:./output/crude-net-effect-boxplots.png]]
-
-
 **** Sample size
 
 #+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes 
@@ -293,10 +287,6 @@ b[[5]]
 #+END_SRC
 
 #+RESULTS[(2022-06-23 08:27:10) 274bfa2c604c157f2281f7cad3d938736e617b75]:
-[[file:./output/sample-size-boxplots.png]]
-
-#+name: fig:2
-#+CAPTION: Effect of sample size on the estimation performance.
 [[file:./output/sample-size-boxplots.png]]
 
 *** Censoring percentage 
@@ -348,10 +338,6 @@ b[[4]]
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 
-#+name: fig:2
-#+CAPTION: Bias in parametric models that ignore a quadratic effect of a confounder variable 
-[[file:./output/misspecified-parametric-boxplots.png]]
-
 *** Ranking performance
 
 #+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
@@ -363,10 +349,5 @@ cowplot::plot_grid(gcrude+ggtitle("Crude effects"),gnet+ggtitle("Net effects"),n
 #+END_SRC
 
 #+RESULTS[(2022-06-23 08:21:28) 523fd7bdc63d549623ee58f9a68a89b166eacc1d]:
-[[file:./output/ranking-performance.png]]
-
-#+name: fig:1
-#+ATTR_LATEX: :width 0.7\textwidth
-#+CAPTION:
 [[file:./output/ranking-performance.png]]
 
