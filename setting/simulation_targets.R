@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jun 22 2022 (08:33) 
+## Last-Updated: Jun 23 2022 (08:15) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 125
+##     Update #: 127
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -108,7 +108,7 @@ varying_ranking <- data.table::CJ(A1_T1 = 1.25,
                                   A1_T2 = 1,
                                   A2_T1 = 1,
                                   A2_T2 = c(.2,.8,1,1.25,2),
-                                  scale.censored = -Inf,
+                                  scale.censored = c(-Inf),
                                   sample.size = c(500,1000,2000,5000),
                                   horizon = 5,
                                   setting = "formula_ranking",

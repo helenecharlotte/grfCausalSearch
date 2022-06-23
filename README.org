@@ -1,36 +1,50 @@
-#+TITLE: Ranking of average   treatment effects with generalized random forests for time-to-event outcomes: The empirical studies
+#+TITLE: Ranking of average treatment effects with generalized random forests for time-to-event outcomes: The empirical studies
 #+Author: Helene Charlotti Wiese Rytgaard & Thomas Alexander Gerds
 
 #+BEGIN_SRC R  :results silent  :exports none  :session *R* :cache no
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
-library(targets)
-library(tarchetypes)
-library(Publish)
-library(ggplot2)
-library(data.table)
 #+END_SRC
 
 
 * Introduction
 
 Here we provide the R-codes that (re)produce the simulation study
-results presented in our manuscript. 
+results presented in our manuscript.
 
 * Preparation
 
-Clone the github repository and load (install if necessary) the following packages:
+Clone the github repository, then load (and install first if
+necessary) the following packages:
 
-#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
 library(targets)
 library(tarchetypes)
 library(Publish)
+library(data.table)
+library(ggplot2)
+#+END_SRC
+
+Source the R-functions
+
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+# load all functions
+for(f in list.files("R",".R$",full.names=TRUE)){source(f)}
+for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
+source("./setting/simulation_targets.R")
+#+END_SRC
+
+* Quick demo
+
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+data <- simulateData()
 #+END_SRC
 
 
-* Performance results
+* Empirical studies
+** Performance results
 
-** Crude effects
+*** Crude effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
 x=tar_read(RESULTS)
 x_crude = x[theme=="crude_effect"]
@@ -52,7 +66,7 @@ Publish::org(tabel_crude)
 :end:
 
 
-** Net effects
+*** Net effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
 x=tar_read(RESULTS)
 x_net = x[theme=="net_effect" & net==1]
@@ -73,14 +87,17 @@ Publish::org(tabel_net)
 | causal_forest |   17.6 |  1.25 |   0.8 | 0.54 | 2.30 | 2.37 |     95.0 |
 :end:
 
-** Simulated performance boxplots
+*** Simulated performance boxplots
 
-*** Crude and net effects
+**** Crude and net effects
 
 #+BEGIN_SRC R :results file graphics :file ./output/crude-net-effect-boxplots.png :exports none :session *R* :cache yes :width 500 :height 1000
 b=tar_read(BOXPLOTS)
 cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
+
+#+RESULTS[(2022-06-23 08:27:09) ee567d5b06de7a47be7dbced30e52d5dd3ce99d9]:
+[[file:./output/crude-net-effect-boxplots.png]]
 
 
 #+name: fig:1
@@ -88,18 +105,21 @@ cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects")
 [[file:./output/crude-net-effect-boxplots.png]]
 
 
-*** Sample size
+**** Sample size
 
 #+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes 
 b=tar_read(BOXPLOTS)
 b[[5]]
 #+END_SRC
 
+#+RESULTS[(2022-06-23 08:27:10) 274bfa2c604c157f2281f7cad3d938736e617b75]:
+[[file:./output/sample-size-boxplots.png]]
+
 #+name: fig:2
 #+CAPTION: Effect of sample size on the estimation performance.
 [[file:./output/sample-size-boxplots.png]]
 
-** Censoring percentage 
+*** Censoring percentage 
 
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes  
@@ -110,15 +130,15 @@ tabel_censoring=x_censoring[,.(method,formula,"P(C<3)"=round(censored.tau,1),A1_
 tabel_censoring
 #+END_SRC
 
-#+RESULTS[(2022-06-10 17:27:04) 506e90d7b643046299ed144dde7450fa59cb4e89]:
+#+RESULTS[(2022-06-23 08:27:10) fca1c9378d9092361da537643a0128b6aeba4edc]:
 :results:
           method      formula P(C<3) A1_T1 A1_T2  bias   SD   SE coverage
-1: causal_forest     formula1    0.0  1.25     1 -0.36 1.35 1.32     93.1
-2: causal_forest     formula1   17.6  1.25     1 -0.24 1.42 1.49     95.5
-3: causal_forest     formula1   26.5  1.25     1 -0.16 1.54 1.56     94.1
-4: causal_forest formula_cens    0.0  1.25     1 -0.29 1.29 1.32     94.7
-5: causal_forest formula_cens   17.6  1.25     1 -0.29 1.43 1.48     95.2
-6: causal_forest formula_cens   26.5  1.25     1 -0.34 1.55 1.54     93.5
+1: causal_forest     formula1    0.0  1.25     1 -0.39 1.31 1.32     93.3
+2: causal_forest     formula1   17.6  1.25     1 -0.10 1.48 1.49     95.3
+3: causal_forest     formula1   26.5  1.25     1 -0.28 1.49 1.55     95.9
+4: causal_forest formula_cens    0.0  1.25     1 -0.33 1.31 1.32     94.3
+5: causal_forest formula_cens   17.6  1.25     1 -0.30 1.48 1.48     94.3
+6: causal_forest formula_cens   26.5  1.25     1 -0.38 1.54 1.54     93.8
 :end:
 
 #+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
@@ -137,54 +157,36 @@ org(tabel_censoring)
 | causal_forest | formula_cens |   26.5 |  1.25 |     1 | -0.34 | 1.55 | 1.54 |     93.5 |
 :end:
 
-** Misspecified parametric models
+*** Misspecified parametric models
 
 #+BEGIN_SRC R :results file graphics :file ./output/misspecified-parametric-boxplots.png :exports none :session *R* :cache yes 
 b=tar_read(BOXPLOTS)
 b[[4]]
 #+END_SRC
 
+#+RESULTS[(2022-06-23 08:27:11) fed0e23230ea7f045908df9e6322d90eeea3f8c1]:
+[[file:./output/misspecified-parametric-boxplots.png]]
+
 
 #+name: fig:2
 #+CAPTION: Bias in parametric models that ignore a quadratic effect of a confounder variable 
 [[file:./output/misspecified-parametric-boxplots.png]]
 
-** Ranking performance
+*** Ranking performance
 
-#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-estimate <- tar_read("ESTIMATE_ATE")
-E=estimate[intervene%in%c("A2","A3"),.(intervene,ate,net,n,A2_T2)]
-e=E[,.(ate=round(1000*mean(ate,na.rm=TRUE),1)),keyby=list(intervene,net,n,A2_T2)]
-e[n==5000&A2_T2==.2]
-E[n==5000&A2_T2==.2,median(ate,na.rm=TRUE),keyby=.(net,intervene)]
-E23[net==0,boxplot(ate~intervene)]
-estimate[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-ggplot(estimate[n==5000&A2_T2==2&intervene=="A2"],aes(y=ate,group=factor(net),color=net))+geom_boxplot()
-ggplot(estimate[n==5000&A2_T2==2&net=="Crude"&intervene%in%c("A2","A3")],aes(y=ate,group=factor(intervene),color=intervene))+geom_boxplot()
-#+END_SRC
-
-
-#+BEGIN_SRC R  :results output raw drawer  :exports results  :session *R* :cache yes  
-estimate <- tar_read("ESTIMATE_ATE")
-truth <- tar_read("TRUTH")
-x2=summarizePerformance(truth,estimate,variable="A2")[theme=="ranking"]
-x2[,c("censored.tau","net","n","A2_T1","A2_T2","true.ate","mean.ate","bias")]
-#+END_SRC
-
-
-#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes
-## estimate <- tar_read("ESTIMATE_ATE")
-## estimate = estimate[!is.na(rank)]
-## ran = estimate[theme == "ranking",.(rank = 1:10,mean = sapply(1:10,function(r)mean(rank == r))),by = c("net","intervene","n","A2_T2")]
-ran <- tar_read(RANKING)
+#+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
+ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)]
 ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-ran[n==5000&A2_T2==2&net=="Crude"&intervene%in%c("A2","A3")]
-ran[n==5000&A2_T2==.2&net=="Crude"&intervene%in%c("A2","A3")]
-ran=ran[intervene%in%c("A2","A3","A7")]
-gnet=ggplot(ran[net==1&rank==2],aes(x=n,y=mean,color=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)
-gcrude=ggplot(ran[net==0&rank==2],aes(x=n,y=mean,color=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)
-## gnet=ggplot(ran[net==1&intervene%in%c("A1","A2","A5")&rank==2],aes(x=n,y=mean,color=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)
-## gcrude=ggplot(ran[net==0&intervene%in%c("A1","A2","A5")&rank==2],aes(x=n,y=mean,color=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)
+gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)+ylim(c(0,1))+ylab("Frequency of rank 1")
+gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)+ylim(c(0,1))+ylab("Frequency of rank 1")
 cowplot::plot_grid(gcrude+ggtitle("Crude effects"),gnet+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
+
+#+RESULTS[(2022-06-23 08:21:28) 523fd7bdc63d549623ee58f9a68a89b166eacc1d]:
+[[file:./output/ranking-performance.png]]
+
+#+name: fig:1
+#+ATTR_LATEX: :width 0.7\textwidth
+#+CAPTION:
+[[file:./output/ranking-performance.png]]
+
