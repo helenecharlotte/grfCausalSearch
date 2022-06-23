@@ -144,7 +144,7 @@ the setting where the treatments =A1= and =A2= are randomized. To
 minimize Monte-Carlo error, we repeat this =10= times and report
 averages.
 
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes
 set.seed(7)
 tt=theTruth(setting = set,
          A1_T1 = 1.25,
@@ -158,14 +158,12 @@ tt=theTruth(setting = set,
 tt[cause==1]
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:16:25) 30e46c2b569824a41c0e9214eddf9a95886e5577]:
-:results:
-   intervene cause net scale.censored      ate censored.tau
-1:        A1     1   1          0.025 0.059851        33.78
-2:        A2     1   1          0.025 0.000553        33.78
-3:        A1     1   0          0.025 0.045465        33.78
-4:        A2     1   0          0.025 0.006996        33.78
-:end:
+#+RESULTS[(2022-06-23 09:48:15) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
+:    intervene cause net scale.censored      ate censored.tau
+: 1:        A1     1   1          0.025 0.059851        33.78
+: 2:        A2     1   1          0.025 0.000553        33.78
+: 3:        A1     1   0          0.025 0.045465        33.78
+: 4:        A2     1   0          0.025 0.006996        33.78
 
 The crude effect of =A1= is larger than the net effect because =A1=
 increases the hazard rate of events of cause 2 and hence subjects are
@@ -174,7 +172,7 @@ shorter time at risk for cause 1.
 ** Estimator
 
 *** Single treatment: crude
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
 set.seed(4)
 x <- causalhunter(formula=Hist(time,event)~intervene(A1)+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7,
                method = "causal_forest",
@@ -190,14 +188,12 @@ set(x,j="true.ate",value=tt[intervene=="A1"&net==0&cause==1,ate])
 x
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:14:14) 11e3fcc3fa0578f5eee876342e27f8ad4688f45f]:
-:results:
-   time intervene        ate        se       lower     upper true.ate
-1:    5        A1 0.04893297 0.0310279 -0.01188059 0.1097465 0.045465
-:end:
+#+RESULTS[(2022-06-23 09:48:33) fc85525cf45dd58040b89840ad0338a7534b29db]:
+:    time intervene        ate        se       lower     upper true.ate
+: 1:    5        A1 0.04893297 0.0310279 -0.01188059 0.1097465 0.045465
 
 *** Single treatment: net
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
 set.seed(4)
 y <- causalhunter(formula=Hist(time,event)~intervene(A1)+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7,
                   method = "causal_forest",
@@ -213,11 +209,9 @@ set(y,j="true.ate",value=tt[intervene=="A1"&net==1&cause==1,ate])
 y
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:39:59) 175d19d2bf35b4d9188ec95c4c05c58b058e409d]:
-:results:
-   time intervene        ate         se       lower     upper true.ate
-1:    5        A1 0.05933079 0.03621768 -0.01165456 0.1303161 0.059851
-:end:
+#+RESULTS[(2022-06-23 09:48:44) 6a9de4efbc17d39712787b7de97fc28bf7891257]:
+:    time intervene        ate         se       lower     upper true.ate
+: 1:    5        A1 0.05933079 0.03621768 -0.01165456 0.1303161 0.059851
 
 * Empirical studies
 
