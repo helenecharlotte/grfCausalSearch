@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jun 23 2022 (08:15) 
+## Last-Updated: Jun 23 2022 (09:51) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 127
+##     Update #: 128
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -14,7 +14,8 @@
 # independent censoring
 # varying sample size
 # varying percentage of censored (before horizon)
-# varying treatment effects 
+# varying treatment effects
+# ranking performance
 # 
 ### Change Log:
 #----------------------------------------------------------------------
