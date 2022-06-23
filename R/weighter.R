@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 27 2020 (06:33) 
 ## Version: 
-## Last-Updated: Jun 21 2022 (14:27) 
+## Last-Updated: Jun 23 2022 (09:39) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 192
+##     Update #: 198
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -103,16 +103,26 @@ weighter <- function(formula,
         dt[,Weight:=1]
         causes <- c(0,1,2)
         stopifnot(cause%in%causes)
-        if (fit.separate) { JJ <- causes[causes != cause]} else {JJ <- cause}
+        if (CR.as.censoring){
+            if (fit.separate) {
+                JJ <- causes[causes != cause]} else {JJ <- cause}
+        }else{
+            JJ <- cause
+        }
         if (tolower(method)=="km"){
             for (jj in JJ){
-                if (jj == cause)
-                    # reverse Kaplan-Meier for censoring distribution 
-                    dt[,Status := as.numeric(event == cause)]
-                else
-                    # reverse Kaplan-Meier for censoring (jj=0)
-                    # or latent cause 2 event time distribution (jj=2) 
+                if (jj == cause){
+                    if (CR.as.censoring){
+                        # reverse Kaplan-Meier for combined censoring/cause2 distribution 
+                        dt[,Status := as.numeric(event == cause)]
+                    }else{
+                        # reverse Kaplan-Meier for censoring distribution
+                        dt[,Status := as.numeric(event)]}
+                } else{
+                    # separate reverse Kaplan-Meiers for censoring (jj=0)
+                    # and latent cause 2 event time distribution (jj=2) 
                     dt[,Status := as.numeric(event != jj)]
+                }
                 ff <- update(formula,"Hist(time,Status)~.")
                 reverse.km.fit <- prodlim(ff, data=dt, reverse=TRUE)
                 ## result of predictSurvIndividual is sorted by (time, -status)
@@ -127,17 +137,18 @@ weighter <- function(formula,
             # method: ranger
             for (jj in JJ) {
                 if (jj == cause){
-                    # not separate
-                    if (CR.as.censoring)
+                    if (CR.as.censoring){
+                        # forest combined censoring/cause2 distribution 
                         dt[,Status := as.numeric(event != cause)]
-                    else
-                        dt[,Status := as.numeric(event == 0)]                        
+                    }else{
+                        # forest for censoring distribution
+                        dt[,Status := as.numeric(event == 0)]}
                 } else{
-                    # separate fits
+                    # fit separate forests
+                    # for censoring (jj=0)
+                    # and latent cause 2 event time distribution (jj=2) 
                     dt[,Status := as.numeric(event == jj)]
                 }
-                ## print(paste("HA = ",CR.as.censoring))
-                ## print(table(dt$Status))
                 ff <- update(formula,paste0("Surv(time,Status)~."))
                 reverse.forest <- do.call("ranger",c(list(formula=ff,
                                                           data=dt[,all.vars(ff),with = FALSE],

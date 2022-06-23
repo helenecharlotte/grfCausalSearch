@@ -22,6 +22,11 @@ library(tarchetypes)
 library(Publish)
 library(data.table)
 library(ggplot2)
+library(parallel)
+library(ranger)
+library(prodlim)
+library(grf)
+library(survival)
 #+END_SRC
 
 Source the R-functions
@@ -33,15 +38,196 @@ for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 source("./setting/simulation_targets.R")
 #+END_SRC
 
-* Quick demo
+* Demo
 
-#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
-data <- simulateData()
+** Simulate data
+
+The function =simulateData= simulates 3 latent event times, one for
+each of 2 causes, and one for the right censoring time. The minimum of
+the three latent times is given in the column =time=. The event type
+is in the column =event= where value =0= codes for right censored, =1=
+event of cause 1 and =2= event of cause 2. The distributions of the
+latent times depends on five discrete (varying prevalence) and two
+continuous covariates and ten binary treatment variables (varying
+prevalence) as defined by the current setting.
+
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
+fixed
 #+END_SRC
 
+#+RESULTS[(2022-06-23 08:53:26) 5c4139cacd7e0e312bba25817204e8572ef8bf14]:
+#+begin_example
+$event.times
+[1] "T1" "T2"
+
+$treatments
+ A1  A2  A3  A4  A5  A6  A7  A8  A9 A10 
+0.4 0.3 0.3 0.4 0.5 0.2 0.7 0.8 0.9 0.1 
+
+$binary.covariates
+ X1  X2  X3  X4  X5 
+0.1 0.2 0.3 0.4 0.5 
+
+$normal.covariates
+[1] "X6" "X7"
+
+$quadratic.covariates
+[1] "X6"
+#+end_example
+
+The dependence of all the variables is defined by a set of formula. Here the values are
+hazard and odds ratios specified on the logarithmic scale.
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
+formula1
+#+END_SRC
+
+#+RESULTS[(2022-06-23 08:54:41) 7c78430e442837b5fe50d61112cf7fde919a362a]:
+#+begin_example
+[[1]]
+T1 ~ f(A4, 0.3) + f(A5, 0.7) + f(X1, 1) + f(X2, 0.3) + f(X6, 
+    -0.5)
+
+[[2]]
+T2 ~ f(A5, -0.3) + f(X1, -0.1) + f(X2, 0.6) + f(X6, 0.1)
+
+[[3]]
+C ~ f(A1, 0)
+
+[[4]]
+A1 ~ f(X1, -1) + f(X6, 0.7) + f(A7, 0.2)
+#+end_example
+
+Furthermore, the effect of the treatments =A1= and =A2= on the latent
+event times are controlled by hazard ratio parameters denoted =A1_T1=,
+=A1_T2=, =A2_T1=, =A2_T2=.  Finally, the baseline hazard rate of the
+censoring distribution is controlled by the parameter
+=scale.censored=.
+
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes
+set <- fixed
+set$formula.list <- formula1
+set.seed(9)
+simulated_data <- simulateData(setting = set,
+                     A1_T1 = 1.25,
+                     A1_T2 = 1.25,
+                     A2_T1 = 1,
+                     A2_T2 = .8,
+                     n = 2000,
+                     scale.censored = 1/40,
+                     keep.latent = FALSE)
+simulated_data
+#+END_SRC
+
+#+RESULTS[(2022-06-23 09:17:49) 732837749fac309bf47b5de3030d435c697570cf]:
+#+begin_example
+      X1 X2 X3 X4 X5        X6         X7       X6_2 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10      time event
+   1:  0  0  0  1  0  1.366917  0.4820531 1.86846333  0  1  0  0  1  0  0  1  1   0 1.5739140     1
+   2:  0  0  0  0  1 -1.271084  1.2153707 1.61565345  0  0  0  0  1  0  0  1  0   0 2.9788801     1
+   3:  0  0  1  1  1 -1.364074 -2.6193556 1.86069689  0  0  0  1  0  0  0  0  0   0 1.2442290     1
+   4:  1  1  0  0  0  1.386565  0.1932862 1.92256317  0  1  0  1  0  0  1  1  1   0 2.1995066     1
+   5:  0  0  0  0  1 -1.775040  2.4391927 3.15076806  0  1  0  0  0  0  1  1  0   0 3.0073309     1
+  ---                                                                                              
+1996:  0  0  0  0  1  1.188219 -1.2651380 1.41186532  1  0  0  0  0  0  0  0  0   0 1.9685047     0
+1997:  0  0  0  0  1  1.170084  0.1322747 1.36909754  1  1  0  0  0  0  0  0  1   0 6.8648901     0
+1998:  0  0  0  1  1 -0.127420 -0.4530185 0.01623587  0  1  0  0  1  1  0  1  1   0 0.1371714     0
+1999:  0  0  1  0  0  0.667086 -1.1179058 0.44500368  0  0  1  0  1  0  0  0  0   0 0.6471192     0
+2000:  0  0  0  0  1  2.026630 -0.3432982 4.10722802  0  0  0  1  0  1  0  1  1   1 6.0341619     0
+#+end_example
+
+** True value of the average treatment effects
+
+We approximate the true values of the crude and net average treatment
+effects at the time horizon as well as the percentage of censored
+*before* the time horizon. We do this by simulating large datasets in
+the setting where the treatments =A1= and =A2= are randomized. To
+minimize Monte-Carlo error, we repeat this =10= times and report
+averages.
+
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes
+set.seed(7)
+tt=theTruth(setting = set,
+         A1_T1 = 1.25,
+         A1_T2 = 1.25,
+         A2_T1 = 1,
+         A2_T2 = .8,
+         B=10, # number of repetitions
+         horizon=5,
+         scale.censored=1/40,
+         n = 100000)
+tt[cause==1]
+#+END_SRC
+
+#+RESULTS[(2022-06-23 09:16:25) 30e46c2b569824a41c0e9214eddf9a95886e5577]:
+:results:
+   intervene cause net scale.censored      ate censored.tau
+1:        A1     1   1          0.025 0.059851        33.78
+2:        A2     1   1          0.025 0.000553        33.78
+3:        A1     1   0          0.025 0.045465        33.78
+4:        A2     1   0          0.025 0.006996        33.78
+:end:
+
+The crude effect of =A1= is larger than the net effect because =A1=
+increases the hazard rate of events of cause 2 and hence subjects are
+shorter time at risk for cause 1.
+
+** Estimator
+
+*** Single treatment: crude
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+set.seed(4)
+x <- causalhunter(formula=Hist(time,event)~intervene(A1)+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7,
+               method = "causal_forest",
+               weighter="ranger",
+               args.weight = list(num.trees = 100,alpha = 0.05,mtry = 17), # arguments for weighter
+               fit.separate = TRUE, # fit G and G2 separately
+               num.trees=100, # number of trees for the function causal_forest
+               CR.as.censoring = 0, # 0 = crude effects, 1 = net effects
+               data=simulated_data,
+               times=5, # time horizon
+               formula.weight = Hist(time,event)~A1+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7)
+set(x,j="true.ate",value=tt[intervene=="A1"&net==0&cause==1,ate])
+x
+#+END_SRC
+
+#+RESULTS[(2022-06-23 09:14:14) 11e3fcc3fa0578f5eee876342e27f8ad4688f45f]:
+:results:
+   time intervene        ate        se       lower     upper true.ate
+1:    5        A1 0.04893297 0.0310279 -0.01188059 0.1097465 0.045465
+:end:
+
+*** Single treatment: net
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
+set.seed(4)
+y <- causalhunter(formula=Hist(time,event)~intervene(A1)+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7,
+                  method = "causal_forest",
+                  weighter="ranger",
+                  args.weight = list(num.trees = 100,alpha = 0.05,mtry = 17), # arguments for weighter
+                  fit.separate = TRUE, # fit G and G2 separately
+                  num.trees=100, # number of trees for the function causal_forest
+                  CR.as.censoring = 1, # 0 = crude effects, 1 = net effects
+                  data=simulated_data,
+                  times=5, # time horizon 
+                  formula.weight = Hist(time,event)~A1+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7)
+set(y,j="true.ate",value=tt[intervene=="A1"&net==1&cause==1,ate])
+y
+#+END_SRC
+
+#+RESULTS[(2022-06-23 09:39:59) 175d19d2bf35b4d9188ec95c4c05c58b058e409d]:
+:results:
+   time intervene        ate         se       lower     upper true.ate
+1:    5        A1 0.05933079 0.03621768 -0.01165456 0.1303161 0.059851
+:end:
 
 * Empirical studies
+
+Our empirical studies are organized with the help of the magnificent
+package =targets=, see https://books.ropensci.org/targets/. The
+simulation settings are defined in the file
+[[./setting/simulation_targets.R]] and run by the master file
+[[./_targets.R]]. The results are saved and can be assessed by the
+function =tar_read= as is shown below.
+
 ** Performance results
 
 *** Crude effects
