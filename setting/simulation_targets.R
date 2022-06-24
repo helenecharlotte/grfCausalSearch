@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jun 23 2022 (09:51) 
+## Last-Updated: Jun 23 2022 (13:35) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 128
+##     Update #: 136
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -62,6 +62,7 @@ varying_crude <- data.table::CJ(A1_T1 = 1.25,
                                 horizon = 5,
                                 setting = "formula1",
                                 method = "causal_forest",
+                                weighter = "ranger",
                                 net = FALSE,
                                 treat = "A1",
                                 num.trees = 50)
@@ -75,6 +76,7 @@ varying_net <- data.table::CJ(A1_T1 = c(.8,1,1.25),
                               horizon = 5,
                               setting = "formula1",
                               method = "causal_forest",
+                              weighter = "ranger",
                               net = c(FALSE,TRUE),
                               treat = "all",
                               num.trees = 50)
@@ -88,6 +90,20 @@ varying_censored <- data.table::CJ(A1_T1 = 1.25,
                                    horizon = 3,
                                    setting = c("formula1","formula_cens"),
                                    method = "causal_forest",
+                                   weighter = "ranger",
+                                   net = FALSE,
+                                   treat = "A1",
+                                   num.trees = 50)
+varying_weighter <- data.table::CJ(A1_T1 = 1.25,
+                                   A1_T2 = 1,
+                                   A2_T1 = 1,
+                                   A2_T2 = 1.25,
+                                   scale.censored = c(1/25),
+                                   sample.size = 5000,
+                                   horizon = 3,
+                                   setting = c("formula1","formula_cens"),
+                                   method = "causal_forest",
+                                   weighter = c("km","ranger"),
                                    net = FALSE,
                                    treat = "A1",
                                    num.trees = 50)
@@ -101,6 +117,7 @@ varying_misspecified <- data.table::CJ(A1_T1 = 1.25,
                                        horizon = 5,
                                        setting = "formula_misspecified",
                                        method = c("causal_forest","CSC","FGR"),
+                                       weighter = "ranger",
                                        net = FALSE,
                                        treat = "A1",
                                        num.trees = 50)
@@ -109,14 +126,15 @@ varying_ranking <- data.table::CJ(A1_T1 = 1.25,
                                   A1_T2 = 1,
                                   A2_T1 = 1,
                                   A2_T2 = c(.2,.8,1,1.25,2),
-                                  scale.censored = c(-Inf),
+                                  scale.censored = c(-Inf,1/40),
                                   sample.size = c(500,1000,2000,5000),
                                   horizon = 5,
                                   setting = "formula_ranking",
                                   method = "causal_forest",
+                                  weighter = "ranger",
                                   net = c(FALSE,TRUE),
                                   treat = "all",
-                                  num.trees = 50)
+                                  num.trees = 100)
 varying_sample_size <- data.table::CJ(A1_T1 = 1.25,
                                       A1_T2 = 1,
                                       A2_T1 = 1,
@@ -126,16 +144,18 @@ varying_sample_size <- data.table::CJ(A1_T1 = 1.25,
                                       horizon = 5,
                                       setting = "formula1",
                                       method = "causal_forest",
+                                      weighter = "ranger",
                                       net = FALSE,
                                       treat = "A1",
                                       num.trees = 100)
-varying_sample_size[sample.size == 5000,num.trees := 50]
 varying <-  rbindlist(list(varying_crude[,theme := "crude_effect"],
                            varying_net[,theme := "net_effect"],
                            varying_censored[,theme := "censoring"],
+                           varying_weighter[,theme := "weighter"],
                            varying_misspecified[,theme := "misspecified"],
                            varying_ranking[,theme := "ranking"],
                            varying_sample_size[,theme := "sample_size"]))
+varying[sample.size == 5000,num.trees := 50]
 varying_target <- tar_target(VARYING,
                              varying,
                              deployment = "main")
@@ -199,16 +219,29 @@ estimates <- tar_map(
             } else{
                 ff = Hist(time,event)~intervene(A1)+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7
             }
-            x <- causalhunter(formula=ff,
-                              method = method,
-                              weighter="ranger",
-                              args.weight = list(num.trees = num.trees,alpha = 0.05,mtry = 17),
-                              fit.separate = TRUE,
-                              num.trees=num.trees,
-                              CR.as.censoring = net,
-                              data=simulated_data,
-                              times=horizon,
-                              formula.weight = Hist(time,event)~A1+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7)
+            if (weighter == "km"){
+                x <- causalhunter(formula=ff,
+                                  method = method,
+                                  weighter=weighter,
+                                  args.weight = list(num.trees = num.trees,alpha = 0.05,mtry = 17),
+                                  fit.separate = TRUE,
+                                  num.trees=num.trees,
+                                  CR.as.censoring = net,
+                                  data=simulated_data,
+                                  times=horizon,
+                                  formula.weight = Hist(time,event)~A1+A2)
+            }else{
+                x <- causalhunter(formula=ff,
+                                  method = method,
+                                  weighter=weighter,
+                                  args.weight = list(num.trees = num.trees,alpha = 0.05,mtry = 17),
+                                  fit.separate = TRUE,
+                                  num.trees=num.trees,
+                                  CR.as.censoring = net,
+                                  data=simulated_data,
+                                  times=horizon,
+                                  formula.weight = Hist(time,event)~A1+A2+A3+A4+A5+A6+A7+A8+A9+A10+X1+X2+X3+X4+X5+X6+X7)
+            }
             if (treat == "all"){
                 x[,rank := rank(-abs(ate))]
             }else{
