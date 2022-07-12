@@ -289,12 +289,12 @@ cowplot::plot_grid(b[[1]]+theme_bw()+ggtitle("Crude effects")+guides(color=FALSE
 
 **** coverage:
 
-#+BEGIN_SRC R :results file graphics :file ./output/coverage.png :exports none :session *R* :cache yes :width 800 :height 500
+#+BEGIN_SRC R :results file graphics :file ./output/coverage.png :exports none :session *R* :cache yes :width 600 :height 300
   r=tar_read(RESULTS)     
   ## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]  
   R=r[net==0]
   R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
-  R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))] 
+  R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]  
   R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
   R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
   R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
@@ -313,7 +313,7 @@ cowplot::plot_grid(b[[1]]+theme_bw()+ggtitle("Crude effects")+guides(color=FALSE
   cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
 #+END_SRC
 
-#+RESULTS[(2022-07-12 13:28:40) 385d89f116e790127e992e7704979cd93524d805]:
+#+RESULTS[(2022-07-12 13:30:52) 79afb86038e73bff7f4a2aaf7c521c15e76021aa]:
 [[file:./output/coverage.png]]
 
 
