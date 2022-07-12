@@ -303,17 +303,21 @@ cowplot::plot_grid(b[[1]]+theme_bw()+ggtitle("Crude effects")+guides(color=FALSE
   R1a=R[theme=="censoring"&formula=="formula1"] 
   R1b=R[theme=="censoring"&formula=="formula_cens"]
   # coverage independent censoring varying censored procentage at time horizon
-  g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
+  g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+    ggtitle("Independent censoring")
   # coverage dependent censoring varying censored procentage at time horizon
-  g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
+  g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+    ggtitle("Informative censoring")
   # bias independent censoring varying censored procentage at time horizon
-  b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
+  b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+      ggtitle("Independent censoring")
   # bias dependent censoring varying censored procentage at time horizon
-  b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
+  b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+        ggtitle("Informative censoring")
   cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
 #+END_SRC
 
-#+RESULTS[(2022-07-12 13:30:52) 79afb86038e73bff7f4a2aaf7c521c15e76021aa]:
+#+RESULTS[(2022-07-12 14:35:04) 000a8d43c4f78a9d5f67999d1986150e843c5b8e]:
 [[file:./output/coverage.png]]
 
 
