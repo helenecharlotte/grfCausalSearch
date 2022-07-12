@@ -316,9 +316,6 @@ cowplot::plot_grid(b[[1]]+theme_bw()+ggtitle("Crude effects")+guides(color=FALSE
 #+RESULTS[(2022-07-12 13:28:40) 385d89f116e790127e992e7704979cd93524d805]:
 [[file:./output/coverage.png]]
 
-#+name: fig:1
-#+ATTR_LATEX: :width 1.2\textwidth
-#+CAPTION:
 
 
 *** Censoring percentage 
