@@ -367,20 +367,20 @@ b[[4]]+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(
     ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
     ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
     ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-    gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")
+    gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
     gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
-      facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")
+      facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
     cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
-  theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),legend.position="none",
+  theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
 			    strip.text = element_text(size=12),
 			    plot.title=element_text(size=16, hjust=0.5),
-			    strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),legend.position="none",
+			    strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
 			    strip.text = element_text(size=12),
 			  plot.title=element_text(size=16, hjust=0.5),
 			    strip.background = element_blank()),ncol = 1)
 #+END_SRC
 
-#+RESULTS[(2022-07-12 13:25:49) 6e489414db01cb8fed2aa32c0665c15898bd201e]:
+#+RESULTS[(2022-07-12 14:56:47) 0a1ce64a533dc11b982d2cb25fbb7196833da4f9]:
 [[file:./output/ranking-performance.png]]
 
 
