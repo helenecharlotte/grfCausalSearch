@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 22 2022 (09:17) 
 ## Version: 
-## Last-Updated: May 27 2022 (16:32) 
+## Last-Updated: Jun 29 2022 (10:39) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 15
+##     Update #: 16
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -20,6 +20,8 @@ library(tarchetypes)
 library(batchtools)
 library(future.batchtools)
 makeClusterFunctionsSlurm("batchtools.slurm.tmpl")
+reg = makeRegistry(file.dir = "/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch/registry",
+                   work.dir = "/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch/registry")
 loadRegistry(file.dir = "/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch/registry",
              work.dir = "/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch/registry",
              writeable = TRUE)

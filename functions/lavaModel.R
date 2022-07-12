@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Apr  9 2022 (19:27) 
 ## Version: 
-## Last-Updated: May 11 2022 (08:58) 
+## Last-Updated: Jul 11 2022 (10:23) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 62
+##     Update #: 65
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -61,7 +61,7 @@ lavaModel <- function(event.times = c("T1","T2"),
             lava::regression(m) = f
         }
     }
-    # observed treatment
+    # event times under observed treatments
     lava::transform(m,T1~T1_placebo_placebo+T1_treated_placebo+T1_placebo_treated+T1_treated_treated+A1+A2) = function(x){
         x[["T1_placebo_placebo"]]*(x[["A1"]] == 0)*(x[["A2"]] == 0) +
             x[["T1_treated_placebo"]]*(x[["A1"]] == 1)*(x[["A2"]] == 0) +
@@ -74,6 +74,32 @@ lavaModel <- function(event.times = c("T1","T2"),
             x[["T2_placebo_treated"]]*(x[["A1"]] == 0)*(x[["A2"]] == 1) +
             x[["T2_treated_treated"]]*(x[["A1"]] == 1)*(x[["A2"]] == 1)
     }
+    # event times in hypothetical world where one of the treatments (A1, A2)
+    # is as observed but the other one is set to a value 
+    lava::transform(m,T1_placebo_A1~T1_placebo_placebo+T1_treated_placebo+T1_placebo_treated+T1_treated_treated+A2) = function(x){
+        x[["T1_placebo_placebo"]]*(x[["A2"]] == 0) + x[["T1_placebo_treated"]]*(x[["A2"]] == 1) 
+    }
+    lava::transform(m,T1_treated_A1~T1_placebo_placebo+T1_treated_placebo+T1_placebo_treated+T1_treated_treated+A2) = function(x){
+        x[["T1_treated_placebo"]]*(x[["A2"]] == 0) + x[["T1_treated_treated"]]*(x[["A2"]] == 1) 
+    }
+    lava::transform(m,T1_placebo_A2~T1_placebo_placebo+T1_treated_placebo+T1_placebo_treated+T1_treated_treated+A1) = function(x){
+        x[["T1_placebo_placebo"]]*(x[["A1"]] == 0) + x[["T1_treated_placebo"]]*(x[["A1"]] == 1) 
+    }
+    lava::transform(m,T1_treated_A2~T1_placebo_placebo+T1_treated_placebo+T1_placebo_treated+T1_treated_treated+A1) = function(x){
+        x[["T1_placebo_treated"]]*(x[["A1"]] == 0) + x[["T1_treated_treated"]]*(x[["A1"]] == 1) 
+    }
+    lava::transform(m,T2_placebo_A1~T2_placebo_placebo+T2_treated_placebo+T2_placebo_treated+T2_treated_treated+A2) = function(x){
+        x[["T2_placebo_placebo"]]*(x[["A2"]] == 0) + x[["T2_placebo_treated"]]*(x[["A2"]] == 1) 
+    }
+    lava::transform(m,T2_treated_A1~T2_placebo_placebo+T2_treated_placebo+T2_placebo_treated+T2_treated_treated+A2) = function(x){
+        x[["T2_treated_placebo"]]*(x[["A2"]] == 0) + x[["T2_treated_treated"]]*(x[["A2"]] == 1) 
+    }
+    lava::transform(m,T2_placebo_A2~T2_placebo_placebo+T2_treated_placebo+T2_placebo_treated+T2_treated_treated+A1) = function(x){
+        x[["T2_placebo_placebo"]]*(x[["A1"]] == 0) + x[["T2_treated_placebo"]]*(x[["A1"]] == 1) 
+    }
+    lava::transform(m,T2_treated_A2~T2_placebo_placebo+T2_treated_placebo+T2_placebo_treated+T2_treated_treated+A1) = function(x){
+        x[["T2_placebo_treated"]]*(x[["A1"]] == 0) + x[["T2_treated_treated"]]*(x[["A1"]] == 1) 
+    }    
     # event time outcome
     m <- lava::eventTime(m,time~min(T1=1,T2=2,C=0),"event")
     m
