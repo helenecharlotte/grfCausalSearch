@@ -348,13 +348,13 @@ org(tabel_censoring)
 *** Misspecified parametric models
 
 #+BEGIN_SRC R :results file graphics :file ./output/misspecified-parametric-boxplots.png :exports none :session *R* :cache yes 
-b=tar_read(BOXPLOTS)
+b=tar_read(BOXPLOTS)    
 b[[4]]+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
                         strip.text = element_text(size=16),
-                        strip.background = element_blank())
+                        strip.background = element_blank())  
 #+END_SRC
 
-#+RESULTS[(2022-07-12 13:13:22) c4721cdf4772394857b3b1c41db06f6706f58aef]:
+#+RESULTS[(2022-07-12 14:06:16) 0b7906e227dcc15ea8bd8b601f254f8cc77fb670]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance

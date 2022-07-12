@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jul 11 2022 (10:23) 
-##           By: Thomas Alexander Gerds
-##     Update #: 143
+## Last-Updated: Jul 12 2022 (14:03) 
+##           By: Helene
+##     Update #: 149
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -334,7 +334,9 @@ boxplots <- tar_target(BOXPLOTS,{
     g_misspecified <- ggplot(e_misspecified,aes(y = ate))
     g_misspecified <- g_misspecified+geom_boxplot()+theme(legend.position="none")
     g_misspecified <- g_misspecified+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_misspecified)
-    g_misspecified <- g_misspecified+facet_grid(~method)+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
+    lmethod <- gsub("\\_", "" ,e_misspecified$method)
+    names(lmethod) <- e_misspecified$method
+    g_misspecified <- g_misspecified+facet_grid(~method,labeller = labeller(method = lmethod))+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
     # sample size
     e_samplesize = e[formula == "formula1"&net == 0&horizon == 5&intervene == "A1"&scale.censored == 1/40&A1_T1 == 1.25&A1_T2 == 1]
     g_samplesize <- ggplot(e_samplesize,aes(x = n,y = ate))
