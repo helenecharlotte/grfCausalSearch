@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jun 23 2022 (13:35) 
+## Last-Updated: Jul 11 2022 (10:23) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 136
+##     Update #: 143
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -22,6 +22,9 @@
 ## 
 ### Code:
 library(data.table)
+## MCCORES <- 1
+## MCCORES <- 5
+MCCORES <- 50
 fixed <- list(event.times = c("T1","T2"),
               treatments = c("A1" = .4,"A2" = .3, "A3" = .3,"A4" = .4,"A5" = .5,"A6" = .2,"A7" = .7,"A8" = .8,"A9" = .9,"A10" = .1),
               binary.covariates = c("X1" = .1,"X2" = .2,"X3" = .3,"X4" = .4,"X5" = .5),
@@ -58,7 +61,7 @@ varying_crude <- data.table::CJ(A1_T1 = 1.25,
                                 A2_T1 = 1,
                                 A2_T2 = 1.25,
                                 scale.censored = 1/40,
-                                sample.size = 5000,
+                                sample.size = c(500,1000,2000,5000),
                                 horizon = 5,
                                 setting = "formula1",
                                 method = "causal_forest",
@@ -86,7 +89,7 @@ varying_censored <- data.table::CJ(A1_T1 = 1.25,
                                    A2_T1 = 1,
                                    A2_T2 = 1.25,
                                    scale.censored = c(-Inf,1/40,1/25),
-                                   sample.size = 5000,
+                                   sample.size = c(500,1000,2000,5000),
                                    horizon = 3,
                                    setting = c("formula1","formula_cens"),
                                    method = "causal_forest",
@@ -169,8 +172,8 @@ truth_varying <- tar_map(
     # truth is affected by % censored and true effect
     values = unique(varying[,.(scale.censored,A1_T1,A1_T2,A2_T1,A2_T2,setting,horizon)]),
     tar_target(VARYING_TRUTH,{
-        lavaModel;
-        simulateData;
+        ## lavaModel;
+        ## simulateData;
         set <- FIXED
         set$formula.list = formula_settings[[setting]]
         y = theTruth(setting = set,
@@ -202,7 +205,7 @@ estimates <- tar_map(
     values = varying,
     unlist = FALSE,
     tar_target(ESTIMATES,{
-        lavaModel;
+        ## lavaModel;
         out = do.call("rbind",mclapply(REPETITIONS,function(b){
             set = FIXED
             set$formula.list = formula_settings[[setting]]
@@ -279,6 +282,7 @@ results <- tar_target(RESULTS,
 ranking <- tar_target(RANKING,
                       rankingPerformance(estimate = ESTIMATE_ATE),
                       deployment = "main")
+
 
 boxplots <- tar_target(BOXPLOTS,{
     e <- ESTIMATE_ATE[intervene == "A1"]

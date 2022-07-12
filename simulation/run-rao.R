@@ -2,9 +2,9 @@
 #----------------------------------------------------------------------
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 15 2022 (13:50) 
-## Last-Updated: Jun 21 2022 (17:10) 
+## Last-Updated: Jul 11 2022 (10:14) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 65
+##     Update #: 66
 ### Code:
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
 try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"))
@@ -18,7 +18,7 @@ library(tarchetypes)
 tar_make()
 ## tar_make(reporter = "verbose_positives")
 ## tar_make(reporter = "summary")
-
+# nohup R CMD BATCH /maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch/simulation/run-rao.R &
 
 ######################################################################
 ### run.R ends here

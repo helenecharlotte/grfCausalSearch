@@ -5,7 +5,6 @@
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
 #+END_SRC
 
-
 * Introduction
 
 Here we provide the R-codes that (re)produce the simulation study
@@ -75,8 +74,18 @@ $quadratic.covariates
 [1] "X6"
 #+end_example
 
-The dependence of all the variables is defined by a set of formula. Here the values are
-hazard and odds ratios specified on the logarithmic scale.
+In addition to the fixed parameters our simulation design also has
+varying parameter values. They can be inspected by looking at the
+following object:
+
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes  
+tar_read(VARYING) 
+#+END_SRC
+
+The dependence of all the variables is defined by a set of
+formulae. Here the values are hazard ratios and odds ratios specified
+on the logarithmic scale.
 #+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
 formula1
 #+END_SRC
@@ -104,7 +113,7 @@ censoring distribution is controlled by the parameter
 =scale.censored=.
 
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
-#+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes
+#+BEGIN_SRC R  :results output example  :exports code  :session *R* :cache yes
 set <- fixed
 set$formula.list <- formula1
 set.seed(9)
@@ -118,22 +127,6 @@ simulated_data <- simulateData(setting = set,
                      keep.latent = FALSE)
 simulated_data
 #+END_SRC
-
-#+RESULTS[(2022-06-23 09:17:49) 732837749fac309bf47b5de3030d435c697570cf]:
-#+begin_example
-      X1 X2 X3 X4 X5        X6         X7       X6_2 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10      time event
-   1:  0  0  0  1  0  1.366917  0.4820531 1.86846333  0  1  0  0  1  0  0  1  1   0 1.5739140     1
-   2:  0  0  0  0  1 -1.271084  1.2153707 1.61565345  0  0  0  0  1  0  0  1  0   0 2.9788801     1
-   3:  0  0  1  1  1 -1.364074 -2.6193556 1.86069689  0  0  0  1  0  0  0  0  0   0 1.2442290     1
-   4:  1  1  0  0  0  1.386565  0.1932862 1.92256317  0  1  0  1  0  0  1  1  1   0 2.1995066     1
-   5:  0  0  0  0  1 -1.775040  2.4391927 3.15076806  0  1  0  0  0  0  1  1  0   0 3.0073309     1
-  ---                                                                                              
-1996:  0  0  0  0  1  1.188219 -1.2651380 1.41186532  1  0  0  0  0  0  0  0  0   0 1.9685047     0
-1997:  0  0  0  0  1  1.170084  0.1322747 1.36909754  1  1  0  0  0  0  0  0  1   0 6.8648901     0
-1998:  0  0  0  1  1 -0.127420 -0.4530185 0.01623587  0  1  0  0  1  1  0  1  1   0 0.1371714     0
-1999:  0  0  1  0  0  0.667086 -1.1179058 0.44500368  0  0  1  0  1  0  0  0  0   0 0.6471192     0
-2000:  0  0  0  0  1  2.026630 -0.3432982 4.10722802  0  0  0  1  0  1  0  1  1   1 6.0341619     0
-#+end_example
 
 ** True value of the average treatment effects
 
@@ -160,10 +153,10 @@ tt[cause==1]
 
 #+RESULTS[(2022-06-23 09:48:15) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
 :    intervene cause net scale.censored      ate censored.tau
-: 1:        A1     1   1          0.025 0.059851        33.78
-: 2:        A2     1   1          0.025 0.000553        33.78
-: 3:        A1     1   0          0.025 0.045465        33.78
-: 4:        A2     1   0          0.025 0.006996        33.78
+: 1:        A1     1   1          0.025 0.059364        33.79
+: 2:        A2     1   1          0.025 0.000180        33.79
+: 3:        A1     1   0          0.025 0.045185        33.79
+: 4:        A2     1   0          0.025 0.007840        33.79
 
 The crude effect of =A1= is larger than the net effect because =A1=
 increases the hazard rate of events of cause 2 and hence subjects are
@@ -189,8 +182,8 @@ x
 #+END_SRC
 
 #+RESULTS[(2022-06-23 09:48:33) fc85525cf45dd58040b89840ad0338a7534b29db]:
-:    time intervene        ate        se       lower     upper true.ate
-: 1:    5        A1 0.04893297 0.0310279 -0.01188059 0.1097465 0.045465
+:    time intervene        ate         se       lower      upper true.ate
+: 1:    5        A1 0.03334221 0.03129835 -0.02800143 0.09468585 0.045185
 
 *** Single treatment: net
 #+BEGIN_SRC R  :results output example  :exports both  :session *R* :cache yes  
@@ -210,8 +203,8 @@ y
 #+END_SRC
 
 #+RESULTS[(2022-06-23 09:48:44) 6a9de4efbc17d39712787b7de97fc28bf7891257]:
-:    time intervene        ate         se       lower     upper true.ate
-: 1:    5        A1 0.05933079 0.03621768 -0.01165456 0.1303161 0.059851
+:    time intervene        ate         se       lower      upper true.ate
+: 1:    5        A1 0.02160464 0.03579717 -0.04855652 0.09176581 0.059364
 
 * Empirical studies
 
@@ -227,8 +220,8 @@ function =tar_read= as is shown below.
 *** Crude effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
 x=tar_read(RESULTS)
-x_crude = x[theme=="crude_effect"]
-tabel_crude=x_crude[,.(method,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
+x_crude = x[theme=="crude_effect"&A1_T2==0.8]
+tabel_crude=x_crude[,.(method,n=n,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
 tabel_crude
 #+END_SRC
 
@@ -238,13 +231,13 @@ Publish::org(tabel_crude)
 
 #+RESULTS[(2022-06-10 07:02:04) a66a92cde7e5c97f900778c0bb2514636450ee11]:
 :results:
-| method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
-|---------------+--------+-------+-------+------+------+------+----------|
-| causal_forest |   17.6 |  1.25 |  0.80 | 0.05 | 2.19 | 2.29 |     95.3 |
-| causal_forest |   17.6 |  1.25 |  1.00 | 0.14 | 2.22 | 2.29 |     95.7 |
-| causal_forest |   17.6 |  1.25 |  1.25 | 0.03 | 2.23 | 2.31 |     95.4 |
+| method        |    n | P(C<5) | A1_T1 | A1_T2 |  bias |   SD |   SE | coverage |
+|---------------+------+--------+-------+-------+-------+------+------+----------|
+| causal_forest |  500 |   17.6 |  1.25 |   0.8 | -2.07 | 6.05 | 6.07 |     92.9 |
+| causal_forest | 1000 |   17.6 |  1.25 |   0.8 | -1.74 | 4.37 | 4.35 |     92.3 |
+| causal_forest | 2000 |   17.6 |  1.25 |   0.8 | -0.89 | 3.09 | 3.12 |     93.8 |
+| causal_forest | 5000 |   17.6 |  1.25 |   0.8 | -0.45 | 1.97 | 2.00 |     94.6 |
 :end:
-
 
 *** Net effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
@@ -267,9 +260,7 @@ Publish::org(tabel_net)
 | causal_forest |   17.6 |  1.25 |   0.8 | 0.54 | 2.30 | 2.37 |     95.0 |
 :end:
 
-*** Simulated performance boxplots
-
-**** Crude and net effects
+**** boxplots: Crude and net effects
 
 #+BEGIN_SRC R :results file graphics :file ./output/crude-net-effect-boxplots.png :exports none :session *R* :cache yes :width 500 :height 1000
 b=tar_read(BOXPLOTS)
@@ -279,7 +270,7 @@ cowplot::plot_grid(b[[1]]+ggtitle("Crude effects"),b[[2]]+ggtitle("Net effects")
 #+RESULTS[(2022-06-23 08:27:09) ee567d5b06de7a47be7dbced30e52d5dd3ce99d9]:
 [[file:./output/crude-net-effect-boxplots.png]]
 
-**** Sample size
+**** boxplots: Sample size
 
 #+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes 
 b=tar_read(BOXPLOTS)
@@ -288,6 +279,36 @@ b[[5]]
 
 #+RESULTS[(2022-06-23 08:27:10) 274bfa2c604c157f2281f7cad3d938736e617b75]:
 [[file:./output/sample-size-boxplots.png]]
+
+**** coverage:
+
+#+BEGIN_SRC R :results file graphics :file ./coverage.pdf :exports none :session *R* :cache yes
+r=tar_read(RESULTS)
+## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]
+R=r[net==0]
+R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
+R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
+R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
+R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
+R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
+R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
+R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
+R1a=R[theme=="censoring"&formula=="formula1"]
+R1b=R[theme=="censoring"&formula=="formula_cens"]
+# coverage independent censoring varying censored procentage at time horizon
+g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
+# coverage dependent censoring varying censored procentage at time horizon
+g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
+# bias independent censoring varying censored procentage at time horizon
+b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
+# bias dependent censoring varying censored procentage at time horizon
+b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
+cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
+#+END_SRC
+#+name: fig:1
+#+ATTR_LATEX: :width 0.7\textwidth
+#+CAPTION:
+
 
 *** Censoring percentage 
 
@@ -326,7 +347,6 @@ b[[4]]
 #+RESULTS[(2022-06-23 08:27:11) fed0e23230ea7f045908df9e6322d90eeea3f8c1]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
-
 *** Ranking performance
 
 #+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
@@ -339,4 +359,5 @@ cowplot::plot_grid(gcrude+ggtitle("Crude effects"),gnet+ggtitle("Net effects"),n
 
 #+RESULTS[(2022-06-23 08:21:28) 523fd7bdc63d549623ee58f9a68a89b166eacc1d]:
 [[file:./output/ranking-performance.png]]
+
 
