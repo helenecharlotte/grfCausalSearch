@@ -1,7 +1,6 @@
 name|type|parent|branches|progress
 FIXED|stem|FIXED|0|skipped
 REPETITIONS|stem|REPETITIONS|0|skipped
-VARYING|stem|VARYING|0|skipped
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula_ranking_5|stem|VARYING_TRUTH_0.025_1.25_1_1_1.25_formula_ranking_5|0|skipped
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_3|stem|VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_3|0|skipped
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_5|stem|VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_5|0|skipped
