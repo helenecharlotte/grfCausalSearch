@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jul 11 2022 (10:23) 
+## Last-Updated: Jul 13 2022 (09:51) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 143
+##     Update #: 146
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -284,7 +284,7 @@ ranking <- tar_target(RANKING,
                       deployment = "main")
 
 
-boxplots <- tar_target(BOXPLOTS,{
+plotframe <- tar_target(PLOTFRAME,{
     e <- ESTIMATE_ATE[intervene == "A1"]
     t <- TRUTH
     ## e <- tar_read("ESTIMATE_ATE")[intervene == "A1"]
@@ -298,50 +298,15 @@ boxplots <- tar_target(BOXPLOTS,{
     e = merge(e,t.cens,by = c("formula","horizon","scale.censored"),all.y = FALSE)
     e[,n:=factor(n)]
     e[,net:=factor(net)]
-    e[,method:=factor(method)]
+    e[,method:=factor(method,levels=c("causal_forest","CSC","FGR"),labels=c("Causal forest","CSC","FGR"))]
     e[,num.trees:=factor(num.trees)]
     e[,horizon:=factor(horizon)]
-    e[,censored.tau:=factor(censored.tau)]
+    e[,censored.tau:=factor(censored.tau,levels=c("0","16.426","17.622","24.77","26.522","31.016","34.0092","35.8076"),labels=c("0","16%","18%","25%","27%","31%","34%","36%"))]
     e[,A1_T1:=factor(A1_T1)]
     e[,A1_T2:=factor(A1_T2)]
     e[,A2_T1:=factor(A2_T1)]
     e[,A2_T2:=factor(A2_T2)]
-    # crude effect
-    e_crude = e[theme == "crude_effect"]
-    g_crude <- ggplot(e_crude,aes(y = ate))
-    g_crude <- g_crude+geom_boxplot()+theme(legend.position="none")
-    g_crude <- g_crude+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_crude)
-    flabs = paste("A1 on T2: ",levels(e_crude$A1_T2))
-    names(flabs) = levels(e_crude$A1_T2)
-    g_crude <- g_crude+facet_grid(~A1_T2,labeller = labeller(A1_T2 = flabs))+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
-    # net effect
-    e_net = e[theme == "net_effect"& net == 1]
-    g_net <- ggplot(e_net,aes(y = ate))
-    g_net <- g_net+geom_boxplot()+theme(legend.position="none")
-    g_net <- g_net+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_net)
-    flabs = paste("A1 on T1: ",levels(e_net$A1_T1))
-    names(flabs) = levels(e_net$A1_T1)
-    g_net <- g_net+facet_grid(~A1_T1,labeller = labeller(A1_T1 = flabs))+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
-    # censoring effect
-    e_censored = e[theme == "censoring"&formula == "formula1"]
-    e_censored[,cens := round(as.numeric(as.character(censored.tau)),1)]
-    g_censored <- ggplot(e_censored,aes(x = censored.tau,y = ate))
-    g_censored <- g_censored+geom_boxplot()+theme(legend.position="none")
-    g_censored <- g_censored+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_censored)
-    g_censored <- g_censored+ylab("Average treatment effect")+xlab("Percentage censored before time horizon")
-    # misspecification
-    e_misspecified = e[formula == "formula_misspecified"&net == 0&n == 5000&horizon == 5&intervene == "A1"&scale.censored == 1/40&A1_T1 == 1.25&A1_T2 == 1]
-    g_misspecified <- ggplot(e_misspecified,aes(y = ate))
-    g_misspecified <- g_misspecified+geom_boxplot()+theme(legend.position="none")
-    g_misspecified <- g_misspecified+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_misspecified)
-    g_misspecified <- g_misspecified+facet_grid(~method)+ylab("Average treatment effect")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
-    # sample size
-    e_samplesize = e[formula == "formula1"&net == 0&horizon == 5&intervene == "A1"&scale.censored == 1/40&A1_T1 == 1.25&A1_T2 == 1]
-    g_samplesize <- ggplot(e_samplesize,aes(x = n,y = ate))
-    g_samplesize <- g_samplesize+geom_boxplot()+theme(legend.position="none")
-    g_samplesize <- g_samplesize+geom_hline(aes(yintercept = true.ate,color = "red"),data = e_samplesize)
-    g_samplesize = g_samplesize+ylab("Average treatment effect")+xlab("Sample size (n)")+theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
-    list("crude" = g_crude,"net" = g_net,"censored" = g_censored,"misspecified"=g_misspecified,"samplesize" = g_samplesize)
+    e
 })
 
 
