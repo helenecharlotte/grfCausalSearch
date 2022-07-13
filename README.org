@@ -1,9 +1,6 @@
 #+TITLE: Ranking of average treatment effects with generalized random forests for time-to-event outcomes: The empirical studies
 #+Author: Helene Charlotti Wiese Rytgaard & Thomas Alexander Gerds
 
-#+BEGIN_SRC R  :results silent  :exports none  :session *R* :cache no
-try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
-#+END_SRC
 
 * Introduction
 
@@ -298,33 +295,31 @@ b_s
 **** coverage:
 
 #+BEGIN_SRC R :results file graphics :file ./output/coverage.png :exports none :session *R* :cache yes :width 600 :height 300
-  r=tar_read(RESULTS)     
-  ## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]  
-  R=r[net==0]
-  R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
-  R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]  
-  R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
-  R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
-  R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
-  R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
-  R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
-  R1a=R[theme=="censoring"&formula=="formula1"] 
-  R1b=R[theme=="censoring"&formula=="formula_cens"]
-  # coverage independent censoring varying censored procentage at time horizon
-  g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
-    ggtitle("Independent censoring")
-  # coverage dependent censoring varying censored procentage at time horizon
-  g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
-    ggtitle("Informative censoring")
-  # bias independent censoring varying censored procentage at time horizon
-  b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
-    ggtitle("Independent censoring")
-  # bias dependent censoring varying censored procentage at time horizon
-  b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
-    ggtitle("Informative censoring")
+r=tar_read(RESULTS)     
+## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]  
+R=r[net==0]
+R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
+R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]  
+R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
+R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
+R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
+R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
+R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
+R1a=R[theme=="censoring"&formula=="formula1"] 
+R1b=R[theme=="censoring"&formula=="formula_cens"]
+# coverage independent censoring varying censored procentage at time horizon
+g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+  ggtitle("Independent censoring")
+# coverage dependent censoring varying censored procentage at time horizon
+g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+  ggtitle("Informative censoring")
+# bias independent censoring varying censored procentage at time horizon
+b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+  ggtitle("Independent censoring")
+# bias dependent censoring varying censored procentage at time horizon
+b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+  ggtitle("Informative censoring")
 p.coverage <- cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
-  ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/coverage.pdf", 
-	 p.coverage)
 p.coverage
 #+END_SRC
 
@@ -367,14 +362,12 @@ b_m=boxplot_effects(p[theme=="misspecified"])
 b_m=b_m+facet_grid(~method)
 b_m
 p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
-                                          strip.text = element_text(size=16),
-                                          strip.background = element_blank())
-## ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/misspecified-parametric-boxplots.pdf", 
-       ## p.misspecified) 
-p.misspecified
+                                       strip.text = element_text(size=16),
+                                       strip.background = element_blank())
+p.misspecified 
 #+END_SRC
 
-#+RESULTS[(2022-07-13 10:41:52) 238e8a7335d27b10b57209ef628ca357123595ac]:
+#+RESULTS[(2022-07-13 10:51:18) feca25d6f35f13865d8172a53a14b30c5b2d930a]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance
@@ -396,7 +389,6 @@ p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
                                                                                                                        strip.text = element_text(size=12),
                                                                                                                        plot.title=element_text(size=16, hjust=0.5),
                                                                                                                        strip.background = element_blank()),ncol = 1)
-ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/ranking-performance.pdf", p.ranking)
 p.ranking
 #+END_SRC
 
