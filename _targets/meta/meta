@@ -1,5 +1,6 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 .Random.seed|object|2f3801507373086f|||||||||||||||
+boxplot_effects|function|0cba8977f9ad325b|||||||||||||||
 BOXPLOTS|stem|0675043f743b2320|c175fa92f21e5e3b|c2a554e24d214b76|1162118473||t19184.8082065929s|33a71db0d0abf549|43205252|rds|local|vector|||1.33||
 causalhunter|function|005fc883fa28223a|||||||||||||||
 dependent_estimates|object|a73d2f7edfb72f4e|||||||||||||||

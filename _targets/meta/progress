@@ -161,5 +161,4 @@ TRUTH|stem|TRUTH|0|skipped
 ESTIMATE_ATE|stem|ESTIMATE_ATE|0|skipped
 RANKING|stem|RANKING|0|skipped
 RESULTS|stem|RESULTS|0|skipped
-PLOTFRAME|stem|PLOTFRAME|0|started
-PLOTFRAME|stem|PLOTFRAME|0|built
+PLOTFRAME|stem|PLOTFRAME|0|skipped

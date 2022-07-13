@@ -2,9 +2,9 @@
 #----------------------------------------------------------------------
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 15 2022 (13:50) 
-## Last-Updated: Jun 21 2022 (17:10) 
+## Last-Updated: Jul 13 2022 (10:35) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 65
+##     Update #: 66
 ### Code:
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
 try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"))
@@ -17,6 +17,7 @@ library(batchtools)
 library(future.batchtools)
 # run simulation
 tar_visnetwork(targets_only = TRUE)
+tar_outdated()
 x <- tar_manifest()
 setDT(x)
 x[grepl("INDEPENDENT_ESTIMATE",name)]
