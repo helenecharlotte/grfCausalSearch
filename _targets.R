@@ -53,7 +53,7 @@ list(tar_target(REPETITIONS, 1:1000),
      ate,
      results,
      ranking,
-     boxplots)
+     plotframe)
 
 
 
