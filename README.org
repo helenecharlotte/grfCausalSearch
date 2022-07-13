@@ -281,7 +281,6 @@ cowplot::plot_grid(b1+ggtitle("Crude effects"),b2+ggtitle("Net effects"),ncol = 
 #+RESULTS:
 [[file:./output/crude-net-effect-boxplots.png]]
 
-[[file:./output/crude-net-effect-boxplots.png]]
 
 **** boxplots: Sample size
 
