@@ -369,26 +369,27 @@ p.misspecified
 *** Ranking performance
 
 #+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
-  ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
-  ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
-  ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-  gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
-  gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
-    facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
-  p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
-				  theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
-				    axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
-					strip.text = element_text(size=12),
-					plot.title=element_text(size=16, hjust=0.5),
-					strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
-															 strip.text = element_text(size=12),
-															 plot.title=element_text(size=16, hjust=0.5),
-															 strip.background = element_blank()),ncol = 1)
-  ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/ranking-performance.pdf", p.ranking)
-  p.ranking
+ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
+ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
+ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
+gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
+  facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
+                                theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
+                                      axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
+                                      strip.text = element_text(size=12),
+                                      plot.title=element_text(size=16, hjust=0.5), 
+                                      strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
+                                                                                                                       axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
+                                                                                                                       strip.text = element_text(size=12),
+                                                                                                                       plot.title=element_text(size=16, hjust=0.5),
+                                                                                                                       strip.background = element_blank()),ncol = 1)
+ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/ranking-performance.pdf", p.ranking)
+p.ranking
 #+END_SRC
 
-#+RESULTS[(2022-07-13 09:15:53) cea73d56781aefa20740267603e5f857128ceaf7]:
+#+RESULTS[(2022-07-13 09:24:40) 04133e6c24a1c2cc07add45fd9ac4874d1876410]:
 [[file:./output/ranking-performance.png]]
 
 
