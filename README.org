@@ -26,6 +26,7 @@ library(ranger)
 library(prodlim)
 library(grf)
 library(survival)
+library(cowplot)
 #+END_SRC
 
 Source the R-functions
@@ -277,7 +278,6 @@ b2=b2+facet_grid(~A1_T1,labeller=labeller(A1_T1=b1_labs))
 cowplot::plot_grid(b1+ggtitle("Crude effects"),b2+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
 
-#+RESULTS[(2022-07-13 10:34:58) d2216327e6260bbaac3c9d8bdcfed54655cb599a]:
 [[file:./output/crude-net-effect-boxplots.png]]
 
 **** boxplots: Sample size
@@ -289,37 +289,45 @@ b_s+facet_grid(~n)
 b_s
 #+END_SRC
 
-#+RESULTS[(2022-06-23 08:27:10) 274bfa2c604c157f2281f7cad3d938736e617b75]:
+#+RESULTS[(2022-07-12 13:04:53) 4ba502d96cd762f906328d70cd08d7bea0936a4b]:
 [[file:./output/sample-size-boxplots.png]]
+
 
 **** coverage:
 
-#+BEGIN_SRC R :results file graphics :file ./coverage.pdf :exports none :session *R* :cache yes
-r=tar_read(RESULTS)
-## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]
-R=r[net==0]
-R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
-R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
-R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
-R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
-R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
-R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
-R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
-R1a=R[theme=="censoring"&formula=="formula1"]
-R1b=R[theme=="censoring"&formula=="formula_cens"]
-# coverage independent censoring varying censored procentage at time horizon
-g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
-# coverage dependent censoring varying censored procentage at time horizon
-g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")
-# bias independent censoring varying censored procentage at time horizon
-b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
-# bias dependent censoring varying censored procentage at time horizon
-b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")
-cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
+#+BEGIN_SRC R :results file graphics :file ./output/coverage.png :exports none :session *R* :cache yes :width 600 :height 300
+  r=tar_read(RESULTS)     
+  ## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]  
+  R=r[net==0]
+  R[,A1_T1:=factor(A1_T1,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
+  R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]  
+  R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
+  R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
+  R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
+  R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
+  R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
+  R1a=R[theme=="censoring"&formula=="formula1"] 
+  R1b=R[theme=="censoring"&formula=="formula_cens"]
+  # coverage independent censoring varying censored procentage at time horizon
+  g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+    ggtitle("Independent censoring")
+  # coverage dependent censoring varying censored procentage at time horizon
+  g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+    ggtitle("Informative censoring")
+  # bias independent censoring varying censored procentage at time horizon
+  b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+    ggtitle("Independent censoring")
+  # bias dependent censoring varying censored procentage at time horizon
+  b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
+    ggtitle("Informative censoring")
+p.coverage <- cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
+  ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/coverage.pdf", 
+	 p.coverage)
+p.coverage
 #+END_SRC
-#+name: fig:1
-#+ATTR_LATEX: :width 0.7\textwidth
-#+CAPTION:
+
+#+RESULTS[(2022-07-13 09:15:07) 62a6729ec8dcc0775820da515becf3cac310ad67]:
+[[file:./output/coverage.png]]
 
 
 *** Censoring percentage 
@@ -356,22 +364,41 @@ p=tar_read(PLOTFRAME)
 b_m=boxplot_effects(p[theme=="misspecified"])
 b_m=b_m+facet_grid(~method)
 b_m
+p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
+                                          strip.text = element_text(size=16),
+                                          strip.background = element_blank())
+ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/misspecified-parametric-boxplots.pdf", 
+       p.misspecified) 
+p.misspecified
 #+END_SRC
 
-#+RESULTS[(2022-06-23 08:27:11) fed0e23230ea7f045908df9e6322d90eeea3f8c1]:
+#+RESULTS[(2022-07-13 09:21:24) eb15a5f5f7625ae669fdd7e351bd4df7e13f3a49]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance
 
 #+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
 ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
+ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
 ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)+ylim(c(0,1))+ylab("Frequency of rank 1")
-gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2)+ylim(c(0,1))+ylab("Frequency of rank 1")
-cowplot::plot_grid(gcrude+ggtitle("Crude effects"),gnet+ggtitle("Net effects"),ncol = 1)
+gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
+  facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
+                                theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
+                                      axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
+                                      strip.text = element_text(size=12),
+                                      plot.title=element_text(size=16, hjust=0.5), 
+                                      strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
+                                                                                                                       axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
+                                                                                                                       strip.text = element_text(size=12),
+                                                                                                                       plot.title=element_text(size=16, hjust=0.5),
+                                                                                                                       strip.background = element_blank()),ncol = 1)
+ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/ranking-performance.pdf", p.ranking)
+p.ranking
 #+END_SRC
 
-#+RESULTS[(2022-06-23 08:21:28) 523fd7bdc63d549623ee58f9a68a89b166eacc1d]:
+#+RESULTS[(2022-07-13 09:24:40) 04133e6c24a1c2cc07add45fd9ac4874d1876410]:
 [[file:./output/ranking-performance.png]]
 
 
