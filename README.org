@@ -310,16 +310,18 @@ cowplot::plot_grid(b[[1]]+theme_bw()+ggtitle("Crude effects")+guides(color=FALSE
     ggtitle("Informative censoring")
   # bias independent censoring varying censored procentage at time horizon
   b1a=ggplot(R1a,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
-      ggtitle("Independent censoring")
+    ggtitle("Independent censoring")
   # bias dependent censoring varying censored procentage at time horizon
   b1b=ggplot(R1b,aes(x=n,y=bias,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(-.025,.025))+xlab("Sample size")+ylab("Bias")+
-        ggtitle("Informative censoring")
-  cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
+    ggtitle("Informative censoring")
+p.coverage <- cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
+  ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/coverage.pdf", 
+	 p.coverage)
+p.coverage
 #+END_SRC
 
-#+RESULTS[(2022-07-12 14:35:04) 000a8d43c4f78a9d5f67999d1986150e843c5b8e]:
+#+RESULTS[(2022-07-13 09:15:07) 62a6729ec8dcc0775820da515becf3cac310ad67]:
 [[file:./output/coverage.png]]
-
 
 
 *** Censoring percentage 
@@ -352,35 +354,41 @@ org(tabel_censoring)
 *** Misspecified parametric models
 
 #+BEGIN_SRC R :results file graphics :file ./output/misspecified-parametric-boxplots.png :exports none :session *R* :cache yes 
-b=tar_read(BOXPLOTS)    
-b[[4]]+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
-                        strip.text = element_text(size=16),
-                        strip.background = element_blank())  
+b=tar_read(BOXPLOTS)
+p.misspecified <- b[[4]]+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
+                                          strip.text = element_text(size=16),
+                                          strip.background = element_blank())
+ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/misspecified-parametric-boxplots.pdf", 
+       p.misspecified) 
+p.misspecified
 #+END_SRC
 
-#+RESULTS[(2022-07-12 14:06:16) 0b7906e227dcc15ea8bd8b601f254f8cc77fb670]:
+#+RESULTS[(2022-07-13 09:21:24) eb15a5f5f7625ae669fdd7e351bd4df7e13f3a49]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance
 
 #+BEGIN_SRC R :results file graphics :file ./output/ranking-performance.png :exports none :session *R* :cache yes
-    ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
-    ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
-    ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
-    gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
-    gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
-      facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
-    cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
-  theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
-			    strip.text = element_text(size=12),
-			    plot.title=element_text(size=16, hjust=0.5),
-			    strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
-			    strip.text = element_text(size=12),
-			  plot.title=element_text(size=16, hjust=0.5),
-			    strip.background = element_blank()),ncol = 1)
+  ran <- tar_read(RANKING)[A2_T2%in%c(0.2,1,2)&scale.censored==0.025]
+  ran[, A2_T2_text:=paste0("A2 on T2: ", A2_T2)] 
+  ran[,net:=factor(net,levels=c(0,1),labels=c("Crude","Net"))]
+  gnet=ggplot(ran[net=="Net"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+  gcrude=ggplot(ran[net=="Crude"&intervene%in%c("A1","A2","A3")&rank==1],aes(x=n,y=mean,linetype=intervene,group=intervene))+geom_line()+geom_point()+
+    facet_grid(~A2_T2_text)+ylim(c(0,1))+ylab("Frequency of rank 1")+guides(linetype=guide_legend(title=""))
+  p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
+				  theme(axis.text.x=element_text(size=12,angle=45,hjust=1),
+				    axis.text.y=element_text(size=12,hjust=1),axis.title=element_text(size=12),
+					strip.text = element_text(size=12),
+					plot.title=element_text(size=16, hjust=0.5),
+					strip.background = element_blank()),gnet+ggtitle("Net effects")+theme_bw()+theme(axis.text=element_text(size=12,angle=45,hjust=1),axis.title=element_text(size=12),
+															 strip.text = element_text(size=12),
+															 plot.title=element_text(size=16, hjust=0.5),
+															 strip.background = element_blank()),ncol = 1)
+  ggsave("~/research/phd/random-forest/grfcausalsearch/manuscript/figures/ranking-performance.pdf", p.ranking)
+  p.ranking
 #+END_SRC
 
-#+RESULTS[(2022-07-12 14:56:47) 0a1ce64a533dc11b982d2cb25fbb7196833da4f9]:
+#+RESULTS[(2022-07-13 09:15:53) cea73d56781aefa20740267603e5f857128ceaf7]:
 [[file:./output/ranking-performance.png]]
 
 
