@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jul 13 2022 (09:51) 
+## Last-Updated: Jul 13 2022 (10:58) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 146
+##     Update #: 151
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -162,6 +162,10 @@ varying[sample.size == 5000,num.trees := 50]
 varying_target <- tar_target(VARYING,
                              varying,
                              deployment = "main")
+varying[,reps := 2000]
+varying[sample.size == 500,reps := 10000]
+varying[sample.size == 1000,reps := 5000]
+varying[sample.size == 2000,reps := 3000]
 
 # ---------------------------------------------------------------------
 # Calculation of true ATE values
@@ -206,7 +210,7 @@ estimates <- tar_map(
     unlist = FALSE,
     tar_target(ESTIMATES,{
         ## lavaModel;
-        out = do.call("rbind",mclapply(REPETITIONS,function(b){
+        out = do.call("rbind",mclapply(1:reps,function(b){
             set = FIXED
             set$formula.list = formula_settings[[setting]]
             simulated_data <- simulateData(setting = set,
@@ -260,6 +264,7 @@ estimates <- tar_map(
                                     A2_T1 = A2_T1,
                                     A2_T2 = A2_T2,
                                     formula = setting,
+                                    weighter = weighter,
                                     theme = theme))
             x
         },mc.cores = MCCORES)) # end of repetitions

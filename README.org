@@ -218,7 +218,7 @@ function =tar_read= as is shown below.
 *** Crude effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
 x=tar_read(RESULTS)
-x_crude = x[theme=="crude_effect"&A1_T2==0.8]
+x_crude = x[theme=="crude_effect"&A1_T2==1]
 tabel_crude=x_crude[,.(method,n=n,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
 tabel_crude
 #+END_SRC
@@ -231,10 +231,10 @@ Publish::org(tabel_crude)
 :results:
 | method        |    n | P(C<5) | A1_T1 | A1_T2 |  bias |   SD |   SE | coverage |
 |---------------+------+--------+-------+-------+-------+------+------+----------|
-| causal_forest |  500 |   17.6 |  1.25 |   0.8 | -2.07 | 6.05 | 6.07 |     92.9 |
-| causal_forest | 1000 |   17.6 |  1.25 |   0.8 | -1.74 | 4.37 | 4.35 |     92.3 |
-| causal_forest | 2000 |   17.6 |  1.25 |   0.8 | -0.89 | 3.09 | 3.12 |     93.8 |
-| causal_forest | 5000 |   17.6 |  1.25 |   0.8 | -0.45 | 1.97 | 2.00 |     94.6 |
+| causal_forest |  500 |   17.6 |  1.25 |     1 | -2.06 | 5.98 | 6.05 |     93.1 |
+| causal_forest | 1000 |   17.6 |  1.25 |     1 | -1.52 | 4.31 | 4.33 |     93.1 |
+| causal_forest | 2000 |   17.6 |  1.25 |     1 | -0.95 | 3.07 | 3.10 |     93.9 |
+| causal_forest | 5000 |   17.6 |  1.25 |     1 | -0.48 | 1.96 | 1.99 |     95.0 |
 :end:
 
 *** Net effects
@@ -253,9 +253,9 @@ Publish::org(tabel_net)
 :results:
 | method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
 |---------------+--------+-------+-------+------+------+------+----------|
-| causal_forest |   17.6 |  0.80 |   0.8 | 0.66 | 2.06 | 2.24 |     94.5 |
-| causal_forest |   17.6 |  1.00 |   0.8 | 0.70 | 2.23 | 2.31 |     94.9 |
-| causal_forest |   17.6 |  1.25 |   0.8 | 0.54 | 2.30 | 2.37 |     95.0 |
+| causal_forest |   17.6 |  0.80 |   0.8 | 0.43 | 2.18 | 2.24 |     95.0 |
+| causal_forest |   17.6 |  1.00 |   0.8 | 0.44 | 2.26 | 2.31 |     95.0 |
+| causal_forest |   17.6 |  1.25 |   0.8 | 0.56 | 2.27 | 2.37 |     95.2 |
 :end:
 
 **** boxplots: Crude and net effects
@@ -275,7 +275,7 @@ b2=b2+facet_grid(~A1_T1,labeller=labeller(A1_T1=b1_labs))
 cowplot::plot_grid(b1+ggtitle("Crude effects"),b2+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS[(2022-07-15 08:59:24) d2216327e6260bbaac3c9d8bdcfed54655cb599a]:
 [[file:./output/crude-net-effect-boxplots.png]]
 
 
@@ -288,7 +288,7 @@ b_s=b_s+facet_grid(~n)
 b_s
 #+END_SRC
 
-#+RESULTS[(2022-07-13 10:41:37) 8bc665ea23934aec4854a9d20858548bd2394d5b]:
+#+RESULTS[(2022-07-15 08:59:58) 8bc665ea23934aec4854a9d20858548bd2394d5b]:
 [[file:./output/sample-size-boxplots.png]]
 
 

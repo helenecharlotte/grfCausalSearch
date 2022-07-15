@@ -43,8 +43,7 @@ source("./setting/simulation_targets.R")
 ## MCCORES <- 5
 ## MCCORES <- 50
 ## MCCORES are set in setting/simulation-targets.R
-list(tar_target(REPETITIONS, 1:1000),
-     varying_target,
+list(varying_target,
      fixed_target,
      fixed,
      truth_varying,

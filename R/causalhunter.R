@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun  4 2020 (16:37) 
 ## Version: 
-## Last-Updated: Jun 23 2022 (09:21) 
+## Last-Updated: Jul 14 2022 (09:26) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 220
+##     Update #: 223
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -118,7 +118,10 @@ causalhunter <- function(formula,
         #-- run grf:
         for (s in 1:length(times)){
             for (i in 1:NCOL(EHF$intervene)){
-                grf.A <- do.call(causal_forest,c(list(X=EHF$design,
+                thisdrug = colnames(EHF$intervene)[i]
+                # use all other treatments and covariates
+                XX = cbind(EHF$design,EHF$intervene[,setdiff(colnames(EHF$intervene),thisdrug)])
+                grf.A <- do.call(causal_forest,c(list(X=XX,
                                                       Y=Y[,s,drop=TRUE],
                                                       W=as.numeric(as.character(EHF$intervene[[i]]))),
                                                  ...))
