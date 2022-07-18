@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 15 2022 (13:56) 
 ## Version: 
-## Last-Updated: Jul 11 2022 (09:21) 
+## Last-Updated: Jul 18 2022 (08:07) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 153
+##     Update #: 154
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -19,7 +19,7 @@ summarizePerformance <- function(truth,estimate,variable = "A1",thecause = 1){
     ## truth <- tar_read("TRUTH")
     estimate = estimate[intervene == variable]
     truth = truth[intervene == variable]
-    setnames(estimate,"time","horizon")
+    ## setnames(estimate,"time","horizon")
     setkeyv(estimate,c("net","formula","horizon","scale.censored","A1_T1","A1_T2","A2_T1","A2_T2"))
     setkeyv(truth,c("net","formula","horizon","scale.censored","A1_T1","A1_T2","A2_T1","A2_T2"))
     # merge true ate: first calculate average true.ate because,

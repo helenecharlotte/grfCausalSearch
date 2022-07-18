@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jul 13 2022 (10:58) 
+## Last-Updated: Jul 18 2022 (08:13) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 151
+##     Update #: 163
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -90,23 +90,10 @@ varying_censored <- data.table::CJ(A1_T1 = 1.25,
                                    A2_T2 = 1.25,
                                    scale.censored = c(-Inf,1/40,1/25),
                                    sample.size = c(500,1000,2000,5000),
-                                   horizon = 3,
+                                   horizon = 2.5,
                                    setting = c("formula1","formula_cens"),
                                    method = "causal_forest",
                                    weighter = "ranger",
-                                   net = FALSE,
-                                   treat = "A1",
-                                   num.trees = 50)
-varying_weighter <- data.table::CJ(A1_T1 = 1.25,
-                                   A1_T2 = 1,
-                                   A2_T1 = 1,
-                                   A2_T2 = 1.25,
-                                   scale.censored = c(1/25),
-                                   sample.size = 5000,
-                                   horizon = 3,
-                                   setting = c("formula1","formula_cens"),
-                                   method = "causal_forest",
-                                   weighter = c("km","ranger"),
                                    net = FALSE,
                                    treat = "A1",
                                    num.trees = 50)
@@ -138,34 +125,19 @@ varying_ranking <- data.table::CJ(A1_T1 = 1.25,
                                   net = c(FALSE,TRUE),
                                   treat = "all",
                                   num.trees = 100)
-varying_sample_size <- data.table::CJ(A1_T1 = 1.25,
-                                      A1_T2 = 1,
-                                      A2_T1 = 1,
-                                      A2_T2 = 1.25,
-                                      scale.censored = 1/40,
-                                      sample.size = c(500,1000,2000,5000),
-                                      horizon = 5,
-                                      setting = "formula1",
-                                      method = "causal_forest",
-                                      weighter = "ranger",
-                                      net = FALSE,
-                                      treat = "A1",
-                                      num.trees = 100)
 varying <-  rbindlist(list(varying_crude[,theme := "crude_effect"],
                            varying_net[,theme := "net_effect"],
                            varying_censored[,theme := "censoring"],
-                           varying_weighter[,theme := "weighter"],
                            varying_misspecified[,theme := "misspecified"],
-                           varying_ranking[,theme := "ranking"],
-                           varying_sample_size[,theme := "sample_size"]))
+                           varying_ranking[,theme := "ranking"]))
 varying[sample.size == 5000,num.trees := 50]
 varying_target <- tar_target(VARYING,
                              varying,
                              deployment = "main")
-varying[,reps := 2000]
-varying[sample.size == 500,reps := 10000]
-varying[sample.size == 1000,reps := 5000]
-varying[sample.size == 2000,reps := 3000]
+varying[,reps := 1001]
+## varying[sample.size == 500,reps := 10000]
+## varying[sample.size == 1000,reps := 5000]
+## varying[sample.size == 2000,reps := 3000]
 
 # ---------------------------------------------------------------------
 # Calculation of true ATE values
@@ -174,7 +146,7 @@ varying[sample.size == 2000,reps := 3000]
 #     net: hypothetical world where competing risks are eliminated
 truth_varying <- tar_map(
     # truth is affected by % censored and true effect
-    values = unique(varying[,.(scale.censored,A1_T1,A1_T2,A2_T1,A2_T2,setting,horizon)]),
+    values = unique(varying[,.(scale.censored,A1_T1,A1_T2,A2_T1,A2_T2,setting,horizon,theme)]),
     tar_target(VARYING_TRUTH,{
         ## lavaModel;
         ## simulateData;
@@ -196,6 +168,7 @@ truth_varying <- tar_map(
                   A2_T1 = A2_T1,
                   A2_T2 = A2_T2,
                   horizon = horizon,
+                  theme = theme,
                   formula = setting)
         y},
         deployment = "main"))
@@ -263,6 +236,7 @@ estimates <- tar_map(
                                     A1_T2 = A1_T2,
                                     A2_T1 = A2_T1,
                                     A2_T2 = A2_T2,
+                                    horizon = horizon,
                                     formula = setting,
                                     weighter = weighter,
                                     theme = theme))
@@ -294,7 +268,7 @@ plotframe <- tar_target(PLOTFRAME,{
     t <- TRUTH
     ## e <- tar_read("ESTIMATE_ATE")[intervene == "A1"]
     ## t <- tar_read("TRUTH")[intervene == "A1"]
-    setnames(e,"time","horizon")
+    ## setnames(e,"time","horizon")
     setkeyv(e,c("net","formula","intervene","horizon","scale.censored","A1_T1","A1_T2","A2_T1","A2_T2"))
     setkeyv(t,c("net","formula","intervene","horizon","scale.censored","A1_T1","A1_T2","A2_T1","A2_T2"))
     t.ate = t[cause == 1 & intervene == "A1",.(true.ate = mean(ate)),keyby = c("net","formula","horizon","A1_T1","A1_T2","A2_T1","A2_T2")]
@@ -306,7 +280,7 @@ plotframe <- tar_target(PLOTFRAME,{
     e[,method:=factor(method,levels=c("causal_forest","CSC","FGR"),labels=c("Causal forest","CSC","FGR"))]
     e[,num.trees:=factor(num.trees)]
     e[,horizon:=factor(horizon)]
-    e[,censored.tau:=factor(censored.tau,levels=c("0","16.426","17.622","24.77","26.522","31.016","34.0092","35.8076"),labels=c("0","16%","18%","25%","27%","31%","34%","36%"))]
+    e[,censored.tau:=factor(round(censored.tau,1))]
     e[,A1_T1:=factor(A1_T1)]
     e[,A1_T2:=factor(A1_T2)]
     e[,A2_T1:=factor(A2_T1)]

@@ -26,6 +26,12 @@ library(survival)
 library(cowplot)
 #+END_SRC
 
+#+RESULTS[(2022-07-18 08:24:35) 5a2f7921c78caef85ea47e54c5499b582c56f4f2]:
+
+Loading required package: prodlim
+data.table 1.14.2 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
+Use suppressPackageStartupMessages() to eliminate package startup messages
+
 Source the R-functions
 
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
@@ -34,6 +40,28 @@ for(f in list.files("R",".R$",full.names=TRUE)){source(f)}
 for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 source("./setting/simulation_targets.R")
 #+END_SRC
+
+#+RESULTS[(2022-07-18 08:24:36) 1083a3632f72f2c338f60efe397911d27e462496]:
+
+Attaching package: ‘lava’
+
+The following objects are masked _by_ ‘.GlobalEnv’:
+
+    expit, logit
+
+The following object is masked from ‘package:ggplot2’:
+
+    vars
+
+Attaching package: ‘lava’
+
+The following objects are masked _by_ ‘.GlobalEnv’:
+
+    expit, logit
+
+The following object is masked from ‘package:ggplot2’:
+
+    vars
 
 * Demo
 
@@ -52,7 +80,7 @@ prevalence) as defined by the current setting.
 fixed
 #+END_SRC
 
-#+RESULTS[(2022-06-23 08:53:26) 5c4139cacd7e0e312bba25817204e8572ef8bf14]:
+#+RESULTS[(2022-07-18 08:24:36) 5c4139cacd7e0e312bba25817204e8572ef8bf14]:
 #+begin_example
 $event.times
 [1] "T1" "T2"
@@ -81,6 +109,34 @@ following object:
 tar_read(VARYING) 
 #+END_SRC
 
+#+RESULTS[(2022-07-18 08:24:36) 426d486a51b67a3234bd3c64952becd9809a1bb3]:
+:results:
+     A1_T1 A1_T2 A2_T1 A2_T2 scale.censored sample.size horizon         setting        method weighter   net treat
+  1:  1.25   0.8     1  1.25          0.025         500       5        formula1 causal_forest   ranger FALSE    A1
+  2:  1.25   0.8     1  1.25          0.025        1000       5        formula1 causal_forest   ranger FALSE    A1
+  3:  1.25   0.8     1  1.25          0.025        2000       5        formula1 causal_forest   ranger FALSE    A1
+  4:  1.25   0.8     1  1.25          0.025        5000       5        formula1 causal_forest   ranger FALSE    A1
+  5:  1.25   1.0     1  1.25          0.025         500       5        formula1 causal_forest   ranger FALSE    A1
+ ---                                                                                                              
+121:  1.25   1.0     1  2.00          0.025        1000       5 formula_ranking causal_forest   ranger  TRUE   all
+122:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger FALSE   all
+123:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger  TRUE   all
+124:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger FALSE   all
+125:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger  TRUE   all
+     num.trees        theme reps
+  1:        50 crude_effect 1001
+  2:        50 crude_effect 1001
+  3:        50 crude_effect 1001
+  4:        50 crude_effect 1001
+  5:        50 crude_effect 1001
+ ---                            
+121:       100      ranking 1001
+122:       100      ranking 1001
+123:       100      ranking 1001
+124:        50      ranking 1001
+125:        50      ranking 1001
+:end:
+
 The dependence of all the variables is defined by a set of
 formulae. Here the values are hazard ratios and odds ratios specified
 on the logarithmic scale.
@@ -88,7 +144,7 @@ on the logarithmic scale.
 formula1
 #+END_SRC
 
-#+RESULTS[(2022-06-23 08:54:41) 7c78430e442837b5fe50d61112cf7fde919a362a]:
+#+RESULTS[(2022-07-18 08:24:36) 7c78430e442837b5fe50d61112cf7fde919a362a]:
 #+begin_example
 [[1]]
 T1 ~ f(A4, 0.3) + f(A5, 0.7) + f(X1, 1) + f(X2, 0.3) + f(X6, 
@@ -126,6 +182,34 @@ simulated_data <- simulateData(setting = set,
 simulated_data
 #+END_SRC
 
+#+RESULTS[(2022-07-18 08:24:36) 59a49c193005e9ce39f902c3e7d53296161d695f]:
+#+begin_example
+      X1 X2 X3 X4 X5          X6          X7        X6_2 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 T1_placebo_A1 T1_treated_A1
+   1:  1  0  1  0  0 -0.13320377 -2.76054462 0.017743244  1  0  0  0  1  0  1  1  1   0      2.920663     4.1787742
+   2:  0  0  0  0  1 -0.46789875 -0.44387025 0.218929239  1  0  0  0  0  1  1  0  0   0     13.948467     7.0472415
+   3:  0  0  0  0  1 -0.10222587 -0.27119836 0.010450129  0  0  1  0  1  0  1  0  1   0      5.847045     4.1586146
+   4:  0  0  1  1  0 -1.16968648  0.73975867 1.368166465  0  1  0  0  1  0  0  1  1   0      1.298224     0.6095287
+   5:  0  0  1  1  0  0.71642285 -0.88792324 0.513261702  0  1  0  0  1  0  0  1  1   0      2.461545     4.6580688
+  ---                                                                                                              
+1996:  0  0  0  0  1 -0.38356362 -0.88460206 0.147121052  0  0  1  0  0  0  0  1  0   0      5.985083     3.5434311
+1997:  0  0  0  0  0 -0.21478075  0.39170095 0.046130772  0  0  0  0  0  0  1  1  0   0     10.925931     9.1298884
+1998:  0  0  0  0  0 -0.45730336 -1.01363116 0.209126362  0  1  0  1  1  0  0  0  0   0      4.662806     2.0319970
+1999:  0  0  1  0  1 -0.82956666 -0.14510451 0.688180837  1  1  1  0  0  0  0  0  0   0      8.545046     5.7484960
+2000:  1  0  1  0  1 -0.04625021 -0.08438956 0.002139082  0  1  0  1  0  1  0  1  0   0      1.923223     6.9399506
+      T1_placebo_A2 T1_treated_A2 T2_placebo_A1 T2_treated_A1 T2_placebo_A2 T2_treated_A2      time event
+   1:      4.178774      3.381759     12.096225      8.157008      8.157008     20.358933  4.178774     1
+   2:      7.047241      3.976646      5.256086      8.964313      8.964313      4.300355  7.047241     1
+   3:      5.847045     10.580990      3.718781      9.400824      3.718781     10.675031  2.503185     0
+   4:      3.304938      1.298224      7.340092      9.884599     17.612549      7.340092  1.298224     1
+   5:      8.705554      2.461545      9.143714     10.560168      4.352860      9.143714  2.461545     1
+  ---                                                                                                    
+1996:      5.985083      4.510087      9.029377     13.084018      9.029377     17.294288  5.985083     1
+1997:     10.925931     14.901843     12.099613      4.074134     12.099613     11.786806 10.925931     1
+1998:      1.220189      4.662806      4.862366     25.447910     14.730231      4.862366  4.131021     0
+1999:      5.361188      5.748496     12.382879     11.635689      7.303464     11.635689  5.748496     1
+2000:      3.509771      1.923223      8.983870      6.018989     25.589130      8.983870  1.923223     1
+#+end_example
+
 ** True value of the average treatment effects
 
 We approximate the true values of the crude and net average treatment
@@ -149,7 +233,7 @@ tt=theTruth(setting = set,
 tt[cause==1]
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:48:15) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
+#+RESULTS[(2022-07-18 08:24:46) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
 :    intervene cause net scale.censored      ate censored.tau
 : 1:        A1     1   1          0.025 0.059364        33.79
 : 2:        A2     1   1          0.025 0.000180        33.79
@@ -179,7 +263,7 @@ set(x,j="true.ate",value=tt[intervene=="A1"&net==0&cause==1,ate])
 x
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:48:33) fc85525cf45dd58040b89840ad0338a7534b29db]:
+#+RESULTS[(2022-07-18 08:24:49) fc85525cf45dd58040b89840ad0338a7534b29db]:
 :    time intervene        ate         se       lower      upper true.ate
 : 1:    5        A1 0.03334221 0.03129835 -0.02800143 0.09468585 0.045185
 
@@ -200,7 +284,7 @@ set(y,j="true.ate",value=tt[intervene=="A1"&net==1&cause==1,ate])
 y
 #+END_SRC
 
-#+RESULTS[(2022-06-23 09:48:44) 6a9de4efbc17d39712787b7de97fc28bf7891257]:
+#+RESULTS[(2022-07-18 08:24:53) 6a9de4efbc17d39712787b7de97fc28bf7891257]:
 :    time intervene        ate         se       lower      upper true.ate
 : 1:    5        A1 0.02160464 0.03579717 -0.04855652 0.09176581 0.059364
 
@@ -218,7 +302,7 @@ function =tar_read= as is shown below.
 *** Crude effects
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes
 x=tar_read(RESULTS)
-x_crude = x[theme=="crude_effect"&A1_T2==1]
+x_crude = x[theme=="crude_effect"&A1_T2==0.8]
 tabel_crude=x_crude[,.(method,n=n,"P(C<5)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
 tabel_crude
 #+END_SRC
@@ -227,14 +311,14 @@ tabel_crude
 Publish::org(tabel_crude)
 #+END_SRC
 
-#+RESULTS[(2022-06-10 07:02:04) a66a92cde7e5c97f900778c0bb2514636450ee11]:
+#+RESULTS[(2022-07-18 08:24:54) a66a92cde7e5c97f900778c0bb2514636450ee11]:
 :results:
 | method        |    n | P(C<5) | A1_T1 | A1_T2 |  bias |   SD |   SE | coverage |
 |---------------+------+--------+-------+-------+-------+------+------+----------|
-| causal_forest |  500 |   17.6 |  1.25 |     1 | -2.06 | 5.98 | 6.05 |     93.1 |
-| causal_forest | 1000 |   17.6 |  1.25 |     1 | -1.52 | 4.31 | 4.33 |     93.1 |
-| causal_forest | 2000 |   17.6 |  1.25 |     1 | -0.95 | 3.07 | 3.10 |     93.9 |
-| causal_forest | 5000 |   17.6 |  1.25 |     1 | -0.48 | 1.96 | 1.99 |     95.0 |
+| causal_forest |  500 |   13.1 |  1.25 |   0.8 | -2.43 | 5.90 | 6.08 |     92.5 |
+| causal_forest | 1000 |   13.1 |  1.25 |   0.8 | -1.62 | 4.21 | 4.36 |     94.7 |
+| causal_forest | 2000 |   13.1 |  1.25 |   0.8 | -1.04 | 3.22 | 3.12 |     92.7 |
+| causal_forest | 5000 |   13.1 |  1.25 |   0.8 | -0.45 | 1.95 | 2.00 |     95.1 |
 :end:
 
 *** Net effects
@@ -249,13 +333,13 @@ tabel_net
 Publish::org(tabel_net)
 #+END_SRC
 
-#+RESULTS[(2022-06-10 17:28:23) 9b5ef84a8772ecb03367cf42518f1252962eeed8]:
+#+RESULTS[(2022-07-18 08:24:54) 9b5ef84a8772ecb03367cf42518f1252962eeed8]:
 :results:
 | method        | P(C<5) | A1_T1 | A1_T2 | bias |   SD |   SE | coverage |
 |---------------+--------+-------+-------+------+------+------+----------|
-| causal_forest |   17.6 |  0.80 |   0.8 | 0.43 | 2.18 | 2.24 |     95.0 |
-| causal_forest |   17.6 |  1.00 |   0.8 | 0.44 | 2.26 | 2.31 |     95.0 |
-| causal_forest |   17.6 |  1.25 |   0.8 | 0.56 | 2.27 | 2.37 |     95.2 |
+| causal_forest |   13.1 |  0.80 |   0.8 | 0.10 | 2.21 | 2.16 |     94.6 |
+| causal_forest |   13.1 |  1.00 |   0.8 | 0.38 | 2.21 | 2.24 |     95.0 |
+| causal_forest |   13.1 |  1.25 |   0.8 | 0.37 | 2.30 | 2.29 |     94.7 |
 :end:
 
 **** boxplots: Crude and net effects
@@ -275,20 +359,20 @@ b2=b2+facet_grid(~A1_T1,labeller=labeller(A1_T1=b1_labs))
 cowplot::plot_grid(b1+ggtitle("Crude effects"),b2+ggtitle("Net effects"),ncol = 1)
 #+END_SRC
 
-#+RESULTS[(2022-07-15 08:59:24) d2216327e6260bbaac3c9d8bdcfed54655cb599a]:
+#+RESULTS[(2022-07-18 08:24:55) d2216327e6260bbaac3c9d8bdcfed54655cb599a]:
 [[file:./output/crude-net-effect-boxplots.png]]
 
 
 **** boxplots: Sample size
 
-#+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes 
+#+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes :width 500 :height 500
 p=tar_read(PLOTFRAME)
-b_s=boxplot_effects(p[theme=="sample_size"&net==0])
-b_s=b_s+facet_grid(~n)
-b_s
+b_c=boxplot_effects(p[theme=="censoring"&net==0&formula=="formula1"])
+b_c=b_c+facet_grid(censored.tau~n)+ylim(c(-.15,.15))
+b_c
 #+END_SRC
 
-#+RESULTS[(2022-07-15 08:59:58) 8bc665ea23934aec4854a9d20858548bd2394d5b]:
+#+RESULTS[(2022-07-18 08:24:55) f22646500f4751cbc25ba69669f3303663094851]:
 [[file:./output/sample-size-boxplots.png]]
 
 
@@ -303,12 +387,12 @@ R[,A1_T2:=factor(A1_T2,levels=c("0.8","1","1.25"),labels=c("0.8","1","1.25"))]
 R[,A2_T1:=factor(A2_T1,levels=c("1"),labels=c("1"))]
 R[,A2_T2:=factor(A2_T2,levels=c("0.2","0.8","1","1.25","2"),labels=c("0.2","0.8","1","1.25","2"))]
 R[,n:=factor(n,levels=c("500","1000","2000","5000"),labels=c("500","1000","2000","5000"))]
-R[,censored.tau:=factor(censored.tau,levels=c("0","17.622","26.522"),labels=c("0","18%","27%"))]
+R[,censored.tau:=factor(round(censored.tau,1))]
 R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,horizon,bias, mean.se, coverage)]
 R1a=R[theme=="censoring"&formula=="formula1"] 
 R1b=R[theme=="censoring"&formula=="formula_cens"]
 # coverage independent censoring varying censored procentage at time horizon
-g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.85,1))+xlab("Sample size")+ylab("Coverage")+
   ggtitle("Independent censoring")
 # coverage dependent censoring varying censored procentage at time horizon
 g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
@@ -323,7 +407,7 @@ p.coverage <- cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
 p.coverage
 #+END_SRC
 
-#+RESULTS[(2022-07-13 09:15:07) 62a6729ec8dcc0775820da515becf3cac310ad67]:
+#+RESULTS[(2022-07-18 08:29:36) 1fd827fe2325ad1ede32feef43bde4d3c4cf1cf9]:
 [[file:./output/coverage.png]]
 
 
@@ -332,7 +416,7 @@ p.coverage
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
 #+BEGIN_SRC R  :results silent  :exports code  :session *R* :cache yes  
 x=tar_read(RESULTS)
-x_censoring = x[theme=="censoring" ]
+x_censoring = x[theme=="censoring" &n==5000]
 setkey(x_censoring,formula,censored.tau)
 tabel_censoring=x_censoring[,.(method,formula,"P(C<3)"=round(censored.tau,1),A1_T1,A1_T2,bias=round(100*bias,2),SD=round(100*sd,2),SE=round(100*mean.se,2),coverage=round(100*coverage,1))]
 tabel_censoring
@@ -342,16 +426,16 @@ tabel_censoring
 org(tabel_censoring)
 #+END_SRC
 
-#+RESULTS[(2022-06-10 17:27:22) 4a675d5b8a3c93eabe0fc69383c7dc0fea14918c]:
+#+RESULTS[(2022-07-18 08:24:56) 4a675d5b8a3c93eabe0fc69383c7dc0fea14918c]:
 :results:
 | method        | formula      | P(C<3) | A1_T1 | A1_T2 |  bias |   SD |   SE | coverage |
 |---------------+--------------+--------+-------+-------+-------+------+------+----------|
-| causal_forest | formula1     |    0.0 |  1.25 |     1 | -0.39 | 1.31 | 1.32 |     93.3 |
-| causal_forest | formula1     |   17.6 |  1.25 |     1 | -0.10 | 1.48 | 1.49 |     95.3 |
-| causal_forest | formula1     |   26.5 |  1.25 |     1 | -0.28 | 1.49 | 1.55 |     95.9 |
-| causal_forest | formula_cens |    0.0 |  1.25 |     1 | -0.33 | 1.31 | 1.32 |     94.3 |
-| causal_forest | formula_cens |   17.6 |  1.25 |     1 | -0.30 | 1.48 | 1.48 |     94.3 |
-| causal_forest | formula_cens |   26.5 |  1.25 |     1 | -0.38 | 1.54 | 1.54 |     93.8 |
+| causal_forest | formula1     |    0.0 |  1.25 |     1 | -0.31 | 1.20 | 1.18 |     93.0 |
+| causal_forest | formula1     |   13.1 |  1.25 |     1 | -0.24 | 1.26 | 1.24 |     94.4 |
+| causal_forest | formula1     |   20.1 |  1.25 |     1 | -0.31 | 1.21 | 1.27 |     94.6 |
+| causal_forest | formula_cens |    0.0 |  1.25 |     1 | -0.33 | 1.19 | 1.18 |     92.9 |
+| causal_forest | formula_cens |   13.1 |  1.25 |     1 | -0.38 | 1.24 | 1.23 |     93.7 |
+| causal_forest | formula_cens |   20.1 |  1.25 |     1 | -0.38 | 1.27 | 1.27 |     93.3 |
 :end:
 
 *** Misspecified parametric models
@@ -367,7 +451,7 @@ p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.titl
 p.misspecified 
 #+END_SRC
 
-#+RESULTS[(2022-07-13 10:51:18) feca25d6f35f13865d8172a53a14b30c5b2d930a]:
+#+RESULTS[(2022-07-18 08:24:57) 5c2bccd4f221a00e3f9b729c3615de19e55a7bae]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance
@@ -392,7 +476,7 @@ p.ranking <- cowplot::plot_grid(gcrude+ggtitle("Crude effects")+theme_bw()+
 p.ranking
 #+END_SRC
 
-#+RESULTS[(2022-07-13 09:24:40) 04133e6c24a1c2cc07add45fd9ac4874d1876410]:
+#+RESULTS[(2022-07-18 08:24:57) 542df85c25387d5e528342bd72c96ba9c81bee99]:
 [[file:./output/ranking-performance.png]]
 
 
