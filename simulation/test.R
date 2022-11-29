@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Apr 19 2022 (07:48) 
 ## Version: 
-## Last-Updated: Jul 15 2022 (09:02) 
+## Last-Updated: Nov 17 2022 (15:11) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 123
+##     Update #: 125
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -25,8 +25,25 @@ library(survival)
 library(ranger)
 library(survival)
 library(parallel)
+library(ggplot2)
 for(f in list.files("R",".R$",full.names=TRUE)){source(f)}
 for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
+setwd("~/research/SoftWare/grfCausalSearch/")
+tar_load(ESTIMATE_ATE)
+tar_load(RESULTS)
+tar_load(TRUTH)
+t <- TRUTH[net == 0&intervene == "A1"&cause == 1&formula == "formula_cens"&theme == "censoring",.(horizon,ate,scale.censored)]
+
+e <- ESTIMATE_ATE[net == 0&formula == "formula_cens"&theme == "censoring",.(time,n,ate,se,scale.censored)]
+e[,scale.censored := factor(scale.censored)]
+e[,n := factor(n)]
+ggplot(e,aes(x = n,y = ate, color = scale.censored))+geom_boxplot()
+ggplot(e,aes(x = n,y = se, color = scale.censored))+geom_boxplot()
+
+g <- RESULTS[formula == "formula_cens"&theme == "censoring",.(censored.tau,n,coverage,horizon,net,formula)]
+g[,censored.tau := factor(round(censored.tau,1))]
+ggplot(g,aes(x = n,y = coverage, color = censored.tau))+geom_point()+geom_line()+ylim(0.85,1)
+
 fixed <- list(horizon = 5,
               event.times = c("T1","T2"),
               treatments = c("A1" = .4,"A2" = .3, "A3" = .3,"A4" = .4,"A5" = .5,"A6" = .6,"A7" = .7,"A8" = .8,"A9" = .9,"A10" = .1),

@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jul 18 2022 (08:13) 
+## Last-Updated: Nov 29 2022 (14:44) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 163
+##     Update #: 185
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -24,7 +24,9 @@
 library(data.table)
 ## MCCORES <- 1
 ## MCCORES <- 5
-MCCORES <- 50
+MCCORES <- 25
+print(MCCORES)
+setDTthreads(1)
 fixed <- list(event.times = c("T1","T2"),
               treatments = c("A1" = .4,"A2" = .3, "A3" = .3,"A4" = .4,"A5" = .5,"A6" = .2,"A7" = .7,"A8" = .8,"A9" = .9,"A10" = .1),
               binary.covariates = c("X1" = .1,"X2" = .2,"X3" = .3,"X4" = .4,"X5" = .5),
@@ -134,10 +136,18 @@ varying[sample.size == 5000,num.trees := 50]
 varying_target <- tar_target(VARYING,
                              varying,
                              deployment = "main")
-varying[,reps := 1001]
+varying[,reps := 2002]
 ## varying[sample.size == 500,reps := 10000]
 ## varying[sample.size == 1000,reps := 5000]
 ## varying[sample.size == 2000,reps := 3000]
+varying <- rbind(#varying[net == 0&theme == "censoring"][,reps := 2002][net == 0&theme == "censoring" & sample.size == 5000,reps := 2002],
+    #varying[net == 0&scale.censored == -Inf&setting == "formula_cens"&theme == "censoring"][,reps := 2002],
+    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 500],
+    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 500][,reps := 25],
+    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 1000],
+    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 2000],
+    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 5000])
+## varying[sample.size != 5000,reps := 2002]
 
 # ---------------------------------------------------------------------
 # Calculation of true ATE values
@@ -246,6 +256,7 @@ estimates <- tar_map(
         out
     }) # end of parameter map
 )
+
 # combine
 ate <- tar_combine(ESTIMATE_ATE,{
     estimates
@@ -257,6 +268,7 @@ results <- tar_target(RESULTS,
                       summarizePerformance(truth = TRUTH,
                                            estimate = ESTIMATE_ATE),
                       deployment = "main")
+
 
 ranking <- tar_target(RANKING,
                       rankingPerformance(estimate = ESTIMATE_ATE),

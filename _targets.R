@@ -1,9 +1,11 @@
 ## setwd("~/research/SoftWare/grfCausalSearch/")
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
-server <- !inherits(try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"),silent = TRUE),"try-error")
+library(targets)
+## server <- !inherits(try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"),silent = TRUE),"try-error")
 # ---------------------------------------------------------------------
 # packages
 # ---------------------------------------------------------------------
+# library("targets");library("future.batchtools");library("tarchetypes");library("future.callr");library("future");library("grf");library("ranger");library("data.table");library("scales");library("riskRegression");library("prodlim");library("survival");library("foreach");library("parallel");library("grid");library("ggplot2");library("gridExtra");library("ggplotify");library("cowplot")
 thepackages <- c("targets",
                  "future.batchtools",
                  "tarchetypes",
@@ -24,7 +26,6 @@ thepackages <- c("targets",
                  "gridExtra",
                  "ggplotify",
                  "cowplot")
-library(targets)
 targets::tar_option_set(packages = thepackages)
 # ---------------------------------------------------------------------
 # R functions
@@ -53,6 +54,9 @@ list(varying_target,
      results,
      ranking,
      plotframe)
+     ## review_estimates,
+     ## review_ate,
+     ## review_results)
 
 
 

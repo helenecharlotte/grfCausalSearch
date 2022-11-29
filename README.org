@@ -26,12 +26,6 @@ library(survival)
 library(cowplot)
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:35) 5a2f7921c78caef85ea47e54c5499b582c56f4f2]:
-
-Loading required package: prodlim
-data.table 1.14.2 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
-Use suppressPackageStartupMessages() to eliminate package startup messages
-
 Source the R-functions
 
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
@@ -41,27 +35,6 @@ for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 source("./setting/simulation_targets.R")
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:36) 1083a3632f72f2c338f60efe397911d27e462496]:
-
-Attaching package: ‘lava’
-
-The following objects are masked _by_ ‘.GlobalEnv’:
-
-    expit, logit
-
-The following object is masked from ‘package:ggplot2’:
-
-    vars
-
-Attaching package: ‘lava’
-
-The following objects are masked _by_ ‘.GlobalEnv’:
-
-    expit, logit
-
-The following object is masked from ‘package:ggplot2’:
-
-    vars
 
 * Demo
 
@@ -378,7 +351,7 @@ b_c
 
 **** coverage:
 
-#+BEGIN_SRC R :results file graphics :file ./output/coverage.png :exports none :session *R* :cache yes :width 600 :height 300
+#+BEGIN_SRC R :results file graphics :file ./output/coverage-revision.png :exports none :session *R* :cache yes :width 600 :height 300
 r=tar_read(RESULTS)     
 ## R=r[formula=="formula1"&horizon==5&theme!="sample_size"]  
 R=r[net==0]
@@ -407,8 +380,8 @@ p.coverage <- cowplot::plot_grid(g1a,g1b,b1a,b1b,ncol=2)
 p.coverage
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:29:36) 1fd827fe2325ad1ede32feef43bde4d3c4cf1cf9]:
-[[file:./output/coverage.png]]
+#+RESULTS[(2022-11-23 11:49:15) 1219f09efc9c961f82ebbdafbc2600843a7b60bd]:
+[[file:./output/coverage-revision.pdf]]
 
 
 *** Censoring percentage 
@@ -448,7 +421,7 @@ b_m
 p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
                                        strip.text = element_text(size=16),
                                        strip.background = element_blank())
-p.misspecified 
+p.misspecified
 #+END_SRC
 
 #+RESULTS[(2022-07-18 08:24:57) 5c2bccd4f221a00e3f9b729c3615de19e55a7bae]:
