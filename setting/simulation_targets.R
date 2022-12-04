@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Nov 29 2022 (14:44) 
+## Last-Updated: Dec  4 2022 (13:57) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 185
+##     Update #: 189
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -143,11 +143,15 @@ varying[,reps := 2002]
 varying <- rbind(#varying[net == 0&theme == "censoring"][,reps := 2002][net == 0&theme == "censoring" & sample.size == 5000,reps := 2002],
     #varying[net == 0&scale.censored == -Inf&setting == "formula_cens"&theme == "censoring"][,reps := 2002],
     varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 500],
-    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 500][,reps := 25],
     varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 1000],
     varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 2000],
     varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 5000])
+## varying[sample.size ==  5000,reps := 1001]
 ## varying[sample.size != 5000,reps := 2002]
+varying <- varying[method != "FGR"]
+varying <- varying[sample.size != 5000]
+
+
 
 # ---------------------------------------------------------------------
 # Calculation of true ATE values

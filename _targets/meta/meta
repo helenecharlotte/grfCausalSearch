@@ -8,8 +8,8 @@ dependent_fixed|object|f056daaa479029e2|||||||||||||||
 dependent_plot_setting|object|5e66c725a6f5c4a0|||||||||||||||
 dependent_truth_varying|object|03dade720993538e|||||||||||||||
 dependent_varying|object|c6801907dca2b64d|||||||||||||||
-ESTIMATE_ATE|stem|887a0eefec72bf0d|c9ba757f42a90545|b8cffc4aecb18f2b|-1706276200||t19318.6721051976s|5cc9fc4cc02da97a|47804435|rds|local|vector|||1.253||
-estimates|object|b5b33da4dd734c6c|||||||||||||||
+ESTIMATE_ATE|stem|2c97957d9e39e8b7|7179b7beeca3d0bf|c3821ac1106a5368|-1706276200||t19330.546820662s|3bdcf002b614b098|367982|rds|local|vector|||0.009||
+estimates|object|18b55867edabd6e5|||||||||||||||
 ESTIMATES_0.8_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_all_50_net_effect_1001|stem|5c862e324f42701b|70facc7b79d3bbac|d4d77ef6bac43536|1605706796||t19188.3322898808s|207c7b47b925eaf1|319929|rds|local|vector|||658.32||
 ESTIMATES_0.8_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_TRUE_all_50_net_effect_1001|stem|46f977957d5c37fc|0732e197e08cd7cb|d4d77ef6bac43536|800822111||t19188.4843601844s|623f915f78841ee3|320098|rds|local|vector|||1115.364||
 ESTIMATES_1_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_all_50_net_effect_1001|stem|4238e753d1351795|6e691e465dd23ec3|d4d77ef6bac43536|1241684531||t19188.4920035374s|75ff3aa8e8ab8de1|319516|rds|local|vector|||660.287||
@@ -145,9 +145,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_ranking_causal_forest_ranger_TRUE_a
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_ranking_causal_forest_ranger_TRUE_all_100_ranking_2002|stem|ff3de165af6409bf|7b863753e7f2c273|d4d77ef6bac43536|-2119225456||t19318.4437828538s|336126eec8e488ee|634974|rds|local|vector|||308.379||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_1001|stem|6de1c13deeba1a84|71628518e5d81893|d4d77ef6bac43536|-1129289478||t19188.3882218064s|e5e47108f2e4a504|32035|rds|local|vector|||44.607||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_2002|stem|ca570236d9d27e26|ba10e49c02072cab|d4d77ef6bac43536|2103220869||t19318.6230531924s|ff28cdb6febf4693|63150|rds|local|vector|||86.293||
-ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem||d8174eff090fdbcd|07f0239ad2dd7a03|1818047918||t19325.5538578477s||0|rds|local|vector|||198.749|scheduled cores 2, 9, 14 did not deliver results, all values of the jobs will be affected. scheduled cores 12, 1, 11, 7 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
-ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_2002|stem|c6daeeaae564286f|272f73dc3125ec37|d4d77ef6bac43536|-920275979||t19319.5147448208s|52c082f971ed86e7|62770|rds|local|vector|||207.584||
-ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|63b9df8a27a29c4d|50c2f8cf6094820f|d4d77ef6bac43536|1016616125||t19319.517756395s|5bfc5b0bfb0604d1|17327|rds|local|vector|||259.904||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem|9045a0834e701b9e|d8174eff090fdbcd|f6333637f07bab8b|1818047918||t19330.5418125462s|f4e146ae93a2b4f7|63216|rds|local|vector|||127.265||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_2002|stem|1f649f3af3434d0d|272f73dc3125ec37|f6333637f07bab8b|-920275979||t19329.4423230048s|0a06d1e56c84eb0c|62760|rds|local|vector|||80.182||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|561baa94db1fe4a8|50c2f8cf6094820f|f6333637f07bab8b|1016616125||t19329.4436068989s|d3fd4ad7d9467d59|17324|rds|local|vector|||110.896||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|bebe3d6ecd42ec01|ae2a3cf2db9be13e|d4d77ef6bac43536|-1386949999||t19188.6389618317s|9f6ccd7b621585e8|32064|rds|local|vector|||103.157||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|0c091662e7b3c2bc|4d110fa2426b1138|d4d77ef6bac43536|-1381624866||t19318.3819512688s|28e289e8e7ed45e6|63248|rds|local|vector|||212.293||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|1312f36682fe31f1|e509a03a5eee5958|d4d77ef6bac43536|443611086||t19188.6401398183s|f402ee6f58e5a243|32018|rds|local|vector|||101.748||
@@ -158,8 +158,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_ranking_causal_forest_ranger_TRUE_a
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_ranking_causal_forest_ranger_TRUE_all_100_ranking_2002|stem|a45197c14854d50f|5a3aa5241ada9adb|d4d77ef6bac43536|-785016868||t19318.4570966836s|da755a88d162a6d5|635154|rds|local|vector|||854.642||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_1001|stem|e6991124144f8ffd|8335cac80ef40992|d4d77ef6bac43536|-1174044654||t19188.6491975301s|7c9f8776c91e0d4b|31986|rds|local|vector|||97.989||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_2002|stem|1f5b30f631c0ac22|8a4577a484057bf2|d4d77ef6bac43536|939113047||t19318.6314481699s|85b932c54e2d7583|63044|rds|local|vector|||198.16||
-ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem||4422fc3f34040416|d4d77ef6bac43536|942077695||t19325.5531854169s||0|rds|local|vector|||1.271||unable to fork, possible reason Cannot allocate memory
-ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|d3315c151ed4d9ad|7b104c23ab060d9f|d4d77ef6bac43536|-79981866||t19319.4646715628s|9b1f61e201365d77|17280|rds|local|vector|||205.797||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem|5f6c8ecb0d020ac7|4422fc3f34040416|f6333637f07bab8b|942077695||t19330.5460280945s|211aa7f103ea378e|63082|rds|local|vector|||249.603||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_2002|stem|2ff9f6aed6440764|b3126ec830cd7632|f6333637f07bab8b|413050358||t19330.5431387328s|2d3cc65e16eb8d00|62466|rds|local|vector|||114.545||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|ed326163e4568d8d|7b104c23ab060d9f|f6333637f07bab8b|-79981866||t19326.3107913609s|d3374d6e14f1f15c|17286|rds|local|vector|||357.125||
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|b316b1ae0c33ae1c|fd3c344309434013|d4d77ef6bac43536|73405038||t19188.3208755609s|3848a4f645b9e6fe|32112|rds|local|vector|||33.319||
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|752a87b2fffd048c|f857a0dd326d62b8|d4d77ef6bac43536|-1456633168||t19318.4613904003s|448c9f02175c21d1|63390|rds|local|vector|||63.969||
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|bc8ae71aad97487b|494bace06572d5fb|d4d77ef6bac43536|-512163658||t19188.4573785612s|82ccf37d416d35fb|32078|rds|local|vector|||32.778||
@@ -172,8 +173,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_causal_forest_ranger_FALSE_A1_50_cr
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_2002|stem|3a0ea7605fb6d8b8|bdb7d3cf4791363d|d4d77ef6bac43536|-831954404||t19318.6399046057s|182fd197867c4ca2|63301|rds|local|vector|||63.378||
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem|15a212bcd0aac260|ac5120387be8007b|f6333637f07bab8b|1727247331||t19325.5751203539s|7e56a3d33f01ec93|63281|rds|local|vector|||107.636||
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_25|stem|43574756080cc7d7|6f91ff6fca757fd0|f6333637f07bab8b|686655203||t19325.5735418315s|ec0a83125bfabd1f|1305|rds|local|vector|||2.995||
-ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_2002|stem|b96ea68f034fd0c0|95a15bd1d55adb1f|d4d77ef6bac43536|-1092182668||t19325.5137719259s|15f969385e7eae14|63001|rds|local|vector|||37.02||
-ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|33d3fd5dfe0fa138|f97135bbafa32fa3|d4d77ef6bac43536|-1658683762||t19319.4651096988s|6fe519eafcc4cf90|17387|rds|local|vector|||37.824||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_2002|stem|ad3b6ed75e7c15dd|95a15bd1d55adb1f|f6333637f07bab8b|-1092182668||t19330.5468190311s|d2cb3966f82081c8|63038|rds|local|vector|||68.296||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|2e890a56a3112fed|f97135bbafa32fa3|f6333637f07bab8b|-1658683762||t19326.311567669s|5d70ab1ef1315be2|17384|rds|local|vector|||67.024||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_25|stem|f7e40fafa5a5966f|cd27d83e377ca2e8|f6333637f07bab8b|-1152345417||t19326.311661971s|0a1588e865a9fcad|666|rds|local|vector|||2.18||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|11ffc943f57abdf1|39f99a780fb2d691|d4d77ef6bac43536|511622570||t19188.6570758361s|6f545fcd8c8ec2f1|31999|rds|local|vector|||513.281||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|e7f0d8ad0bd28c76|d18641d4b06eda7e|d4d77ef6bac43536|166118478||t19188.6627031785s|d432a216a503f350|31965|rds|local|vector|||486.168||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula_misspecified_causal_forest_ranger_FALSE_A1_50_misspecified_1001|stem|5b7cd4636e5a8ef5|df12ea698e7345eb|d4d77ef6bac43536|-1954729500||t19188.6683283051s|e8e5ccac07971480|31915|rds|local|vector|||485.929||
@@ -182,8 +184,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula_misspecified_FGR_ranger_FALSE_A1_50
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula_ranking_causal_forest_ranger_FALSE_all_50_ranking_1001|stem|be4557c4f4b27711|bbd227df8abbd7ee|d4d77ef6bac43536|1856473373||t19188.6775568259s|4bc6f8947b05ec27|320804|rds|local|vector|||659.348||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula_ranking_causal_forest_ranger_TRUE_all_50_ranking_1001|stem|9d020b4edc05981d|a4b8984ce12dbc9e|d4d77ef6bac43536|639523941||t19188.690439417s|c0db51d5ba276810|320645|rds|local|vector|||1112.953||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_1001|stem|860aac2c5ab3f4c0|2159ee2bd1392a74|d4d77ef6bac43536|-490400191||t19188.4424852672s|21617862944040ad|31848|rds|local|vector|||484.234||
-ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem||bc650e081985d50a|d4d77ef6bac43536|-878008631||t19319.5323461977s||0|rds|local|vector|||396.837|scheduled cores 1, 7, 11, 14, 19, 22, 23, 32, 33, 34, 35, 38, 39 did not deliver results, all values of the jobs will be affected. scheduled cores 4, 8, 24, 6, 3, 26, 13, 9, 41, 50, 36, 28, 37, 20, 30, 16, 29, 25, 2, 21, 15, 47 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
-ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|31b7c8004d43b4e9|d8deeacf29535645|d4d77ef6bac43536|-602428872||t19319.5123358487s|70eaa6a45fbce079|17221|rds|local|vector|||4011.755||
+ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_1001|stem||a3d6a4bd0c59037f|f6333637f07bab8b|1022907009||t19329.4697023115s||0|rds|local|vector|||380.483|scheduled cores 1, 3, 6, 9, 12, 19, 22, 24 did not deliver results, all values of the jobs will be affected. scheduled cores 2, 7, 11 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
+ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem||bc650e081985d50a|f6333637f07bab8b|-878008631||t19319.5323461977s||0|rds|local|vector|||741.538|scheduled cores 4, 6, 7, 10, 15, 18, 21 did not deliver results, all values of the jobs will be affected. scheduled cores 1, 3, 13, 5, 12 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
+ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|31b7c8004d43b4e9|d8deeacf29535645|f6333637f07bab8b|-602428872||t19319.5123358487s||17221|rds|local|vector|||3724.934|scheduled cores 16, 24, 12, 14 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
 ESTIMATES_1.25_1_1_1.25_0.04_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|5ae4f0536fb3d98b|030e8fb91509991c|d4d77ef6bac43536|-602231499||t19188.6909508903s|82aec48ccbac7308|32116|rds|local|vector|||44.148||
 ESTIMATES_1.25_1_1_1.25_0.04_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|f32639f6e4f01b42|d1f345ad94ed056f|d4d77ef6bac43536|-818341244||t19318.4896655697s|dea85a89a6a74d5e|63397|rds|local|vector|||87.963||
 ESTIMATES_1.25_1_1_1.25_0.04_1000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|830db9efc7ab78d7|86634be96f1b5ea8|d4d77ef6bac43536|-804709253||t19188.6914560466s|da4b1c69bdb12c1f|32104|rds|local|vector|||43.621||
@@ -268,11 +271,11 @@ net_fixed|object|341e71546a05a3bc|||||||||||||||
 net_plot_setting|object|a4532251b56be774|||||||||||||||
 net_truth_varying|object|4aa482365645fca9|||||||||||||||
 net_varying|object|914e90cb62b3434f|||||||||||||||
-PLOTFRAME|stem|2c92697eb50f4b00|5a54b9f99c4cba59|88e1d63115248216|712761364||t19318.6721702223s|73ebbd1c5df2fa59|6547666|rds|local|vector|||2.21||
+PLOTFRAME|stem|bd6c6e0fd5c258ef|5a54b9f99c4cba59|5bc5afa3fbcdff80|712761364||t19330.5468238756s|6cf60ca1fb4e6fa2|368695|rds|local|vector|||0.188||
 plotTruth|function|de064d3c5a3fa967|||||||||||||||
-RANKING|stem|169806d1e0248bde|c4dc809ddb6a189f|5575615d20578fdf|1586753560||t19318.6721285467s|772ba44ef31d3be0|19044|rds|local|vector|||1.458||
+RANKING|stem|2c1799140ca17462|c4dc809ddb6a189f|9155e595e48eeae3|1586753560||t19330.5468242058s|c784844629387e6b|197|rds|local|vector|||0.005||
 rankingPerformance|function|866c81acbc921f94|||||||||||||||
-RESULTS|stem|56101a4fe79446f7|9d86a3343781d1fe|0723435d931de24a|746227562||t19318.6721370809s|9ca518fb6619d1e6|6862|rds|local|vector|||0.666||
+RESULTS|stem|873f7967c71edadd|9d86a3343781d1fe|541c11c8312dbb34|746227562||t19330.5468257262s|f270a887ecdcabd8|847|rds|local|vector|||0.11||
 REVIEW_ATE|stem|51842c830719b89b|666747728256cf9d|5e4ef8d7750e7970|-1463186170||t19314.6576779036s|152a6c83ba93ba9b|1565113|rds|local|vector|||0.054||
 review_estimates|object|51128bff3269e62d|||||||||||||||
 REVIEW_ESTIMATES_1.25_1_1_1.25_.Inf_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_10|stem|aa960614af83e651|77d17e7bdce3d04a|d4d77ef6bac43536|-1575506923||t19313.6000112606s|0c06bd7502b40ecf|769|rds|local|vector|||1.941||
@@ -334,10 +337,10 @@ slurm|function|8ca51ef81a40502e|||||||||||||||
 summarizePerformance|function|40e54298cfed4776|||||||||||||||
 thepackages|object|a0a7130fe85c5f55|||||||||||||||
 theTruth|function|54f8e157718adcde|||||||||||||||
-TRUTH|stem|9548d32ef88976a1|1fe5ec05b47b8159|24a8255f5b12d986|1693541711||t19325.5129242431s|4566d5bf5a60f145|413|rds|local|vector|||0.003||
+TRUTH|stem|1ce608d431466420|1fe5ec05b47b8159|3d2f3801a504f629|1693541711||t19330.5468193466s|4566d5bf5a60f145|413|rds|local|vector|||0.003||
 truth_varying|object|9f2abe0c8440be35|||||||||||||||
-varying|object|e26f1e6e0db6ffcc|||||||||||||||
-VARYING|stem|30be05805f597b9e|7d5c02655e133b4d|aec5fd6834526c92|1375678044||t19319.4622892318s|b6099e1bec5fd49f|419|rds|local|vector|||3.75||
+varying|object|c430bddd5cbeccb1|||||||||||||||
+VARYING|stem|baff74ca191db4d6|7d5c02655e133b4d|f18d8800fef34bd5|1375678044||t19330.5403386744s|bee34feafdb8a59e|404|rds|local|vector|||3.811||
 varying_censored|object|dc4ebdc1499b18a0|||||||||||||||
 varying_crude|object|8659219418eae417|||||||||||||||
 varying_effect|object|b991290cd2cc13c5|||||||||||||||
@@ -364,7 +367,7 @@ VARYING_TRUTH_0.025_1.25_1_1_1.25_formula_misspecified_5_misspecified|stem|52e42
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula_ranking_5_ranking|stem|8f5327fcf7a95c16|3d58332d74820a36|cfd7e0a4aeb8424f|-396908056||t19188.3885058482s|2430ee2ba518383b|409|rds|local|vector|||4.502||
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_2.5_censoring|stem|c35e934a6041e141|1101464d632983e0|cfd7e0a4aeb8424f|-639369602||t19188.7666920229s|a0252f4d8dc0f410|403|rds|local|vector|||4.213||
 VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_5_crude_effect|stem|0e33a265bbbf2782|20922c1d4aac2039|cfd7e0a4aeb8424f|-1094920116||t19188.7667431391s|9ea571d1cd313787|411|rds|local|vector|||4.4||
-VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_5_not_misspecified|stem|c85fcc6ef31abd1b|589b224106c083f3|3b0bc44580e87ed0|-1921921947||t19319.4651628894s||414|rds|local|vector|||8.244|scheduled cores 10, 16, 12, 7, 5, 3, 1, 11, 6, 2, 8, 17, 4, 9, 15, 14 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
+VARYING_TRUTH_0.025_1.25_1_1_1.25_formula1_5_not_misspecified|stem|6bc6f6095676594c|589b224106c083f3|3b0bc44580e87ed0|-1921921947||t19326.3116364874s|1bd6378f9a2638bb|414|rds|local|vector|||5.923||
 VARYING_TRUTH_0.025_1.25_1_1_2_formula_ranking_5_ranking|stem|844f300fab9d9ebd|00046bba24376cf5|cfd7e0a4aeb8424f|1339053821||t19188.7667918809s|b61fd30e50026aef|412|rds|local|vector|||4.196||
 VARYING_TRUTH_0.025_1.25_1.25_1_1.25_formula1_5_crude_effect|stem|77c08ba9213982b1|f16e6325d76c9219|cfd7e0a4aeb8424f|-1328191701||t19188.7668405558s|9ea571d1cd313787|411|rds|local|vector|||4.189||
 VARYING_TRUTH_0.04_1.25_1_1_1.25_formula_cens_2.5_censoring|stem|500b38e5a59563a3|81c9cca978e7636a|cfd7e0a4aeb8424f|-1621960054||t19188.7668899927s|9ea571d1cd313787|411|rds|local|vector|||4.252||
