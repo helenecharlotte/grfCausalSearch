@@ -1,11 +1,11 @@
 ## setwd("~/research/SoftWare/grfCausalSearch/")
 try(setwd("~/research/SoftWare/grfCausalSearch/"),silent=TRUE)
 library(targets)
-## server <- !inherits(try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"),silent = TRUE),"try-error")
 # ---------------------------------------------------------------------
 # packages
 # ---------------------------------------------------------------------
 # library("targets");library("future.batchtools");library("tarchetypes");library("future.callr");library("future");library("grf");library("ranger");library("data.table");library("scales");library("riskRegression");library("prodlim");library("survival");library("foreach");library("parallel");library("grid");library("ggplot2");library("gridExtra");library("ggplotify");library("cowplot")
+server <- !inherits(try(setwd("/maps/projects/biostat01/people/grb615/research/SoftWare/grfCausalSearch"),silent = TRUE),"try-error")
 thepackages <- c("targets",
                  "future.batchtools",
                  "tarchetypes",
@@ -26,6 +26,7 @@ thepackages <- c("targets",
                  "gridExtra",
                  "ggplotify",
                  "cowplot")
+library(targets)
 targets::tar_option_set(packages = thepackages)
 # ---------------------------------------------------------------------
 # R functions
@@ -44,7 +45,8 @@ source("./setting/simulation_targets.R")
 ## MCCORES <- 5
 ## MCCORES <- 50
 ## MCCORES are set in setting/simulation-targets.R
-list(varying_target,
+list(tar_target(REPETITIONS, 1:1000),
+     varying_target,
      fixed_target,
      fixed,
      truth_varying,
@@ -54,9 +56,6 @@ list(varying_target,
      results,
      ranking,
      plotframe)
-     ## review_estimates,
-     ## review_ate,
-     ## review_results)
 
 
 

@@ -35,7 +35,6 @@ for(f in list.files("functions",".R$",full.names=TRUE)){source(f)}
 source("./setting/simulation_targets.R")
 #+END_SRC
 
-
 * Demo
 
 ** Simulate data
@@ -117,7 +116,7 @@ on the logarithmic scale.
 formula1
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:36) 7c78430e442837b5fe50d61112cf7fde919a362a]:
+#+RESULTS[(2022-06-23 08:54:41) 7c78430e442837b5fe50d61112cf7fde919a362a]:
 #+begin_example
 [[1]]
 T1 ~ f(A4, 0.3) + f(A5, 0.7) + f(X1, 1) + f(X2, 0.3) + f(X6, 
@@ -206,7 +205,7 @@ tt=theTruth(setting = set,
 tt[cause==1]
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:46) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
+#+RESULTS[(2022-06-23 09:48:15) fa0bed239c1fb2011b68ba3dbf560b9ed4f53fbf]:
 :    intervene cause net scale.censored      ate censored.tau
 : 1:        A1     1   1          0.025 0.059364        33.79
 : 2:        A2     1   1          0.025 0.000180        33.79
@@ -345,7 +344,14 @@ b_c=b_c+facet_grid(censored.tau~n)+ylim(c(-.15,.15))
 b_c
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:55) f22646500f4751cbc25ba69669f3303663094851]:
+#+BEGIN_SRC R :results file graphics :file ./output/sample-size-boxplots.png :exports none :session *R* :cache yes 
+p=tar_read(PLOTFRAME)
+b_s=boxplot_effects(p[theme=="sample_size"&net==0])
+b_s=b_s+facet_grid(~n)
+b_s
+#+END_SRC
+
+#+RESULTS[(2022-07-13 10:41:37) 8bc665ea23934aec4854a9d20858548bd2394d5b]:
 [[file:./output/sample-size-boxplots.png]]
 
 
@@ -365,8 +371,9 @@ R=R[theme!="weighter",.(repetitions,theme,censored.tau,formula,n,A1_T1,A1_T2,hor
 R1a=R[theme=="censoring"&formula=="formula1"] 
 R1b=R[theme=="censoring"&formula=="formula_cens"]
 # coverage independent censoring varying censored procentage at time horizon
-g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.85,1))+xlab("Sample size")+ylab("Coverage")+
-  ggtitle("Independent censoring")
+# g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.85,1))+xlab("Sample size")+ylab("Coverage")+
+g1a=ggplot(R1a,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
+ggtitle("Independent censoring")
 # coverage dependent censoring varying censored procentage at time horizon
 g1b=ggplot(R1b,aes(x=n,y=coverage,group=censored.tau,linetype=censored.tau))+theme_bw()+guides(linetype=guide_legend(title="censoring (%)"))+geom_line()+geom_point()+ylim(c(.9,1))+xlab("Sample size")+ylab("Coverage")+
   ggtitle("Informative censoring")
@@ -425,6 +432,11 @@ p.misspecified
 #+END_SRC
 
 #+RESULTS[(2022-07-18 08:24:57) 5c2bccd4f221a00e3f9b729c3615de19e55a7bae]:
+p.misspecified 
+#+END_SRC
+
+#+RESULTS[(2022-07-13 10:51:18) feca25d6f35f13865d8172a53a14b30c5b2d930a]:
+>>>>>>> 1fa4d10c72d55f2ea65079acca4f3d6a2e2de830
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance
