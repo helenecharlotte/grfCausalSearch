@@ -81,7 +81,7 @@ following object:
 tar_read(VARYING) 
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:36) 426d486a51b67a3234bd3c64952becd9809a1bb3]:
+#+RESULTS[(2023-01-10 11:49:39) 426d486a51b67a3234bd3c64952becd9809a1bb3]:
 :results:
      A1_T1 A1_T2 A2_T1 A2_T2 scale.censored sample.size horizon         setting        method weighter   net treat
   1:  1.25   0.8     1  1.25          0.025         500       5        formula1 causal_forest   ranger FALSE    A1
@@ -90,24 +90,25 @@ tar_read(VARYING)
   4:  1.25   0.8     1  1.25          0.025        5000       5        formula1 causal_forest   ranger FALSE    A1
   5:  1.25   1.0     1  1.25          0.025         500       5        formula1 causal_forest   ranger FALSE    A1
  ---                                                                                                              
-121:  1.25   1.0     1  2.00          0.025        1000       5 formula_ranking causal_forest   ranger  TRUE   all
-122:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger FALSE   all
-123:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger  TRUE   all
-124:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger FALSE   all
-125:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger  TRUE   all
+142:  1.25   1.0     1  2.00          0.025        1000       5 formula_ranking causal_forest   ranger  TRUE   all
+143:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger FALSE   all
+144:  1.25   1.0     1  2.00          0.025        2000       5 formula_ranking causal_forest   ranger  TRUE   all
+145:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger FALSE   all
+146:  1.25   1.0     1  2.00          0.025        5000       5 formula_ranking causal_forest   ranger  TRUE   all
      num.trees        theme reps
-  1:        50 crude_effect 1001
-  2:        50 crude_effect 1001
-  3:        50 crude_effect 1001
+  1:        50 crude_effect 2002
+  2:        50 crude_effect 2002
+  3:        50 crude_effect 2002
   4:        50 crude_effect 1001
-  5:        50 crude_effect 1001
+  5:        50 crude_effect 2002
  ---                            
-121:       100      ranking 1001
-122:       100      ranking 1001
-123:       100      ranking 1001
-124:        50      ranking 1001
-125:        50      ranking 1001
+142:       100      ranking 2002
+143:       100      ranking 2002
+144:       100      ranking 2002
+145:        50      ranking 1001
+146:        50      ranking 1001
 :end:
+
 
 The dependence of all the variables is defined by a set of
 formulae. Here the values are hazard ratios and odds ratios specified
@@ -420,7 +421,7 @@ org(tabel_censoring)
 
 #+BEGIN_SRC R :results file graphics :file ./output/misspecified-parametric-boxplots.png :exports none :session *R* :cache yes 
 p=tar_read(PLOTFRAME)
-b_m=boxplot_effects(p[theme=="misspecified"])
+b_m=boxplot_effects(p[theme=="misspecified"&n==5000])
 b_m=b_m+facet_grid(~method)
 b_m
 p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.title=element_text(size=18),legend.position="none",
@@ -429,11 +430,7 @@ p.misspecified <- b_m+theme_bw()+theme(axis.text=element_text(size=12),axis.titl
 p.misspecified
 #+END_SRC
 
-#+RESULTS[(2022-07-18 08:24:57) 5c2bccd4f221a00e3f9b729c3615de19e55a7bae]:
-p.misspecified 
-#+END_SRC
-
-#+RESULTS[(2022-07-13 10:51:18) feca25d6f35f13865d8172a53a14b30c5b2d930a]:
+#+RESULTS[(2023-01-10 11:47:55) 77ae14254be5a6e51725503066c7006861b4ab97]:
 [[file:./output/misspecified-parametric-boxplots.png]]
 
 *** Ranking performance

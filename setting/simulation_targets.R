@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Jan 10 2023 (09:24) 
+## Last-Updated: Jan 10 2023 (09:56) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 199
+##     Update #: 200
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -105,7 +105,7 @@ varying_misspecified <- data.table::CJ(A1_T1 = 1.25,
                                        A2_T2 = 1.25,
                                        scale.censored = 1/40,
                                        ## sample.size = 5000,
-                                       sample.size = c(500,1000,2000),
+                                       sample.size = c(500,1000,2000,5000),
                                        horizon = 5,
                                        setting = "formula_misspecified",
                                        method = c("causal_forest","CSC","FGR"),
@@ -118,7 +118,7 @@ varying_notmisspecified <- data.table::CJ(A1_T1 = 1.25,
                                        A2_T1 = 1,
                                        A2_T2 = 1.25,
                                        scale.censored = 1/40,
-                                       sample.size = c(500,1000,2000),
+                                       sample.size = c(500,1000,2000,5000),
                                        horizon = 5,
                                        setting = "formula1",
                                        method = c("causal_forest","CSC","FGR"),
@@ -158,7 +158,7 @@ varying[,reps := 2002]
 #varying[net == 0&theme == "censoring"][,reps := 2002][net == 0&theme == "censoring" & sample.size == 5000,reps := 2002],
 #varying[net == 0&scale.censored == -Inf&setting == "formula_cens"&theme == "censoring"][,reps := 2002],
 varying[sample.size ==  5000,reps := 1001]
-varying <- varying[!(sample.size == 5000&method%in%c("CSC","FGR"))]
+## varying <- varying[!(sample.size == 5000&method%in%c("CSC","FGR"))]
 ## varying[sample.size != 5000,reps := 2002]
 ## varying <- varying[method != "FGR"]
 ## varying <- varying[sample.size != 5000]

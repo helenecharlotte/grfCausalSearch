@@ -8,8 +8,8 @@ dependent_fixed|object|f056daaa479029e2|||||||||||||||
 dependent_plot_setting|object|5e66c725a6f5c4a0|||||||||||||||
 dependent_truth_varying|object|03dade720993538e|||||||||||||||
 dependent_varying|object|c6801907dca2b64d|||||||||||||||
-ESTIMATE_ATE|stem|fb6aaa34253d7ca8|6e65b5c989e79880|14081002cf777d58|-1706276200||t19367.3119156801s|949f56e61d07b44d|48205678|rds|local|vector|||1.55||
-estimates|object|92c4cf7338929047|||||||||||||||
+ESTIMATE_ATE|stem|ac859cdae6d3451e|756289c0910fffad|e48b1eedbd1e2704|-1706276200||t19367.3983555048s|f569170f8d75213a|48699656|rds|local|vector|||1.309||
+estimates|object|01ce047e924e991f|||||||||||||||
 ESTIMATES_0.8_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_all_50_net_effect_1001|stem|5c862e324f42701b|70facc7b79d3bbac|d4d77ef6bac43536|1605706796||t19188.3322898808s|207c7b47b925eaf1|319929|rds|local|vector|||658.32||
 ESTIMATES_0.8_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_TRUE_all_50_net_effect_1001|stem|46f977957d5c37fc|0732e197e08cd7cb|d4d77ef6bac43536|800822111||t19188.4843601844s|623f915f78841ee3|320098|rds|local|vector|||1115.364||
 ESTIMATES_1_0.8_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_all_50_net_effect_1001|stem|4238e753d1351795|6e691e465dd23ec3|d4d77ef6bac43536|1241684531||t19188.4920035374s|75ff3aa8e8ab8de1|319516|rds|local|vector|||660.287||
@@ -139,6 +139,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A
 ESTIMATES_1.25_1_1_1.25_0.025_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|34e7d078bc82ecfe|a6155be671ac7235|d4d77ef6bac43536|-1508054209||t19318.6220540191s|c0f98cf305746eac|63392|rds|local|vector|||87.768||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|5e99a24420785e3d|490ef6d4ab249826|d4d77ef6bac43536|-94776530||t19188.6377675714s|da5c389b1d3eae45|32089|rds|local|vector|||43.547||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|08ae72f6a7f4d6df|7785ecaa0fa97976|d4d77ef6bac43536|90530567||t19318.3794937272s|aabbc965bbcabec7|63302|rds|local|vector|||87.438||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_misspecified_causal_forest_ranger_FALSE_A1_50_misspecified_2002|stem|2d5a896c090f5415|ce8261e61a0bffc2|f6333637f07bab8b|-164278490||t19367.354605465s|3e96bf5a7c1d6dd3|63331|rds|local|vector|||135.079||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_misspecified_CSC_ranger_FALSE_A1_50_misspecified_2002|stem|71ff4c6149b38d3f|bd0b9e06cfdd84d3|f6333637f07bab8b|449236636||t19367.3530413158s|c3b9d0a5cc4a5d94|62767|rds|local|vector|||84.186||
+ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_misspecified_FGR_ranger_FALSE_A1_50_misspecified_2002|stem|8a6c8a6f6f745eac|6f3a2a9b4705d41a|f6333637f07bab8b|1922762705||t19367.3638178394s|36c8721cd343f6ba|17422|rds|local|vector|||118.317||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_1001|stem|e0328e536af74bd3|57fa377e58ff95f0|d4d77ef6bac43536|-1793361133||t19188.4292440078s|828e352474087843|320422|rds|local|vector|||108.194||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_2002|stem|bdcd964ea1b9afa5|2b7b88b1ba6e83f1|d4d77ef6bac43536|665219809||t19318.4639993781s|a325bebe56d34b42|634730|rds|local|vector|||225.234||
 ESTIMATES_1.25_1_1_1.25_0.025_1000_5_formula_ranking_causal_forest_ranger_TRUE_all_100_ranking_1001|stem|7a65bea4b6645238|28cf578c7e114e67|d4d77ef6bac43536|163425552||t19188.4368802829s|6a29818ce09a0bd5|320741|rds|local|vector|||149.149||
@@ -152,6 +155,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula_cens_causal_forest_ranger_FALSE_A
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|0c091662e7b3c2bc|4d110fa2426b1138|d4d77ef6bac43536|-1381624866||t19318.3819512688s|28e289e8e7ed45e6|63248|rds|local|vector|||212.293||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|1312f36682fe31f1|e509a03a5eee5958|d4d77ef6bac43536|443611086||t19188.6401398183s|f402ee6f58e5a243|32018|rds|local|vector|||101.748||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|610c4d854863f16c|7e3e0d3214c94782|d4d77ef6bac43536|-808263684||t19318.4766787287s|ff94deccdfd3db64|63161|rds|local|vector|||197.277||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_misspecified_causal_forest_ranger_FALSE_A1_50_misspecified_2002|stem|5fa404ecf7e39c6c|2317fbdcdeac079d|f6333637f07bab8b|1259196260||t19367.3624478947s|f9da9eb62bd16ab2|63208|rds|local|vector|||251.806||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_misspecified_CSC_ranger_FALSE_A1_50_misspecified_2002|stem|3b227a20768191e3|a4a360aca583b76b|f6333637f07bab8b|-1196262120||t19367.3665897538s|175fc4e5db7864dc|62457|rds|local|vector|||126.13||
+ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_misspecified_FGR_ranger_FALSE_A1_50_misspecified_2002|stem|f84f74eddbc608b8|59761cf03af96a65|f6333637f07bab8b|45323075||t19367.3586930222s|e8247ff84735ab12|17360|rds|local|vector|||352.787||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_1001|stem|65e231db070415b1|23b4536d98c9ccfd|d4d77ef6bac43536|-1399415150||t19188.6431887473s|c28153d6b79cfb3c|321111|rds|local|vector|||263.301||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_2002|stem|92c54e7672292450|1c3cb051d06c32f4|d4d77ef6bac43536|1715996353||t19318.6291541103s|1a25b22af2e618f4|635506|rds|local|vector|||526.964||
 ESTIMATES_1.25_1_1_1.25_0.025_2000_5_formula_ranking_causal_forest_ranger_TRUE_all_100_ranking_1001|stem|da0afc26e514c272|23f797531572e0ec|d4d77ef6bac43536|-2010569421||t19188.6480628664s|e60acffc6d4b17b6|320868|rds|local|vector|||421.015||
@@ -165,6 +171,9 @@ ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula_cens_causal_forest_ranger_FALSE_A1
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|752a87b2fffd048c|f857a0dd326d62b8|d4d77ef6bac43536|-1456633168||t19318.4613904003s|448c9f02175c21d1|63390|rds|local|vector|||63.969||
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|bc8ae71aad97487b|494bace06572d5fb|d4d77ef6bac43536|-512163658||t19188.4573785612s|82ccf37d416d35fb|32078|rds|local|vector|||32.778||
 ESTIMATES_1.25_1_1_1.25_0.025_500_2.5_formula1_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|575385167bba870b|cea774086461193f|d4d77ef6bac43536|359883040||t19318.4727088236s|6fa68a49e2f23c23|63334|rds|local|vector|||63.155||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_misspecified_causal_forest_ranger_FALSE_A1_50_misspecified_2002|stem|7febec9a07e57485|1b219038d97b4cf6|f6333637f07bab8b|2522448||t19367.3651285794s|5ab472299a3412b3|63440|rds|local|vector|||113.195||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_misspecified_CSC_ranger_FALSE_A1_50_misspecified_2002|stem|08d42984f9937079|242a8eaa0d56299a|f6333637f07bab8b|1273903506||t19367.3520664184s|9ab9d51b3301be91|63071|rds|local|vector|||71.858||
+ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_misspecified_FGR_ranger_FALSE_A1_50_misspecified_2002|stem|45b92f81d5a49c3c|daa011c8f81b8fc9|f6333637f07bab8b|561661839||t19367.3595328354s|e688638f1d6619ab|17468|rds|local|vector|||72.443||
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_1001|stem|04886ff6065895ef|f5fe62d23720f41d|d4d77ef6bac43536|-1897017255||t19188.4438005458s|b7772466b2c96138|320880|rds|local|vector|||113.55||
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_ranking_causal_forest_ranger_FALSE_all_100_ranking_2002|stem|53c4e7bca45ed984|9efc96ea92d2e3ef|d4d77ef6bac43536|-1803944557||t19318.6342755507s|e18d9ef1ba2bba2d|635025|rds|local|vector|||244.132||
 ESTIMATES_1.25_1_1_1.25_0.025_500_5_formula_ranking_causal_forest_ranger_TRUE_all_100_ranking_1001|stem|64f0177248ca7dd6|6423a6f25eddc68b|d4d77ef6bac43536|693316403||t19188.6507378048s|6a29818ce09a0bd5|320741|rds|local|vector|||132.998||
@@ -186,6 +195,8 @@ ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula_ranking_causal_forest_ranger_TRUE_a
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_crude_effect_1001|stem|860aac2c5ab3f4c0|2159ee2bd1392a74|d4d77ef6bac43536|-490400191||t19188.4424852672s|21617862944040ad|31848|rds|local|vector|||484.234||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_1001|stem|6c33ad5581357bed|a3d6a4bd0c59037f|f6333637f07bab8b|1022907009||t19367.3114561525s|90d24feff014653f|31871|rds|local|vector|||550.155||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_causal_forest_ranger_FALSE_A1_50_not_misspecified_2002|stem||bc650e081985d50a|f6333637f07bab8b|-878008631||t19319.5323461977s||0|rds|local|vector|||741.538|scheduled cores 4, 6, 7, 10, 15, 18, 21 did not deliver results, all values of the jobs will be affected. scheduled cores 1, 3, 13, 5, 12 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
+ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_CSC_ranger_FALSE_A1_50_not_misspecified_1001|stem|1445fbcd1f0399cf|e52d06bab42bd2c2|f6333637f07bab8b|2123040759||t19367.3752419621s|86247f1a05572abb|31545|rds|local|vector|||191.462||
+ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_1001|stem|69948585cdf82c2b|9a0eb300e89ec9f2|f6333637f07bab8b|-902610638||t19367.3982139027s|b9c2420f690a96e2|8881|rds|local|vector|||1984.318||
 ESTIMATES_1.25_1_1_1.25_0.025_5000_5_formula1_FGR_ranger_FALSE_A1_50_not_misspecified_2002|stem|31b7c8004d43b4e9|d8deeacf29535645|f6333637f07bab8b|-602428872||t19319.5123358487s||17221|rds|local|vector|||3724.934|scheduled cores 16, 24, 12, 14 encountered errors in user code, all values of the jobs will be affected|cannot coerce class tryerror to a data.frame
 ESTIMATES_1.25_1_1_1.25_0.04_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_1001|stem|5ae4f0536fb3d98b|030e8fb91509991c|d4d77ef6bac43536|-602231499||t19188.6909508903s|82aec48ccbac7308|32116|rds|local|vector|||44.148||
 ESTIMATES_1.25_1_1_1.25_0.04_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_2002|stem|f32639f6e4f01b42|d1f345ad94ed056f|d4d77ef6bac43536|-818341244||t19318.4896655697s|dea85a89a6a74d5e|63397|rds|local|vector|||87.963||
@@ -271,12 +282,12 @@ net_fixed|object|341e71546a05a3bc|||||||||||||||
 net_plot_setting|object|a4532251b56be774|||||||||||||||
 net_truth_varying|object|4aa482365645fca9|||||||||||||||
 net_varying|object|914e90cb62b3434f|||||||||||||||
-PLOTFRAME|stem|af247af471d7d1ea|5a54b9f99c4cba59|74ed8712b9d9de66|712761364||t19367.3119880483s|b8ca06c255f65c62|6948923|rds|local|vector|||2.895||
+PLOTFRAME|stem|59fb59b7ebc4f7d9|5a54b9f99c4cba59|ac60002371c3aafd|712761364||t19367.398447793s|4cb66cd0c74433c3|7438808|rds|local|vector|||3.092||
 plotTruth|function|de064d3c5a3fa967|||||||||||||||
-RANKING|stem|169806d1e0248bde|c4dc809ddb6a189f|a8bf4d850bdbfb30|1586753560||t19367.3119465735s|772ba44ef31d3be0|19044|rds|local|vector|||2.106||
+RANKING|stem|169806d1e0248bde|c4dc809ddb6a189f|040a2085bb8760da|1586753560||t19367.3983855811s|772ba44ef31d3be0|19044|rds|local|vector|||2.056||
 rankingPerformance|function|866c81acbc921f94|||||||||||||||
 REPETITIONS|stem|689a0706084f6dfa|b94af71c2e82471c|787f005495551c49|2078059189||t19332.6142789935s|f55bdaeb17afeaf9|102|rds|local|vector|||0.703||
-RESULTS|stem|5f60762cc815af74|9d86a3343781d1fe|3fc660f4fc536baa|746227562||t19367.3119968808s|c484f2eedce83fec|7236|rds|local|vector|||0.676||
+RESULTS|stem|54d76b2e59af1b58|9d86a3343781d1fe|fe45bf109a7a9279|746227562||t19367.3984032963s|bcd9108a1a8caabb|7783|rds|local|vector|||1.508||
 REVIEW_ATE|stem|51842c830719b89b|666747728256cf9d|5e4ef8d7750e7970|-1463186170||t19314.6576779036s|152a6c83ba93ba9b|1565113|rds|local|vector|||0.054||
 review_estimates|object|51128bff3269e62d|||||||||||||||
 REVIEW_ESTIMATES_1.25_1_1_1.25_.Inf_1000_2.5_formula_cens_causal_forest_ranger_FALSE_A1_50_censoring_10|stem|aa960614af83e651|77d17e7bdce3d04a|d4d77ef6bac43536|-1575506923||t19313.6000112606s|0c06bd7502b40ecf|769|rds|local|vector|||1.941||
@@ -338,15 +349,16 @@ slurm|function|8ca51ef81a40502e|||||||||||||||
 summarizePerformance|function|40e54298cfed4776|||||||||||||||
 thepackages|object|a0a7130fe85c5f55|||||||||||||||
 theTruth|function|54f8e157718adcde|||||||||||||||
-TRUTH|stem|1762d26ab975627f|e7d9cca72fe66932|9d489bf2ad5d5557|1693541711||t19367.3119218355s|8770a2f7f2299414|2173|rds|local|vector|||0.018||
-truth_varying|object|767de7513e5fc58b|||||||||||||||
-varying|object|c3a04b86e05d1884|||||||||||||||
-VARYING|stem|2e244fec8ee9f318|7d5c02655e133b4d|4346c4a30a604f48|1375678044||t19367.3050829759s|bee7c7e7a2a497ec|750|rds|local|vector|||10.203||
+TRUTH|stem|7953915a6e0defe6|d09dea972e10550f|9d489bf2ad5d5557|1693541711||t19367.366591131s|4413ce7c117b3b1c|2164|rds|local|vector|||0.024||
+truth_varying|object|82f4203f6c3cb0f6|||||||||||||||
+varying|object|cd5012714f3b0a13|||||||||||||||
+VARYING|stem|52d2719510f7a648|7d5c02655e133b4d|d4aaa7eabda2b917|1375678044||t19367.3730241482s|febc0ae0f71ad275|1093|rds|local|vector|||1.856||
 varying_censored|object|dc4ebdc1499b18a0|||||||||||||||
 varying_crude|object|8659219418eae417|||||||||||||||
 varying_effect|object|b991290cd2cc13c5|||||||||||||||
-varying_misspecified|object|b9269633ba72050b|||||||||||||||
+varying_misspecified|object|3bb69874e8698f55|||||||||||||||
 varying_net|object|2c50f6c53e833dab|||||||||||||||
+varying_notmisspecified|object|30da4b330310f7ef|||||||||||||||
 varying_ranking|object|de96d0ca248bec6b|||||||||||||||
 varying_sample_size|object|dc5c0408bec79d89|||||||||||||||
 VARYING_TRUTH_.Inf_1.25_1_1_0.2_formula_ranking_5_ranking|stem|dba2ed2489415fb7|54173d2fb72b17ee|4075fe6d7bfa9a0b|1600276152||t19366.6812804552s|2430ee2ba518383b|409|rds|local|vector|||19.976||
