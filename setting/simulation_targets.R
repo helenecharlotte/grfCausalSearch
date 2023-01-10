@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: May  5 2022 (11:08) 
 ## Version: 
-## Last-Updated: Dec  4 2022 (13:57) 
+## Last-Updated: Jan 10 2023 (09:24) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 189
+##     Update #: 199
 #----------------------------------------------------------------------
 ## 
 ### Commentary:
@@ -25,7 +25,6 @@ library(data.table)
 ## MCCORES <- 1
 ## MCCORES <- 5
 MCCORES <- 25
-print(MCCORES)
 setDTthreads(1)
 fixed <- list(event.times = c("T1","T2"),
               treatments = c("A1" = .4,"A2" = .3, "A3" = .3,"A4" = .4,"A5" = .5,"A6" = .2,"A7" = .7,"A8" = .8,"A9" = .9,"A10" = .1),
@@ -105,9 +104,23 @@ varying_misspecified <- data.table::CJ(A1_T1 = 1.25,
                                        A2_T1 = 1,
                                        A2_T2 = 1.25,
                                        scale.censored = 1/40,
-                                       sample.size = 5000,
+                                       ## sample.size = 5000,
+                                       sample.size = c(500,1000,2000),
                                        horizon = 5,
                                        setting = "formula_misspecified",
+                                       method = c("causal_forest","CSC","FGR"),
+                                       weighter = "ranger",
+                                       net = FALSE,
+                                       treat = "A1",
+                                       num.trees = 50)
+varying_notmisspecified <- data.table::CJ(A1_T1 = 1.25,
+                                       A1_T2 = 1,
+                                       A2_T1 = 1,
+                                       A2_T2 = 1.25,
+                                       scale.censored = 1/40,
+                                       sample.size = c(500,1000,2000),
+                                       horizon = 5,
+                                       setting = "formula1",
                                        method = c("causal_forest","CSC","FGR"),
                                        weighter = "ranger",
                                        net = FALSE,
@@ -131,6 +144,7 @@ varying <-  rbindlist(list(varying_crude[,theme := "crude_effect"],
                            varying_net[,theme := "net_effect"],
                            varying_censored[,theme := "censoring"],
                            varying_misspecified[,theme := "misspecified"],
+                           varying_notmisspecified[,theme := "not_misspecified"],
                            varying_ranking[,theme := "ranking"]))
 varying[sample.size == 5000,num.trees := 50]
 varying_target <- tar_target(VARYING,
@@ -140,18 +154,14 @@ varying[,reps := 2002]
 ## varying[sample.size == 500,reps := 10000]
 ## varying[sample.size == 1000,reps := 5000]
 ## varying[sample.size == 2000,reps := 3000]
-varying <- rbind(#varying[net == 0&theme == "censoring"][,reps := 2002][net == 0&theme == "censoring" & sample.size == 5000,reps := 2002],
-    #varying[net == 0&scale.censored == -Inf&setting == "formula_cens"&theme == "censoring"][,reps := 2002],
-    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 500],
-    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 1000],
-    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 2000],
-    varying[theme == "misspecified"][,setting := "formula1"][,theme := "not_misspecified"][,sample.size:= 5000])
-## varying[sample.size ==  5000,reps := 1001]
+# REVIEW
+#varying[net == 0&theme == "censoring"][,reps := 2002][net == 0&theme == "censoring" & sample.size == 5000,reps := 2002],
+#varying[net == 0&scale.censored == -Inf&setting == "formula_cens"&theme == "censoring"][,reps := 2002],
+varying[sample.size ==  5000,reps := 1001]
+varying <- varying[!(sample.size == 5000&method%in%c("CSC","FGR"))]
 ## varying[sample.size != 5000,reps := 2002]
-varying <- varying[method != "FGR"]
-varying <- varying[sample.size != 5000]
-
-
+## varying <- varying[method != "FGR"]
+## varying <- varying[sample.size != 5000]
 
 # ---------------------------------------------------------------------
 # Calculation of true ATE values
@@ -258,7 +268,7 @@ estimates <- tar_map(
         },mc.cores = MCCORES)) # end of repetitions
         gc()
         out
-    }) # end of parameter map
+    },cue = tar_cue(mode = "never")) # end of parameter map
 )
 
 # combine
